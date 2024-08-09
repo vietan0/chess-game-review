@@ -17,6 +17,11 @@ export default {
         xs: '400px',
         ...defaultTheme.screens,
       },
+      colors: {
+        lightSquare: '#ebecd0',
+        darkSquare: '#739552',
+        lastMove: 'hsl(60 100% 60% / 50%)',
+      },
     },
   },
   darkMode: 'class',
