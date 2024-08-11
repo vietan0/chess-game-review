@@ -12,6 +12,7 @@ export default function App() {
   const {
     currentGame,
     currentMove,
+    flipBoard,
     toFirstMove,
     toPrevMove,
     toNextMove,
@@ -20,6 +21,7 @@ export default function App() {
   } = useStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMove: state.currentMove,
+    flipBoard: state.flipBoard,
     toFirstMove: state.toFirstMove,
     toPrevMove: state.toPrevMove,
     toNextMove: state.toNextMove,
@@ -36,7 +38,7 @@ export default function App() {
     <div className="mx-auto flex max-w-7xl justify-center gap-8 p-6" id="App">
       <Board displayedGame={displayedGame} lastMove={lastMove} />
       <div className="flex max-w-md grow flex-col gap-4" id="right">
-        <h1 className="text-center text-3xl font-bold">Free Game Review</h1>
+        <h1 className="text-center text-2xl font-bold">Free Game Review</h1>
         <PGNForm setRandomState={setRandomState} />
         <pre>
           currentMove:
@@ -90,6 +92,15 @@ export default function App() {
             <Icon icon="material-symbols:last-page-rounded" />
           </Button>
         </div>
+        <Button
+          aria-label="Flip board"
+          className="text-3xl"
+          isIconOnly
+          onPress={flipBoard}
+          radius="sm"
+        >
+          <Icon icon="material-symbols:sync-rounded" />
+        </Button>
         <Button
           color="danger"
           onPress={reset}

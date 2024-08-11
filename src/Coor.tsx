@@ -1,15 +1,19 @@
 import { Chess, type Square } from 'chess.js';
 
+import { useStore } from './store';
 import cn from './utils/cn';
 
 export default function Coor({ square }: { square: Square }) {
-  const chess = new Chess();
-  const color = chess.squareColor(square);
+  const color = new Chess().squareColor(square);
+  const isFlipped = useStore(state => state.isFlipped);
+  const isFirstCol = square.includes(isFlipped ? 'h' : 'a');
+  const isFirstRow = square.includes(isFlipped ? '8' : '1');
+  const cornerSquare = isFlipped ? 'h8' : 'a1';
 
   const file = (
     <span
       className={cn(
-        'absolute bottom-1 right-1 select-none text-xs font-semibold',
+        'absolute bottom-0.5 right-1 select-none text-sm font-semibold',
         color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
       )}
     >
@@ -20,7 +24,7 @@ export default function Coor({ square }: { square: Square }) {
   const rank = (
     <span
       className={cn(
-        'absolute left-1 top-1 select-none text-xs font-semibold',
+        'absolute left-1 top-1 select-none text-sm font-semibold',
         color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
       )}
     >
@@ -28,7 +32,7 @@ export default function Coor({ square }: { square: Square }) {
     </span>
   );
 
-  if (square === 'a1') {
+  if (square === cornerSquare) {
     return (
       <>
         {file}
@@ -37,11 +41,11 @@ export default function Coor({ square }: { square: Square }) {
     );
   }
 
-  else if (square.includes('1')) {
+  else if (isFirstRow) {
     return file;
   }
 
-  else if (square.includes('a')) {
+  else if (isFirstCol) {
     return rank;
   }
 }

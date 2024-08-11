@@ -4,6 +4,8 @@ import { create } from 'zustand';
 interface StoreType {
   currentGame: Chess;
   currentMove: number;
+  isFlipped: boolean;
+  flipBoard: () => void;
   toFirstMove: () => void;
   toPrevMove: () => void;
   toNextMove: () => void;

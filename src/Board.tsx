@@ -1,8 +1,10 @@
 import { SQUARES } from 'chess.js';
 import { nanoid } from 'nanoid';
+import { useMemo } from 'react';
 
 import BoardSquare from './BoardSquare';
 import PlayerBadge from './PlayerBadge';
+import { useStore } from './store';
 
 import type { Chess, Move } from 'chess.js';
 
@@ -13,9 +15,13 @@ export default function Board({
   displayedGame: Chess;
   lastMove: Move | undefined;
 }) {
+  const isFlipped = useStore(state => state.isFlipped);
   const board = displayedGame.board();
+  const reverseBoard = [...board].reverse().map(row => [...row].reverse());
+  const finalBoard = useMemo(() => isFlipped ? reverseBoard : board, [isFlipped, reverseBoard, board]);
+  const finalSquares = useMemo(() => isFlipped ? [...SQUARES].reverse() : SQUARES, [isFlipped]);
 
-  const boardSquares = SQUARES.map(square => (
+  const boardSquares = finalSquares.map(square => (
     <BoardSquare
       isLastMove={lastMove?.from === square || lastMove?.to === square}
       key={square}
@@ -23,7 +29,7 @@ export default function Board({
     />
   ));
 
-  const pieces = board.flatMap((row) => {
+  const pieces = finalBoard.flatMap((row) => {
     const piecesRow = row.map((piece) => {
       if (!piece) {
         return (
@@ -45,8 +51,8 @@ export default function Board({
 
   return (
     <div className="flex flex-col gap-2" id="Board">
-      <PlayerBadge color="b" />
-      <div className="relative size-[600px]" id="actual-board">
+      <PlayerBadge color={isFlipped ? 'w' : 'b'} />
+      <div className="relative size-[600px] overflow-hidden rounded" id="actual-board">
         <div className="absolute grid size-full grid-cols-8 grid-rows-8" id="background">
           {boardSquares}
         </div>
@@ -54,7 +60,7 @@ export default function Board({
           {pieces}
         </div>
       </div>
-      <PlayerBadge color="w" />
+      <PlayerBadge color={isFlipped ? 'b' : 'w'} />
     </div>
   );
 }
