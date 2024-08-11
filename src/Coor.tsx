@@ -6,29 +6,42 @@ export default function Coor({ square }: { square: Square }) {
   const chess = new Chess();
   const color = chess.squareColor(square);
 
-  if (square.includes('1')) {
+  const file = (
+    <span
+      className={cn(
+        'absolute bottom-1 right-1 select-none text-xs font-semibold',
+        color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
+      )}
+    >
+      {square[0]}
+    </span>
+  );
+
+  const rank = (
+    <span
+      className={cn(
+        'absolute left-1 top-1 select-none text-xs font-semibold',
+        color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
+      )}
+    >
+      {square[1]}
+    </span>
+  );
+
+  if (square === 'a1') {
     return (
-      <span
-        className={cn(
-          'absolute text-sm font-semibold right-1 bottom-1',
-          color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
-        )}
-      >
-        {square[0]}
-      </span>
+      <>
+        {file}
+        {rank}
+      </>
     );
   }
 
-  if (square.includes('a') && square !== 'a1') {
-    return (
-      <span
-        className={cn(
-          'absolute text-sm font-semibold left-1 top-1',
-          color === 'light' ? 'text-darkSquare' : 'text-lightSquare',
-        )}
-      >
-        {square[1]}
-      </span>
-    );
+  else if (square.includes('1')) {
+    return file;
+  }
+
+  else if (square.includes('a')) {
+    return rank;
   }
 }

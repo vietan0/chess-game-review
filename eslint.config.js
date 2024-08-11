@@ -92,6 +92,13 @@ export default antfu(
     },
   },
   ...tailwind.configs['flat/recommended'],
+  {
+    settings: {
+      tailwindcss: {
+        callees: ['classnames', 'clsx', 'cn'],
+      },
+    },
+  },
   ...compat.config({
     overrides: [
       {
