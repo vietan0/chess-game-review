@@ -63,19 +63,16 @@ Bxf4 $9 {[%clk 0:04:53.1]} 12... Qxf4 {[%clk 0:06:19.9]} 13. Ne5 $6 {[%clk
 export default function PGNForm({ setRandomState }: {
   setRandomState: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const currentGame = useStore(state => state.currentGame);
+  const loadGame = useStore(state => state.loadGame);
 
-  const {
-    handleSubmit,
-    control,
-  } = useForm<Inputs>({
+  const { handleSubmit, control } = useForm<Inputs>({
     defaultValues: {
       pgn: samplePgn,
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    currentGame.loadPgn(data.pgn);
+    loadGame(data.pgn);
     setRandomState(Math.random());
   };
 

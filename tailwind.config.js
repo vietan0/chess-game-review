@@ -12,6 +12,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        mono: ['Chivo Mono', ...defaultTheme.fontFamily.mono],
       },
       screens: {
         xs: '400px',
