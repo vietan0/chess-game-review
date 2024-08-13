@@ -1,0 +1,41 @@
+import { useStore } from './store';
+import translatePiece from './utils/translatePiece';
+import useEndgameBadges from './utils/useEndgameBadges';
+import useKingSquares from './utils/useKingSquares';
+
+export default function EndgameBadges() {
+  const [wkBadge, bkBadge] = useEndgameBadges();
+  const [wkSquare, bkSquare] = useKingSquares();
+  const currentGame = useStore(state => state.currentGame);
+  const currentMove = useStore(state => state.currentMove);
+  const isFlipped = useStore(state => state.isFlipped);
+  const result = currentGame.header().Result;
+  const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
+  const history = currentGame.history({ verbose: true });
+  const isLastMove = currentMove === history.length;
+  const [wx, wy] = translatePiece(wkSquare, isFlipped, true);
+  const [bx, by] = translatePiece(bkSquare, isFlipped, true);
+
+  if (isGameOver && isLastMove) {
+    return (
+      <div className="absolute size-full text-background">
+        <div
+          className="absolute size-[12.5%]"
+          style={{
+            transform: `translate(${wx}%, ${wy}%)`,
+          }}
+        >
+          {wkBadge}
+        </div>
+        <div
+          className="absolute size-[12.5%]"
+          style={{
+            transform: `translate(${bx}%, ${by}%)`,
+          }}
+        >
+          {bkBadge}
+        </div>
+      </div>
+    );
+  }
+}

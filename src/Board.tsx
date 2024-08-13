@@ -3,8 +3,10 @@ import { nanoid } from 'nanoid';
 import { useMemo } from 'react';
 
 import BoardSquare from './BoardSquare';
+import EndgameBadges from './EndgameBadges';
 import PlayerBadge from './PlayerBadge';
 import { useStore } from './store';
+import translatePiece from './utils/translatePiece';
 
 import type { Chess, Move } from 'chess.js';
 
@@ -31,17 +33,17 @@ export default function Board({
 
   const pieces = finalBoard.flatMap((row) => {
     const piecesRow = row.map((piece) => {
-      if (!piece) {
-        return (
-          <div className="size-[1/8]" key={nanoid()} />
-        );
-      }
+      if (!piece)
+        return null;
+
+      const [x, y] = translatePiece(piece.square, isFlipped);
 
       return (
         <img
-          className="size-[1/8] select-none"
+          className="absolute w-[12.5%] select-none transition-transform"
           key={nanoid()}
           src={`/img/pieces/${piece.color}${piece.type}.png`}
+          style={{ transform: `translate(${x}%, ${y}%)` }}
         />
       );
     });
@@ -53,12 +55,13 @@ export default function Board({
     <div className="flex flex-col gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} />
       <div className="relative size-[600px] overflow-hidden rounded" id="actual-board">
-        <div className="absolute grid size-full grid-cols-8 grid-rows-8" id="background">
+        <div className="absolute size-full" id="background">
           {boardSquares}
         </div>
-        <div className="absolute grid size-full grid-cols-8 grid-rows-8" id="pieces">
+        <div className="absolute size-full" id="pieces">
           {pieces}
         </div>
+        <EndgameBadges />
       </div>
       <PlayerBadge color={isFlipped ? 'b' : 'w'} />
     </div>
