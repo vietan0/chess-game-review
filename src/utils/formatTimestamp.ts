@@ -28,8 +28,8 @@ export default function formatTimestamp(timestamp: string) {
 
   if (minutes > 0 || (minutes === 0 && seconds >= 20)) {
     // 3. hide miliseconds if more than 20s
-    if (timestamp.length > 7) {
-      formatted = formatted.slice(0, 4);
+    if (timestamp.includes('.')) {
+      formatted = formatted.split('.')[0];
     }
   }
 

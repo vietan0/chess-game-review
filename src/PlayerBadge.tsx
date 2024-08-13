@@ -121,10 +121,11 @@ export default function PlayerBadge({ color }: { color: Color }) {
         <div
           className={cn(
             'flex min-w-32 items-center justify-between gap-1 rounded px-2 py-1 text-right font-mono text-lg',
-            color === turn ? 'bg-foreground text-foreground-50' : 'bg-default-100 text-foreground',
+            color === 'w' ? 'bg-foreground text-foreground-50' : 'bg-default-100 text-foreground',
+            color !== turn ? 'opacity-100' : 'opacity-40',
           )}
         >
-          {color === turn && <Icon icon="material-symbols:timer-outline-rounded" />}
+          {color !== turn && <Icon icon="material-symbols:timer-outline-rounded" />}
           <span className="ml-auto">{timeLeft}</span>
         </div>
       ) }
