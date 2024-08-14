@@ -11,7 +11,7 @@ import { useStore } from './store';
 export default function App() {
   const {
     currentGame,
-    currentMove,
+    currentMoveNum,
     lastNav,
     flipBoard,
     toFirstMove,
@@ -21,7 +21,7 @@ export default function App() {
     reset,
   } = useStore(useShallow(state => ({
     currentGame: state.currentGame,
-    currentMove: state.currentMove,
+    currentMoveNum: state.currentMoveNum,
     lastNav: state.lastNav,
     flipBoard: state.flipBoard,
     toFirstMove: state.toFirstMove,
@@ -32,7 +32,7 @@ export default function App() {
   })));
 
   const history = currentGame.history({ verbose: true });
-  const displayedGame = new Chess(currentMove > 0 ? history[currentMove - 1].after : undefined);
+  const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
   const [_randomState, setRandomState] = useState(0); // to trigger re-render when PGNForm call currentGame.loadPgn()
 
   return (
@@ -42,9 +42,9 @@ export default function App() {
         <h1 className="text-center text-2xl font-bold">Free Game Review</h1>
         <PGNForm setRandomState={setRandomState} />
         <pre>
-          currentMove:
+          currentMoveNum:
           {' '}
-          {currentMove}
+          {currentMoveNum}
         </pre>
         <pre>
           game length:
@@ -60,7 +60,7 @@ export default function App() {
           <Button
             aria-label="First move"
             className="grow text-3xl"
-            isDisabled={history.length === 0 || currentMove === 0}
+            isDisabled={history.length === 0 || currentMoveNum === 0}
             isIconOnly
             onPress={toFirstMove}
             radius="sm"
@@ -70,7 +70,7 @@ export default function App() {
           <Button
             aria-label="Previous move"
             className="grow text-3xl"
-            isDisabled={history.length === 0 || currentMove === 0}
+            isDisabled={history.length === 0 || currentMoveNum === 0}
             isIconOnly
             onPress={toPrevMove}
             radius="sm"
@@ -80,7 +80,7 @@ export default function App() {
           <Button
             aria-label="Next move"
             className="grow text-3xl"
-            isDisabled={history.length === 0 || currentMove === history.length}
+            isDisabled={history.length === 0 || currentMoveNum === history.length}
             isIconOnly
             onPress={toNextMove}
             radius="sm"
@@ -90,7 +90,7 @@ export default function App() {
           <Button
             aria-label="Last move"
             className="grow text-3xl"
-            isDisabled={history.length === 0 || currentMove === history.length}
+            isDisabled={history.length === 0 || currentMoveNum === history.length}
             isIconOnly
             onPress={toLastMove}
             radius="sm"

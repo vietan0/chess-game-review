@@ -15,7 +15,7 @@ dayjs.extend(relativeTime);
 
 export default function PlayerBadge({ color }: { color: Color }) {
   const currentGame = useStore(state => state.currentGame);
-  const currentMove = useStore(state => state.currentMove);
+  const currentMoveNum = useStore(state => state.currentMoveNum);
   const timestamps = useStore(state => state.timestamps);
 
   const oneSideTimestamps = timestamps
@@ -43,7 +43,7 @@ export default function PlayerBadge({ color }: { color: Color }) {
   const name = color === 'w' ? header.White || 'White' : header.Black || 'Black';
   const rating = color === 'w' ? header.WhiteElo : header.BlackElo;
   const title = color === 'w' ? header.WhiteTitle : header.BlackTitle;
-  const turn = currentMove === 0 ? null : currentMove % 2 === 1 ? 'w' : 'b';
+  const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
 
   const timeLeft = useMemo(() => {
     // 1. check if game is correspondant
@@ -65,36 +65,36 @@ export default function PlayerBadge({ color }: { color: Color }) {
       return null;
 
     // 3. display timestamps normally
-    if (currentMove === 0) {
+    if (currentMoveNum === 0) {
       return timeControl ? formatTimestamp(timeControl) : null;
     }
 
     if (color === 'w') {
       if (turn === 'w') {
-        // currentMove: 1 3 5 7 9
-        return formatTimestamp(oneSideTimestamps[(currentMove - 1) / 2]);
+        // currentMoveNum: 1 3 5 7 9
+        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 1) / 2]);
       }
       else {
-        // currentMove: 2 4 6 8 10
-        return formatTimestamp(oneSideTimestamps[(currentMove - 2) / 2]);
+        // currentMoveNum: 2 4 6 8 10
+        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
       }
     }
     else {
       // black
       if (turn === 'b') {
-        // currentMove: 2 4 6 8 10
-        return formatTimestamp(oneSideTimestamps[(currentMove - 2) / 2]);
+        // currentMoveNum: 2 4 6 8 10
+        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
       }
       else {
-        // currentMove: 1 3 5 7 9
-        if (currentMove === 1) {
+        // currentMoveNum: 1 3 5 7 9
+        if (currentMoveNum === 1) {
           return timeControl ? formatTimestamp(timeControl) : null;
         }
 
-        return formatTimestamp(oneSideTimestamps[(currentMove - 3) / 2]);
+        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 3) / 2]);
       }
     }
-  }, [currentMove, color, timeControl, header]);
+  }, [currentMoveNum, color, timeControl, header]);
 
   return (
     <div className="flex items-center justify-between gap-2">

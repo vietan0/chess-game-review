@@ -7,12 +7,12 @@ export default function EndgameBadges() {
   const [wkBadge, bkBadge] = useEndgameBadges();
   const [wkSquare, bkSquare] = useKingSquares();
   const currentGame = useStore(state => state.currentGame);
-  const currentMove = useStore(state => state.currentMove);
+  const currentMoveNum = useStore(state => state.currentMoveNum);
   const isFlipped = useStore(state => state.isFlipped);
   const result = currentGame.header().Result;
   const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
   const history = currentGame.history({ verbose: true });
-  const isLastMove = currentMove === history.length;
+  const isLastMove = currentMoveNum === history.length;
   const [wx, wy] = translatePiece(wkSquare, isFlipped);
   const [bx, by] = translatePiece(bkSquare, isFlipped);
 

@@ -13,19 +13,19 @@ import type { Chess, Color, PieceSymbol, Square } from 'chess.js';
 export default function Board({ displayedGame }: { displayedGame: Chess }) {
   const {
     currentGame,
-    currentMove,
+    currentMoveNum,
     lastNav,
     isFlipped,
   } = useStore(useShallow(state => ({
     currentGame: state.currentGame,
-    currentMove: state.currentMove,
+    currentMoveNum: state.currentMoveNum,
     lastNav: state.lastNav,
     isFlipped: state.isFlipped,
   })));
 
   const history = currentGame.history({ verbose: true });
-  const prevMove = currentMove === 0 ? undefined : history[currentMove - 1];
-  const nextMove = currentMove === history.length ? undefined : history[currentMove];
+  const prevMove = currentMoveNum === 0 ? undefined : history[currentMoveNum - 1];
+  const currentMove = currentMoveNum === history.length ? undefined : history[currentMoveNum];
   const board = displayedGame.board();
 
   const boardSquares = SQUARES.map(square => (
@@ -41,7 +41,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
    * - Animation always go from `initial` --> `animate` (I'm using Framer Motion's terms here)
    * - Current square is always `animate`.
    * - When moving forward, `initial` is `prevMove.from`.
-   * - When moving backward, `initial` is `currentMove.to`. (rename later)
+   * - When moving backward, `initial` is `currentMove.to`
    */
   function getInitSquare(piece: { square: Square; type: PieceSymbol; color: Color }) {
     if (lastNav > 0) {
@@ -56,15 +56,15 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
       return prevMove.from;
     }
     else {
-      if (!nextMove)
+      if (!currentMove)
         return piece.square;
 
-      if (piece.type !== nextMove.piece || piece.color !== nextMove.color || piece.square !== nextMove.from) {
+      if (piece.type !== currentMove.piece || piece.color !== currentMove.color || piece.square !== currentMove.from) {
         // not the same piece
         return piece.square;
       }
 
-      return nextMove.to;
+      return currentMove.to;
     }
   }
 
