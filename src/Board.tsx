@@ -101,8 +101,8 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
   return (
     <div className="flex flex-col gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} />
-      <div className="relative size-[600px] overflow-hidden rounded" id="actual-board">
-        <div className="absolute size-full" id="background">
+      <div className="relative size-[600px]" id="actual-board">
+        <div className="absolute size-full overflow-hidden rounded" id="background">
           {boardSquares}
         </div>
         <div className="absolute size-full" id="pieces">
