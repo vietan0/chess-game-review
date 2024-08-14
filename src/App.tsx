@@ -12,6 +12,7 @@ export default function App() {
   const {
     currentGame,
     currentMove,
+    lastNav,
     flipBoard,
     toFirstMove,
     toPrevMove,
@@ -21,6 +22,7 @@ export default function App() {
   } = useStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMove: state.currentMove,
+    lastNav: state.lastNav,
     flipBoard: state.flipBoard,
     toFirstMove: state.toFirstMove,
     toPrevMove: state.toPrevMove,
@@ -31,12 +33,11 @@ export default function App() {
 
   const history = currentGame.history({ verbose: true });
   const displayedGame = new Chess(currentMove > 0 ? history[currentMove - 1].after : undefined);
-  const lastMove = currentMove === 0 ? undefined : history[currentMove - 1];
   const [_randomState, setRandomState] = useState(0); // to trigger re-render when PGNForm call currentGame.loadPgn()
 
   return (
     <div className="mx-auto flex max-w-7xl justify-center gap-8 p-6" id="App">
-      <Board displayedGame={displayedGame} lastMove={lastMove} />
+      <Board displayedGame={displayedGame} />
       <div className="flex max-w-md grow flex-col gap-4" id="right">
         <h1 className="text-center text-2xl font-bold">Free Game Review</h1>
         <PGNForm setRandomState={setRandomState} />
@@ -49,6 +50,11 @@ export default function App() {
           game length:
           {' '}
           {history.length}
+        </pre>
+        <pre>
+          lastNav:
+          {' '}
+          {lastNav}
         </pre>
         <div className="flex gap-1" id="game-nav">
           <Button

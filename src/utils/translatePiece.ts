@@ -1,6 +1,12 @@
 import type { Square } from 'chess.js';
 
-export default function translatePiece(square: Square, isFlipped: boolean, isEndgameBadge: boolean = false) {
+/**
+ * Get the `x`, `y` percentage to translate from the top left of the board.
+ * @param square Square on the board - e.g. `"e2"`
+ * @param isFlipped Whether the board is flipped
+ * @returns An array of percentage - e.g. `[100, 700]`
+ */
+export default function translatePiece(square: Square, isFlipped: boolean) {
   const letterMap = {
     a: 1,
     b: 2,
@@ -11,6 +17,9 @@ export default function translatePiece(square: Square, isFlipped: boolean, isEnd
     g: 7,
     h: 8,
   } as const;
+
+  if (!square)
+    return [0, 0];
 
   const col = square[0] as keyof typeof letterMap;
   const row = Number(square[1]) as typeof letterMap[keyof typeof letterMap];
@@ -24,10 +33,5 @@ export default function translatePiece(square: Square, isFlipped: boolean, isEnd
     y = 700 - y;
   }
 
-  if (isEndgameBadge) {
-    x += 80;
-    y -= 17.5;
-  }
-
-  return [x.toString(), y.toString()];
+  return [x, y];
 }

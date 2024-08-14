@@ -1,6 +1,6 @@
 import { SQUARES } from 'chess.js';
-import { nanoid } from 'nanoid';
-import { useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 
 import BoardSquare from './BoardSquare';
 import EndgameBadges from './EndgameBadges';
@@ -8,42 +8,89 @@ import PlayerBadge from './PlayerBadge';
 import { useStore } from './store';
 import translatePiece from './utils/translatePiece';
 
-import type { Chess, Move } from 'chess.js';
+import type { Chess, Color, PieceSymbol, Square } from 'chess.js';
 
-export default function Board({
-  displayedGame,
-  lastMove,
-}: {
-  displayedGame: Chess;
-  lastMove: Move | undefined;
-}) {
-  const isFlipped = useStore(state => state.isFlipped);
+export default function Board({ displayedGame }: { displayedGame: Chess }) {
+  const {
+    currentGame,
+    currentMove,
+    lastNav,
+    isFlipped,
+  } = useStore(useShallow(state => ({
+    currentGame: state.currentGame,
+    currentMove: state.currentMove,
+    lastNav: state.lastNav,
+    isFlipped: state.isFlipped,
+  })));
+
+  const history = currentGame.history({ verbose: true });
+  const prevMove = currentMove === 0 ? undefined : history[currentMove - 1];
+  const nextMove = currentMove === history.length ? undefined : history[currentMove];
   const board = displayedGame.board();
-  const reverseBoard = [...board].reverse().map(row => [...row].reverse());
-  const finalBoard = useMemo(() => isFlipped ? reverseBoard : board, [isFlipped, reverseBoard, board]);
-  const finalSquares = useMemo(() => isFlipped ? [...SQUARES].reverse() : SQUARES, [isFlipped]);
 
-  const boardSquares = finalSquares.map(square => (
+  const boardSquares = SQUARES.map(square => (
     <BoardSquare
-      isLastMove={lastMove?.from === square || lastMove?.to === square}
+      isLastMove={prevMove?.from === square || prevMove?.to === square}
       key={square}
       square={square}
     />
   ));
 
-  const pieces = finalBoard.flatMap((row) => {
+  /**
+   * Generate initial x,y for piece animation.
+   * - Animation always go from `initial` --> `animate` (I'm using Framer Motion's terms here)
+   * - Current square is always `animate`.
+   * - When moving forward, `initial` is `prevMove.from`.
+   * - When moving backward, `initial` is `currentMove.to`. (rename later)
+   */
+  function getInitSquare(piece: { square: Square; type: PieceSymbol; color: Color }) {
+    if (lastNav > 0) {
+      if (!prevMove)
+        return piece.square;
+
+      if (piece.type !== prevMove.piece || piece.color !== prevMove.color || piece.square !== prevMove.to) {
+        // not the same piece
+        return piece.square;
+      }
+
+      return prevMove.from;
+    }
+    else {
+      if (!nextMove)
+        return piece.square;
+
+      if (piece.type !== nextMove.piece || piece.color !== nextMove.color || piece.square !== nextMove.from) {
+        // not the same piece
+        return piece.square;
+      }
+
+      return nextMove.to;
+    }
+  }
+
+  const pieces = board.flatMap((row) => {
     const piecesRow = row.map((piece) => {
       if (!piece)
         return null;
 
+      const [initX, initY] = translatePiece(getInitSquare(piece), isFlipped);
       const [x, y] = translatePiece(piece.square, isFlipped);
+      const key = `${piece.color}${piece.type}-${piece.square}-${String(isFlipped)}`;
 
       return (
-        <img
-          className="absolute w-[12.5%] select-none transition-transform"
-          key={nanoid()}
+        <motion.img
+          animate={{
+            x: `${x}%`,
+            y: `${y}%`,
+          }}
+          className="absolute w-[12.5%] select-none"
+          initial={{
+            x: `${initX}%`,
+            y: `${initY}%`,
+          }}
+          key={key}
           src={`/img/pieces/${piece.color}${piece.type}.png`}
-          style={{ transform: `translate(${x}%, ${y}%)` }}
+          transition={{ duration: 0.1, bounce: 0 }}
         />
       );
     });
