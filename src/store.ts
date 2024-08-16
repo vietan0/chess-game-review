@@ -4,7 +4,7 @@ import { create } from 'zustand';
 interface StoreType {
   currentGame: Chess;
   currentMoveNum: number;
-  lastNav: 1 | -1;
+  lastNav: 1 | 0 | -1;
   timestamps: RegExpMatchArray | null;
   loadGame: (pgn: string) => void;
   isFlipped: boolean;
@@ -33,11 +33,11 @@ export const useStore = create<StoreType>(set => ({
     };
   }),
   isFlipped: false,
-  flipBoard: () => set(state => ({ isFlipped: !state.isFlipped, lastNav: 1 })),
-  toFirstMove: () => set({ currentMoveNum: 0, lastNav: -1 }),
+  flipBoard: () => set(state => ({ isFlipped: !state.isFlipped, lastNav: 0 })),
+  toFirstMove: () => set({ currentMoveNum: 0, lastNav: 0 }),
   toPrevMove: () => set(state => ({ currentMoveNum: state.currentMoveNum - 1, lastNav: -1 })),
   toNextMove: () => set(state => ({ currentMoveNum: state.currentMoveNum + 1, lastNav: 1 })),
-  toLastMove: () => set(state => ({ currentMoveNum: state.currentGame.history().length, lastNav: 1 })),
+  toLastMove: () => set(state => ({ currentMoveNum: state.currentGame.history().length, lastNav: 0 })),
   reset: () => set({
     currentGame: new Chess(),
     currentMoveNum: 0,

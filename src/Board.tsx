@@ -44,7 +44,13 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
    * - When moving backward, `initial` is `currentMove.to`
    */
   function getInitSquare(piece: { square: Square; type: PieceSymbol; color: Color }) {
-    if (lastNav > 0) {
+    if (lastNav === 0) {
+      // lastNav === 0 happens when you flip the board.
+      // By doing this, when you flip the board, the piece is not animated again.
+      return piece.square;
+    }
+
+    else if (lastNav > 0) {
       if (!prevMove)
         return piece.square;
 
