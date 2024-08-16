@@ -100,7 +100,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
 
   return (
     <div className="flex flex-col gap-2" id="Board">
-      <PlayerBadge color={isFlipped ? 'w' : 'b'} />
+      <PlayerBadge color={isFlipped ? 'w' : 'b'} displayedGame={displayedGame} />
       <div className="relative size-[600px]" id="actual-board">
         <div className="absolute size-full overflow-hidden rounded" id="background">
           {boardSquares}
@@ -110,7 +110,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
         </div>
         <EndgameBadges />
       </div>
-      <PlayerBadge color={isFlipped ? 'b' : 'w'} />
+      <PlayerBadge color={isFlipped ? 'b' : 'w'} displayedGame={displayedGame} />
     </div>
   );
 }

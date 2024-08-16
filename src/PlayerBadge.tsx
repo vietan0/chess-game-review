@@ -4,19 +4,28 @@ import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useMemo } from 'react';
 
+import CapturedGroup from './CapturedGroup';
 import { useStore } from './store';
 import cn from './utils/cn';
 import formatTimestamp from './utils/formatTimestamp';
+import getCaptured from './utils/getCaptured';
+import getDiff from './utils/getDiff';
 
-import type { Color } from 'chess.js';
+import type { Capturable } from './utils/getCaptured';
+import type { Chess, Color } from 'chess.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export default function PlayerBadge({ color }: { color: Color }) {
+export default function PlayerBadge({ displayedGame, color }: {
+  displayedGame: Chess;
+  color: Color;
+}) {
+  const board = displayedGame.board();
   const currentGame = useStore(state => state.currentGame);
   const currentMoveNum = useStore(state => state.currentMoveNum);
   const timestamps = useStore(state => state.timestamps);
+  const history = currentGame.history({ verbose: true });
 
   const oneSideTimestamps = timestamps
     ? color === 'w'
@@ -40,7 +49,21 @@ export default function PlayerBadge({ color }: { color: Color }) {
     return inPgnFormat;
   }, [header]);
 
-  const name = color === 'w' ? header.White || 'White' : header.Black || 'Black';
+  function renderName() {
+    if (color === 'w') {
+      if (header.White && header.White !== '?')
+        return header.White;
+
+      return 'White';
+    }
+
+    if (header.Black && header.Black !== '?')
+      return header.Black;
+
+    return 'Black';
+  }
+
+  const name = renderName();
   const rating = color === 'w' ? header.WhiteElo : header.BlackElo;
   const title = color === 'w' ? header.WhiteTitle : header.BlackTitle;
   const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
@@ -96,25 +119,41 @@ export default function PlayerBadge({ color }: { color: Color }) {
     }
   }, [currentMoveNum, color, timeControl, header]);
 
+  const capturedRecord = getCaptured(history, currentMoveNum, color);
+  const diff = getDiff(board, color);
+
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="flex items-start gap-2">
         <Icon
-          className={cn('text-4xl', color === 'b' && 'bg-default-100 text-background')}
+          className={cn('text-[40px]', color === 'b' && 'bg-default-100 text-background')}
           icon="material-symbols:person"
         />
-        <div className="flex items-center gap-1">
-          {title && (
-            <span className="rounded-sm bg-red-900 px-0.5 text-xs font-bold">
-              {title}
-            </span>
-          )}
-          <span className="text-sm">{name}</span>
-          {rating && (
-            <span className="ml-1 text-xs font-bold text-foreground-500">
-              {rating}
-            </span>
-          )}
+        <div>
+          <div className="flex items-center gap-1">
+            {title && (
+              <span className="rounded-sm bg-red-900 px-0.5 text-xs font-bold">
+                {title}
+              </span>
+            )}
+            <span className="text-sm">{name}</span>
+            {rating && (
+              <span className="ml-1 text-xs font-bold text-foreground-500">
+                {rating}
+              </span>
+            )}
+          </div>
+          <div className="flex min-h-5 leading-none" id="captured-pieces">
+            {Object.entries(capturedRecord).map(([piece, number]) => (
+              <CapturedGroup
+                color={color === 'w' ? 'b' : 'w'}
+                key={piece}
+                number={number}
+                piece={piece as Capturable}
+              />
+            ))}
+            {diff > 0 && <span className="ml-1 text-sm text-foreground-500">{`+${diff}`}</span>}
+          </div>
         </div>
       </div>
       {timeLeft && (
