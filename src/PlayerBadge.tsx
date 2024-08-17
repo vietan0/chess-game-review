@@ -10,6 +10,7 @@ import cn from './utils/cn';
 import formatTimestamp from './utils/formatTimestamp';
 import getCaptured from './utils/getCaptured';
 import getDiff from './utils/getDiff';
+import useLoser from './utils/useLoser';
 
 import type { Capturable } from './utils/getCaptured';
 import type { Chess, Color } from 'chess.js';
@@ -26,13 +27,6 @@ export default function PlayerBadge({ displayedGame, color }: {
   const currentMoveNum = useStore(state => state.currentMoveNum);
   const timestamps = useStore(state => state.timestamps);
   const history = currentGame.history({ verbose: true });
-
-  const oneSideTimestamps = timestamps
-    ? color === 'w'
-      ? timestamps.filter((_, i) => i % 2 === 0)
-      : timestamps.filter((_, i) => i % 2 === 1)
-    : null;
-
   const header = currentGame.header();
 
   const timeControl = useMemo(() => {
@@ -49,7 +43,7 @@ export default function PlayerBadge({ displayedGame, color }: {
     return inPgnFormat;
   }, [header]);
 
-  function renderName() {
+  const name = useMemo(() => {
     if (color === 'w') {
       if (header.White && header.White !== '?')
         return header.White;
@@ -61,21 +55,27 @@ export default function PlayerBadge({ displayedGame, color }: {
       return header.Black;
 
     return 'Black';
-  }
+  }, [color, header]);
 
-  const name = renderName();
   const rating = color === 'w' ? header.WhiteElo : header.BlackElo;
   const title = color === 'w' ? header.WhiteTitle : header.BlackTitle;
   const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
+  const { loser, loseBy } = useLoser();
 
   const timeLeft = useMemo(() => {
-    // 1. check if game is correspondant
+    const oneSideTimestamps = timestamps
+      ? color === 'w'
+        ? timestamps.filter((_, i) => i % 2 === 0)
+        : timestamps.filter((_, i) => i % 2 === 1)
+      : null;
+
+    // 1. if game is correspondant, display fixed incrementt
     if (header.TimeControl) {
       const incrementAfterSlashRegex = /(?<=\/)\d+$/;
       const incrementAfterSlash = header.TimeControl.match(incrementAfterSlashRegex);
 
       if (incrementAfterSlash) {
-        // confirmed game is correspondant, display fixed increment
+        // game is correspondant
         const increment = Number(incrementAfterSlash[0]);
         const humanized = dayjs.duration(increment, 'seconds').humanize();
 
@@ -84,42 +84,55 @@ export default function PlayerBadge({ displayedGame, color }: {
     }
 
     // 2. no timestamps in PGN
-    if (!oneSideTimestamps)
+    if (!oneSideTimestamps) {
       return null;
+    }
 
     // 3. display timestamps normally
-    if (currentMoveNum === 0) {
-      return timeControl ? formatTimestamp(timeControl) : null;
-    }
-
-    if (color === 'w') {
-      if (turn === 'w') {
-        // currentMoveNum: 1 3 5 7 9
-        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 1) / 2]);
-      }
-      else {
-        // currentMoveNum: 2 4 6 8 10
-        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
-      }
-    }
     else {
-      // black
-      if (turn === 'b') {
+      // first move, display time control
+      if (currentMoveNum === 0) {
+        return timeControl ? formatTimestamp(timeControl) : null;
+      }
+
+      // last move, override with 0:00 if timeout
+      if (
+        currentMoveNum === history.length
+        && loser === color
+        && loseBy === 'timeout'
+      ) {
+        return '0:00';
+      }
+
+      if (color === 'w') {
+        if (turn === 'w') {
+        // currentMoveNum: 1 3 5 7 9
+          return formatTimestamp(oneSideTimestamps[(currentMoveNum - 1) / 2]);
+        }
+        else {
         // currentMoveNum: 2 4 6 8 10
-        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
+          return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
+        }
       }
       else {
-        // currentMoveNum: 1 3 5 7 9
-        if (currentMoveNum === 1) {
-          return timeControl ? formatTimestamp(timeControl) : null;
+      // black
+        if (turn === 'b') {
+        // currentMoveNum: 2 4 6 8 10
+          return formatTimestamp(oneSideTimestamps[(currentMoveNum - 2) / 2]);
         }
+        else {
+        // currentMoveNum: 1 3 5 7 9
+          if (currentMoveNum === 1) {
+            return timeControl ? formatTimestamp(timeControl) : null;
+          }
 
-        return formatTimestamp(oneSideTimestamps[(currentMoveNum - 3) / 2]);
+          return formatTimestamp(oneSideTimestamps[(currentMoveNum - 3) / 2]);
+        }
       }
     }
-  }, [currentMoveNum, color, timeControl, header]);
+  }, [currentMoveNum, color, timeControl, header, loser, loseBy]);
 
-  const capturedRecord = getCaptured(history, currentMoveNum, color);
+  const captured = getCaptured(history, currentMoveNum, color);
   const diff = getDiff(board, color);
 
   return (
@@ -144,7 +157,7 @@ export default function PlayerBadge({ displayedGame, color }: {
             )}
           </div>
           <div className="flex min-h-5 leading-none" id="captured-pieces">
-            {Object.entries(capturedRecord).map(([piece, number]) => (
+            {Object.entries(captured).map(([piece, number]) => (
               <CapturedGroup
                 color={color === 'w' ? 'b' : 'w'}
                 key={piece}
@@ -167,7 +180,7 @@ export default function PlayerBadge({ displayedGame, color }: {
           {color !== turn && <Icon icon="material-symbols:timer-outline-rounded" />}
           <span className="ml-auto">{timeLeft}</span>
         </div>
-      ) }
+      )}
     </div>
   );
 }

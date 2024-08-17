@@ -114,7 +114,6 @@ export default function App() {
           Reset
         </Button>
       </div>
-
     </div>
   );
 }
