@@ -30,7 +30,7 @@ export default function App() {
     toFirstMove,
     toPrevMove,
     toNextMove,
-    toLastMove,
+    toFinalMove,
     reset,
   } = useStore(useShallow(state => ({
     currentGame: state.currentGame,
@@ -40,14 +40,14 @@ export default function App() {
     toFirstMove: state.toFirstMove,
     toPrevMove: state.toPrevMove,
     toNextMove: state.toNextMove,
-    toLastMove: state.toLastMove,
+    toFinalMove: state.toFinalMove,
     reset: state.reset,
   })));
 
   const history = currentGame.history({ verbose: true });
   const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
   const [_randomState, setRandomState] = useState(0); // to trigger re-render when PGNForm call currentGame.loadPgn()
-  const prevMove = currentMoveNum === 0 ? undefined : history[currentMoveNum - 1];
+  const currentMove = history[currentMoveNum - 1];
 
   useEffect(() => {
     function stopAll() {
@@ -58,34 +58,34 @@ export default function App() {
     }
 
     function playSound() {
-      if (!prevMove) {
+      if (!currentMove) {
         // starting position
         stopAll();
       }
 
       else {
-        if (new Chess(prevMove.after).inCheck()) {
+        if (new Chess(currentMove.after).inCheck()) {
           stopAll();
           sound.moveCheck.play();
 
           return;
         }
 
-        if (prevMove.flags.includes('p')) {
+        if (currentMove.flags.includes('p')) {
           stopAll();
           sound.promote.play();
 
           return;
         }
 
-        if (prevMove.flags.includes('c') || prevMove.flags.includes('e')) {
+        if (currentMove.flags.includes('c') || currentMove.flags.includes('e')) {
           stopAll();
           sound.capture.play();
 
           return;
         }
 
-        if (prevMove.flags.includes('k') || prevMove.flags.includes('q')) {
+        if (currentMove.flags.includes('k') || currentMove.flags.includes('q')) {
           stopAll();
           sound.castle.play();
         }
@@ -161,7 +161,7 @@ export default function App() {
             disableRipple
             isDisabled={history.length === 0 || currentMoveNum === history.length}
             isIconOnly
-            onPress={toLastMove}
+            onPress={toFinalMove}
             radius="sm"
           >
             <Icon icon="material-symbols:last-page-rounded" />

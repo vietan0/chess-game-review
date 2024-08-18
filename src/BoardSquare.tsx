@@ -5,10 +5,10 @@ import { useStore } from './store';
 import cn from './utils/cn';
 import translatePiece from './utils/translatePiece';
 
-export default function BoardSquare({
-  isLastMove,
-  square,
-}: { isLastMove: boolean; square: Square }) {
+export default function BoardSquare({ isHighlight, square }: {
+  isHighlight: boolean;
+  square: Square;
+}) {
   const chess = new Chess();
   const isFlipped = useStore(state => state.isFlipped);
   const color = chess.squareColor(square);
@@ -23,7 +23,7 @@ export default function BoardSquare({
       id={square}
       style={{ transform: `translate(${x}%, ${y}%)` }}
     >
-      {isLastMove && <div className="size-full bg-lastMove"></div>}
+      {isHighlight && <div className="size-full bg-highlight"></div>}
       <Coor square={square} />
     </div>
   );

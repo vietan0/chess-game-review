@@ -24,24 +24,27 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
   })));
 
   const history = currentGame.history({ verbose: true });
-  const prevMove = currentMoveNum === 0 ? undefined : history[currentMoveNum - 1];
-  const currentMove = currentMoveNum === history.length ? undefined : history[currentMoveNum];
+  const currentMove = history[currentMoveNum - 1];
+  const nextMove = history[currentMoveNum];
   const board = displayedGame.board();
 
   const boardSquares = SQUARES.map(square => (
     <BoardSquare
-      isLastMove={prevMove?.from === square || prevMove?.to === square}
+      isHighlight={currentMove?.from === square || currentMove?.to === square}
       key={square}
       square={square}
     />
   ));
 
+  // console.log('currentMove', currentMove);
+  // console.log('nextMove', nextMove);
+
   /**
    * Generate initial x,y for piece animation.
    * - Animation always go from `initial` --> `animate` (I'm using Framer Motion's terms here)
    * - Current square is always `animate`.
-   * - When moving forward, `initial` is `prevMove.from`.
-   * - When moving backward, `initial` is `currentMove.to`
+   * - When moving forward (X --> Y), `initial` is `currentMove.from` / `Y.from`.
+   * - When moving backward (Y --> X), `initial` is `nextMove.to` / `Y.to`.
    */
   function getInitSquare(piece: { square: Square; type: PieceSymbol; color: Color }) {
     if (lastNav === 0) {
@@ -51,26 +54,28 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
     }
 
     else if (lastNav > 0) {
-      if (!prevMove)
-        return piece.square;
-
-      if (piece.type !== prevMove.piece || piece.color !== prevMove.color || piece.square !== prevMove.to) {
-        // not the same piece
-        return piece.square;
-      }
-
-      return prevMove.from;
-    }
-    else {
+      // nav-ing forward
       if (!currentMove)
         return piece.square;
 
-      if (piece.type !== currentMove.piece || piece.color !== currentMove.color || piece.square !== currentMove.from) {
+      if (piece.type !== currentMove.piece || piece.color !== currentMove.color || piece.square !== currentMove.to) {
         // not the same piece
         return piece.square;
       }
 
-      return currentMove.to;
+      return currentMove.from;
+    }
+    else {
+      // nav-ing backward
+      console.info('nav-ing backward');
+      console.log(`animate from ${nextMove.to} to ${nextMove.from}`);
+
+      if (piece.type !== nextMove.piece || piece.color !== nextMove.color || piece.square !== nextMove.from) {
+        // not the same piece
+        return piece.square;
+      }
+
+      return nextMove.to;
     }
   }
 

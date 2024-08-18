@@ -95,7 +95,7 @@ export default function PlayerBadge({ displayedGame, color }: {
         return timeControl ? formatTimestamp(timeControl) : null;
       }
 
-      // last move, override with 0:00 if timeout
+      // final move, override with 0:00 if timeout
       if (
         currentMoveNum === history.length
         && loser === color

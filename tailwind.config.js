@@ -21,7 +21,7 @@ export default {
       colors: {
         lightSquare: '#ebecd0',
         darkSquare: '#739552',
-        lastMove: 'hsl(60 100% 60% / 50%)',
+        highlight: 'hsl(60 100% 60% / 50%)',
       },
     },
   },

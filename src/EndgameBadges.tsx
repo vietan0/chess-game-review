@@ -12,11 +12,11 @@ export default function EndgameBadges() {
   const result = currentGame.header().Result;
   const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
   const history = currentGame.history({ verbose: true });
-  const isLastMove = currentMoveNum === history.length;
+  const isFinalMove = currentMoveNum === history.length;
   const [wx, wy] = translatePiece(wkSquare, isFlipped);
   const [bx, by] = translatePiece(bkSquare, isFlipped);
 
-  if (isGameOver && isLastMove) {
+  if (isGameOver && isFinalMove) {
     return (
       <div className="absolute size-full text-background">
         <div
