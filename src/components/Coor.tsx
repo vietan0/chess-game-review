@@ -1,11 +1,11 @@
 import { Chess, type Square } from 'chess.js';
 
-import { useStore } from './store';
-import cn from './utils/cn';
+import { useBoardStore } from '../useBoardStore';
+import cn from '../utils/cn';
 
 export default function Coor({ square }: { square: Square }) {
   const color = new Chess().squareColor(square);
-  const isFlipped = useStore(state => state.isFlipped);
+  const isFlipped = useBoardStore(state => state.isFlipped);
   const isFirstCol = square.includes(isFlipped ? 'h' : 'a');
   const isFirstRow = square.includes(isFlipped ? '8' : '1');
   const cornerSquare = isFlipped ? 'h8' : 'a1';

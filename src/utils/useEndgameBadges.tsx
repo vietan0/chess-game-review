@@ -5,11 +5,11 @@ import DrawWhite from '../icons/DrawWhite';
 import Resign from '../icons/Resign';
 import Timeout from '../icons/Timeout';
 import Winner from '../icons/Winner';
-import { useStore } from '../store';
+import { useBoardStore } from '../useBoardStore';
 import useLoser from './useLoser';
 
 export default function useEndgameBadges() {
-  const currentGame = useStore(state => state.currentGame);
+  const currentGame = useBoardStore(state => state.currentGame);
   const header = currentGame.header();
   const result = header.Result;
   const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);

@@ -4,15 +4,15 @@ import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useMemo } from 'react';
 
+import { useBoardStore } from '../useBoardStore';
+import cn from '../utils/cn';
+import formatTimestamp from '../utils/formatTimestamp';
+import getCaptured from '../utils/getCaptured';
+import getDiff from '../utils/getDiff';
+import useLoser from '../utils/useLoser';
 import CapturedGroup from './CapturedGroup';
-import { useStore } from './store';
-import cn from './utils/cn';
-import formatTimestamp from './utils/formatTimestamp';
-import getCaptured from './utils/getCaptured';
-import getDiff from './utils/getDiff';
-import useLoser from './utils/useLoser';
 
-import type { Capturable } from './utils/getCaptured';
+import type { Capturable } from '../utils/getCaptured';
 import type { Chess, Color } from 'chess.js';
 
 dayjs.extend(duration);
@@ -23,9 +23,9 @@ export default function PlayerBadge({ displayedGame, color }: {
   color: Color;
 }) {
   const board = displayedGame.board();
-  const currentGame = useStore(state => state.currentGame);
-  const currentMoveNum = useStore(state => state.currentMoveNum);
-  const timestamps = useStore(state => state.timestamps);
+  const currentGame = useBoardStore(state => state.currentGame);
+  const currentMoveNum = useBoardStore(state => state.currentMoveNum);
+  const timestamps = useBoardStore(state => state.timestamps);
   const history = currentGame.history({ verbose: true });
   const header = currentGame.header();
 

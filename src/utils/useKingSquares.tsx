@@ -1,7 +1,7 @@
-import { useStore } from '../store';
+import { useBoardStore } from '../useBoardStore';
 
 export default function useKingSquares() {
-  const currentGame = useStore(state => state.currentGame);
+  const currentGame = useBoardStore(state => state.currentGame);
   const board = currentGame.board();
 
   const kings = board

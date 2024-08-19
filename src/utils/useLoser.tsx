@@ -1,9 +1,9 @@
-import { useStore } from '../store';
+import { useBoardStore } from '../useBoardStore';
 
 import type { Color } from 'chess.js';
 
 export default function useLoser() {
-  const currentGame = useStore(state => state.currentGame);
+  const currentGame = useBoardStore(state => state.currentGame);
   const header = currentGame.header();
   const site = header.Site; // Chess.com | lichess.org
   const result = header.Result;

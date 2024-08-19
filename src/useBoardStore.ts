@@ -7,6 +7,7 @@ interface StoreType {
   isFlipped: boolean;
   lastNav: 1 | 0 | -1;
   timestamps: RegExpMatchArray | null;
+  randomState: number;
   loadGame: (pgn: string) => void;
   flipBoard: () => void;
   toFirstMove: () => void;
@@ -18,12 +19,13 @@ interface StoreType {
 
 const timestampRegex = /(?<=%clk\s)[\d:.]+/g;
 
-export const useStore = create<StoreType>(set => ({
+export const useBoardStore = create<StoreType>(set => ({
   currentGame: new Chess(),
   currentMoveNum: 0, // 0 means starting position, 1 means first move
   isFlipped: false,
   lastNav: 1,
   timestamps: null,
+  randomState: 0,
   loadGame: (pgn: string) => set((state) => {
     state.currentGame.loadPgn(pgn);
 
@@ -31,6 +33,7 @@ export const useStore = create<StoreType>(set => ({
       currentMoveNum: 0,
       lastNav: 1,
       timestamps: pgn.match(timestampRegex),
+      randomState: Math.random(), // trigger re-render manually, because Chess.loadPgn() won't
     };
   }),
   flipBoard: () => set(state => ({ isFlipped: !state.isFlipped, lastNav: 0 })),
@@ -43,5 +46,6 @@ export const useStore = create<StoreType>(set => ({
     currentMoveNum: 0,
     lastNav: 1,
     timestamps: null,
+    randomState: 0,
   }),
 }));

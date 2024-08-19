@@ -2,11 +2,11 @@ import { SQUARES } from 'chess.js';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 
+import { useBoardStore } from '../useBoardStore';
+import translatePiece from '../utils/translatePiece';
 import BoardSquare from './BoardSquare';
 import EndgameBadges from './EndgameBadges';
 import PlayerBadge from './PlayerBadge';
-import { useStore } from './store';
-import translatePiece from './utils/translatePiece';
 
 import type { Chess, Color, PieceSymbol, Square } from 'chess.js';
 
@@ -16,7 +16,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
     currentMoveNum,
     lastNav,
     isFlipped,
-  } = useStore(useShallow(state => ({
+  } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
     lastNav: state.lastNav,
@@ -35,9 +35,6 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
       square={square}
     />
   ));
-
-  // console.log('currentMove', currentMove);
-  // console.log('nextMove', nextMove);
 
   /**
    * Generate initial x,y for piece animation.
@@ -67,9 +64,6 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
     }
     else {
       // nav-ing backward
-      console.info('nav-ing backward');
-      console.log(`animate from ${nextMove.to} to ${nextMove.from}`);
-
       if (piece.type !== nextMove.piece || piece.color !== nextMove.color || piece.square !== nextMove.from) {
         // not the same piece
         return piece.square;
