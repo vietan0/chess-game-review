@@ -15,14 +15,24 @@ interface Inputs {
 export default function PGNForm() {
   const loadGame = useBoardStore(state => state.loadGame);
 
-  const { handleSubmit, control, formState } = useForm<Inputs>({
+  const { handleSubmit, control, setError, formState } = useForm<Inputs>({
     defaultValues: {
       pgn: '',
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    loadGame(data.pgn);
+    try {
+      loadGame(data.pgn);
+    }
+    catch (error) {
+      const err = error as Error;
+
+      setError('pgn', {
+        type: 'pgn-parsing',
+        message: err.message,
+      });
+    }
   };
 
   return (
@@ -46,6 +56,8 @@ export default function PGNForm() {
                 classNames={{
                   inputWrapper: 'rounded-none',
                 }}
+                errorMessage={formState.errors.pgn?.message}
+                isInvalid={Boolean(formState.errors.pgn)}
                 label="PGN"
                 maxRows={3}
                 minRows={1}
@@ -57,8 +69,9 @@ export default function PGNForm() {
         </CardBody>
         <CardFooter>
           <Button
+            disableAnimation
             fullWidth
-            isDisabled={!formState.isDirty}
+            isDisabled={!formState.isDirty || !formState.isValid}
             radius="none"
             type="submit"
           >
