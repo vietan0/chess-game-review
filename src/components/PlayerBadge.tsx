@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 
 import { useBoardStore } from '../useBoardStore';
 import cn from '../utils/cn';
-import { mainTimeRegex } from '../utils/formatTimeControl';
+import { dailyIncrementRegex, mainTimeRegex } from '../utils/formatTimeControl';
 import formatTimestamp from '../utils/formatTimestamp';
 import getCaptured from '../utils/getCaptured';
 import getDiff from '../utils/getDiff';
@@ -71,8 +71,7 @@ export default function PlayerBadge({ displayedGame, color }: {
 
     // 1. if game is correspondant, display fixed incrementt
     if (header.TimeControl) {
-      const incrementAfterSlashRegex = /(?<=\/)\d+$/;
-      const incrementAfterSlash = header.TimeControl.match(incrementAfterSlashRegex);
+      const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
 
       if (incrementAfterSlash) {
         // game is correspondant

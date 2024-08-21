@@ -1,29 +1,41 @@
+import dayjs from 'dayjs';
+
+export const dailyIncrementRegex = /(?<=\/)\d+$/;
 export const mainTimeRegex = /\d+(?=\+)|^\d+$/;
 const incrementRegex = /(?<=\+)\d+$/;
 
-// from 600+5 to 10|5
-// from 1800 to 30
+// from 600+5 to 10 | 5
+// from 1800 to 30m
 export default function formatTimeControl(timeControl: string) {
+  if (timeControl.includes('/')) {
+    // daily game
+    const dailyIncrement = timeControl.match(dailyIncrementRegex)![0];
+    const formatted = dayjs.duration(Number(dailyIncrement), 'seconds').format('D[d]');
+
+    return formatted;
+  }
+
   let mainTime = '';
   let increment = '';
-  const mainTimeMatches = timeControl.match(mainTimeRegex);
-  if (!mainTimeMatches)
-    throw new Error('invalid time control');
+  const mainTimeMatch = timeControl.match(mainTimeRegex);
 
-  const seconds = Number(mainTimeMatches[0]);
+  if (!mainTimeMatch)
+    return `invalid time control: ${timeControl}`;
+
+  const seconds = Number(mainTimeMatch[0]);
 
   if (seconds < 60) {
-    mainTime = `${String(seconds)}s`;
+    mainTime = dayjs.duration(seconds, 'seconds').format('ss[s]');
   }
   else {
-    mainTime = `${String(seconds / 60)}m`;
+    mainTime = dayjs.duration(seconds, 'seconds').format('m[m]');
   }
 
-  const incrementMatches = timeControl.match(incrementRegex);
+  const incrementMatch = timeControl.match(incrementRegex);
 
-  if (incrementMatches) {
-    increment = incrementMatches[0];
+  if (incrementMatch) {
+    increment = incrementMatch[0];
   }
 
-  return increment ? `${mainTime.slice(0, mainTime.length - 1)} | ${increment}` : mainTime;
+  return increment ? `${mainTime.slice(0, -1)} | ${increment}` : mainTime;
 }
