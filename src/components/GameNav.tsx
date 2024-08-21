@@ -3,6 +3,7 @@ import { Button } from '@nextui-org/button';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
+import { useSelectGameStore } from '../useSelectGameStore';
 
 export default function GameNav() {
   const {
@@ -25,10 +26,11 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
+  const resetSelectGameStore = useSelectGameStore(state => state.reset);
   const history = currentGame.history({ verbose: true });
 
   return (
-    <div className="flex flex-col gap-2" id="GameNav">
+    <div className="mt-auto flex flex-col gap-2" id="GameNav">
       <div className="flex gap-1">
         <Button
           aria-label="First move"
@@ -88,7 +90,10 @@ export default function GameNav() {
         </Button>
         <Button
           color="danger"
-          onPress={reset}
+          onPress={() => {
+            reset();
+            resetSelectGameStore();
+          }}
           size="sm"
         >
           Reset

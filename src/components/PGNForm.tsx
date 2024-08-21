@@ -61,7 +61,6 @@ export default function PGNForm() {
                 label="PGN"
                 maxRows={3}
                 minRows={1}
-                placeholder="Paste PGN here"
                 {...field}
               />
             )}
@@ -78,8 +77,8 @@ export default function PGNForm() {
             Add Game
           </Button>
         </CardFooter>
+        <DevTool control={control} />
       </form>
-      <DevTool control={control} />
     </Card>
   );
 }
