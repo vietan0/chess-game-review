@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
+import getIconPath from '../utils/getIconPath';
 import translatePiece from '../utils/translatePiece';
 import BoardSquare from './BoardSquare';
 import EndgameBadges from './EndgameBadges';
@@ -94,7 +95,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
             y: `${initY}%`,
           }}
           key={key}
-          src={`/img/pieces/${piece.color}${piece.type}.png`}
+          src={getIconPath(`${piece.color}${piece.type}`, 'pieces', 'png')}
           transition={{ duration: 0.1, bounce: 0 }}
         />
       );

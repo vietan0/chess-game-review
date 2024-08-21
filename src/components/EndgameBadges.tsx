@@ -1,10 +1,11 @@
 import { useBoardStore } from '../useBoardStore';
+import getIconPath from '../utils/getIconPath';
 import translatePiece from '../utils/translatePiece';
 import useEndgameBadges from '../utils/useEndgameBadges';
 import useKingSquares from '../utils/useKingSquares';
 
 export default function EndgameBadges() {
-  const [wkBadge, bkBadge] = useEndgameBadges();
+  const [wkBadgePath, bkBadgePath] = useEndgameBadges();
   const [wkSquare, bkSquare] = useKingSquares();
   const currentGame = useBoardStore(state => state.currentGame);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
@@ -23,13 +24,13 @@ export default function EndgameBadges() {
           className="absolute size-[12.5%]"
           style={{ transform: `translate(${wx + 80}%, ${wy - 17.5}%)` }}
         >
-          {wkBadge}
+          <img className="size-7" src={getIconPath(wkBadgePath, 'endgame-badges', 'svg')} />
         </div>
         <div
           className="absolute size-[12.5%]"
           style={{ transform: `translate(${bx + 80}%, ${by - 17.5}%)` }}
         >
-          {bkBadge}
+          <img className="size-7" src={getIconPath(bkBadgePath, 'endgame-badges', 'svg')} />
         </div>
       </div>
     );
