@@ -1,5 +1,6 @@
 import antfu from '@antfu/eslint-config';
 import { FlatCompat } from '@eslint/eslintrc';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tailwind from 'eslint-plugin-tailwindcss';
@@ -99,6 +100,7 @@ export default antfu(
       },
     },
   },
+  ...pluginQuery.configs['flat/recommended'],
   ...compat.config({
     overrides: [
       {
