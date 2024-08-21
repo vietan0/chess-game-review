@@ -9,9 +9,11 @@ export default function Game({ game }: { game: ChessComGame }) {
     }}
     >
       <CardHeader className="flex gap-1">
-        {game.time_class}
-        {' '}
-        -
+        <img
+          alt=""
+          className="size-6"
+          src={getIconPath(game.time_class, 'time-controls', 'svg')}
+        />
         {' '}
         {game.white.username}
         {' '}
