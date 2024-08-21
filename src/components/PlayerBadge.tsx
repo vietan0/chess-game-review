@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 
 import { useBoardStore } from '../useBoardStore';
 import cn from '../utils/cn';
+import { mainTimeRegex } from '../utils/formatTimeControl';
 import formatTimestamp from '../utils/formatTimestamp';
 import getCaptured from '../utils/getCaptured';
 import getDiff from '../utils/getDiff';
@@ -32,7 +33,6 @@ export default function PlayerBadge({ displayedGame, color }: {
   const timeControl = useMemo(() => {
     if (!header.TimeControl)
       return null;
-    const mainTimeRegex = /\d+(?=\+)|^\d+$/;
     const mainTimeMatches = header.TimeControl.match(mainTimeRegex);
     if (!mainTimeMatches)
       return null;
