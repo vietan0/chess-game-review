@@ -34,7 +34,7 @@ export default function App() {
   useSoundFx();
 
   return (
-    <div className="mx-auto flex max-h-full max-w-7xl justify-center gap-6 p-6" id="App">
+    <div className="mx-auto flex h-full max-w-7xl justify-center gap-6 p-6" id="App">
       <Board displayedGame={displayedGame} />
       <div className="flex max-w-md grow flex-col gap-4" id="Controls">
         <div className="grid grid-cols-[40px_1fr_40px] gap-1">
@@ -57,7 +57,7 @@ export default function App() {
             {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Loaded'}
           </a>
         </div>
-        <div className="overflow-scroll">
+        <div className="grow overflow-scroll">
           {stage === 'home'
             ? <Forms />
             : stage === 'select-month'

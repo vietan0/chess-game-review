@@ -38,6 +38,6 @@ export default function useMonthlyArchives(monthLink: string) {
 
       return noVariants;
     },
-    staleTime: 6 * 60 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
   });
 }
