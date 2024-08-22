@@ -17,21 +17,52 @@ export default function App() {
   const {
     currentGame,
     currentMoveNum,
+    reset,
   } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
-    lastNav: state.lastNav,
     randomState: state.randomState, // unused, but included to trigger re-render
+    reset: state.reset,
   })));
 
   const history = currentGame.history({ verbose: true });
   const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
-  const stage = useSelectGameStore(state => state.stage);
-  const backToMonths = useSelectGameStore(state => state.backToMonths);
-  const backToGames = useSelectGameStore(state => state.backToGames);
-  const reset = useSelectGameStore(state => state.reset);
+
+  const {
+    stage,
+    site,
+    backToMonths,
+    backToGames,
+    resetSelectGame,
+  } = useSelectGameStore(useShallow(state => ({
+    stage: state.stage,
+    site: state.site,
+    backToMonths: state.backToMonths,
+    backToGames: state.backToGames,
+    resetSelectGame: state.reset,
+  })));
 
   useSoundFx();
+
+  function back() {
+    if (stage === 'select-month') {
+      resetSelectGame();
+    }
+
+    else if (stage === 'select-game') {
+      backToMonths();
+    }
+
+    else if (stage === 'loaded') {
+      if (site) {
+        backToGames();
+      }
+      else {
+        reset();
+        resetSelectGame();
+      }
+    }
+  }
 
   return (
     <div className="mx-auto flex h-full max-w-7xl justify-center gap-6 p-6" id="App">
@@ -43,7 +74,7 @@ export default function App() {
             className={cn('text-2xl', stage === 'home' && 'invisible')}
             disableRipple
             isIconOnly
-            onPress={stage === 'select-month' ? reset : stage === 'select-game' ? backToMonths : stage === 'loaded' ? backToGames : undefined}
+            onPress={back}
             radius="sm"
             size="sm"
             variant="light"
@@ -54,7 +85,8 @@ export default function App() {
             className={cn('flex w-full items-center justify-center font-bold', stage === 'home' && 'text-xl')}
             href="/"
           >
-            {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Loaded'}
+            {stage === 'home' && <img className="mr-1 size-5" src="/star.svg" />}
+            {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
           </a>
         </div>
         <div className="grow overflow-scroll">

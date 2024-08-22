@@ -36,7 +36,8 @@ type StoreType = Stage & {
   backToMonths: () => void;
   backToGames: () => void;
   submitUsername: (username: string, site: Site) => void;
-  toSelectGame: (monthLink: string) => void;
+  submitMonth: (monthLink: string) => void;
+  submitGame: () => void;
   reset: () => void;
 };
 
@@ -48,6 +49,7 @@ export const useSelectGameStore = create<StoreType>(set => ({
   backToMonths: () => set({ stage: 'select-month' }),
   backToGames: () => set({ stage: 'select-game' }),
   submitUsername: (username: string, site: Site) => set({ stage: 'select-month', username, site }),
-  toSelectGame: (monthLink: string) => set({ stage: 'select-game', monthLink }),
+  submitMonth: (monthLink: string) => set({ stage: 'select-game', monthLink }),
+  submitGame: () => set({ stage: 'loaded' }),
   reset: () => set({ stage: 'home', username: undefined, site: undefined, monthLink: undefined }),
 }));

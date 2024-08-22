@@ -5,6 +5,7 @@ import { Textarea } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useBoardStore } from '../useBoardStore';
+import { useSelectGameStore } from '../useSelectGameStore';
 
 import type { SubmitHandler } from 'react-hook-form';
 
@@ -14,6 +15,7 @@ interface Inputs {
 
 export default function PGNForm() {
   const loadGame = useBoardStore(state => state.loadGame);
+  const submitGame = useSelectGameStore(state => state.submitGame);
 
   const { handleSubmit, control, setError, formState } = useForm<Inputs>({
     defaultValues: {
@@ -24,6 +26,7 @@ export default function PGNForm() {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     try {
       loadGame(data.pgn);
+      submitGame();
     }
     catch (error) {
       const err = error as Error;

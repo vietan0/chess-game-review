@@ -1,5 +1,6 @@
 import { Card, CardBody } from '@nextui-org/card';
 
+import { useBoardStore } from '../useBoardStore';
 import { useSelectGameStore } from '../useSelectGameStore';
 import formatTimeControl from '../utils/formatTimeControl';
 import getIconPath from '../utils/getIconPath';
@@ -7,7 +8,9 @@ import getIconPath from '../utils/getIconPath';
 import type { ChessComGame } from '../queries/useMonthlyArchives';
 
 export default function Game({ game }: { game: ChessComGame }) {
+  const loadGame = useBoardStore(state => state.loadGame);
   const username = useSelectGameStore(state => state.username)!;
+  const submitGame = useSelectGameStore(state => state.submitGame);
 
   function getResult() {
     // if daily game, winner's result is still 'timeout', so use pgn to determine
@@ -32,6 +35,10 @@ export default function Game({ game }: { game: ChessComGame }) {
       fullWidth
       isHoverable
       isPressable
+      onPress={() => {
+        loadGame(game.pgn);
+        submitGame();
+      }}
       radius="none"
       shadow="none"
     >
