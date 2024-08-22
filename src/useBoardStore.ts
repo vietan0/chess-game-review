@@ -9,7 +9,7 @@ interface StoreType {
   timestamps: RegExpMatchArray | null;
   randomState: number;
   loadGame: (pgn: string) => void;
-  flipBoard: () => void;
+  flipBoard: (newVal?: boolean) => void;
   toFirstMove: () => void;
   toPrevMove: () => void;
   toNextMove: () => void;
@@ -36,7 +36,7 @@ export const useBoardStore = create<StoreType>(set => ({
       randomState: Math.random(), // trigger re-render manually, because Chess.loadPgn() won't
     };
   }),
-  flipBoard: () => set(state => ({ isFlipped: !state.isFlipped, lastNav: 0 })),
+  flipBoard: (newVal?: boolean) => set(state => ({ isFlipped: newVal || !state.isFlipped, lastNav: 0 })),
   toFirstMove: () => set({ currentMoveNum: 0, lastNav: 0 }),
   toPrevMove: () => set(state => ({ currentMoveNum: state.currentMoveNum - 1, lastNav: -1 })),
   toNextMove: () => set(state => ({ currentMoveNum: state.currentMoveNum + 1, lastNav: 1 })),

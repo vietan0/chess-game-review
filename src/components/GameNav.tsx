@@ -82,7 +82,7 @@ export default function GameNav() {
           aria-label="Flip board"
           className="text-2xl"
           isIconOnly
-          onPress={flipBoard}
+          onPress={() => flipBoard()}
           radius="sm"
           size="sm"
         >

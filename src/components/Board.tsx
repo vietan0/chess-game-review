@@ -1,8 +1,10 @@
 import { SQUARES } from 'chess.js';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
+import { useSelectGameStore } from '../useSelectGameStore';
 import getIconPath from '../utils/getIconPath';
 import translatePiece from '../utils/translatePiece';
 import BoardSquare from './BoardSquare';
@@ -17,12 +19,31 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
     currentMoveNum,
     lastNav,
     isFlipped,
+    flipBoard,
   } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
     lastNav: state.lastNav,
     isFlipped: state.isFlipped,
+    flipBoard: state.flipBoard,
   })));
+
+  const stage = useSelectGameStore(state => state.stage);
+  const username = useSelectGameStore(state => state.username);
+
+  useEffect(() => {
+    if (stage === 'loaded' && username) {
+      // if game loaded through a site
+      const white = currentGame.header().White;
+
+      if (username.toLowerCase() === white.toLowerCase()) {
+        flipBoard(false);
+      }
+      else {
+        flipBoard(true);
+      }
+    }
+  }, [stage, username, currentGame]);
 
   const history = currentGame.history({ verbose: true });
   const currentMove = history[currentMoveNum - 1];
