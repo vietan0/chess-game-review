@@ -1,15 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import objectSupport from 'dayjs/plugin/objectSupport';
 
-import groupLinksByYear from '../utils/groupLinksByYear';
+import { groupChessComLinksByYear, groupLichessLinksByYear } from '../utils/groupChessComLinksByYear';
 
 import type { Site } from '../useSelectGameStore';
+
+dayjs.extend(objectSupport);
+dayjs.extend(isSameOrBefore);
 
 export default function useGameArchives(username: string, site: Site) {
   return useQuery({
     queryKey: ['gameArchives', username, site],
     queryFn: async () => {
-      // if site === 'chess.com'
-      return fetchChessCom(username);
+      return site === 'chess.com' ? fetchChessCom(username) : fetchLichess(username);
     },
     staleTime: 24 * 60 * 60 * 1000,
   });
@@ -18,5 +23,44 @@ export default function useGameArchives(username: string, site: Site) {
 async function fetchChessCom(username: string) {
   const res = await fetch(`https://api.chess.com/pub/player/${username}/games/archives`).then(res => res.json()) as { archives: string[] };
 
-  return groupLinksByYear(res.archives.reverse());
+  return groupChessComLinksByYear(res.archives.reverse());
+}
+
+async function fetchLichess(username: string) {
+  const createdAt = await fetch(`https://lichess.org/api/user/${username}`)
+    .then(res => res.json())
+    .then(userInfo => userInfo.createdAt as number); // UNIX timestamp
+
+  const now = dayjs();
+  const created = dayjs(createdAt);
+
+  // the start of the month the user was created
+  // .e.g if created at 2016-08-12T14:48:00
+  // createdMonth is 2016-08-01T00:00:00
+  const createdMonth = dayjs({
+    year: created.year(),
+    month: created.month(),
+    day: 1,
+  });
+
+  // generate UNIX timestamps for all the months inbetween (edge-inclusive)
+  const sinceTo: { since: number; to: number }[] = [];
+  let currentMonth = createdMonth; // will increase 1 month each while-loop
+
+  while (currentMonth.isSameOrBefore(now)) {
+    const nextMonth = currentMonth.add(1, 'month');
+
+    sinceTo.unshift({
+      since: currentMonth.valueOf(),
+      to: nextMonth.valueOf(),
+    });
+
+    currentMonth = nextMonth;
+  }
+
+  const monthLinks = sinceTo.map(({ since, to }) => `https://lichess.org/api/games/user/${username}?pgnInJson=true&clocks=true&since=${since}&to=${to}`);
+  const grouped = groupLichessLinksByYear(monthLinks);
+  console.log('grouped', grouped);
+
+  return grouped;
 }
