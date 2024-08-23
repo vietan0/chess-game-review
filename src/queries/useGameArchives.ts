@@ -3,19 +3,19 @@ import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import objectSupport from 'dayjs/plugin/objectSupport';
 
+import { useSelectGameStore } from '../useSelectGameStore';
 import { groupChessComLinksByYear, groupLichessLinksByYear } from '../utils/groupChessComLinksByYear';
-
-import type { Site } from '../useSelectGameStore';
 
 dayjs.extend(objectSupport);
 dayjs.extend(isSameOrBefore);
 
-export default function useGameArchives(username: string, site: Site) {
+export default function useGameArchives(username: string) {
+  const site = useSelectGameStore(state => state.site)!;
+
   return useQuery({
     queryKey: ['gameArchives', username, site],
-    queryFn: async () => {
-      return site === 'chess.com' ? fetchChessCom(username) : fetchLichess(username);
-    },
+    queryFn: async () =>
+      site === 'chess.com' ? fetchChessCom(username) : fetchLichess(username),
     staleTime: 24 * 60 * 60 * 1000,
   });
 }
@@ -34,8 +34,8 @@ async function fetchLichess(username: string) {
   const now = dayjs();
   const created = dayjs(createdAt);
 
-  // the start of the month the user was created
-  // .e.g if created at 2016-08-12T14:48:00
+  // round down the created date to start of month
+  // .e.g if created at 2016-08-12T14:48:29,
   // createdMonth is 2016-08-01T00:00:00
   const createdMonth = dayjs({
     year: created.year(),
@@ -58,9 +58,7 @@ async function fetchLichess(username: string) {
     currentMonth = nextMonth;
   }
 
-  const monthLinks = sinceTo.map(({ since, to }) => `https://lichess.org/api/games/user/${username}?pgnInJson=true&clocks=true&since=${since}&to=${to}`);
-  const grouped = groupLichessLinksByYear(monthLinks);
-  console.log('grouped', grouped);
+  const monthLinks = sinceTo.map(({ since, to }) => `https://lichess.org/api/games/user/${username}?pgnInJson=true&clocks=true&literate=true&since=${since}&to=${to}`);
 
-  return grouped;
+  return groupLichessLinksByYear(monthLinks);
 }

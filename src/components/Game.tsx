@@ -2,18 +2,22 @@ import { Card, CardBody } from '@nextui-org/card';
 
 import { useBoardStore } from '../useBoardStore';
 import { useSelectGameStore } from '../useSelectGameStore';
-import formatTimeControl from '../utils/formatTimeControl';
+import { formatChessComTimeControl, formatLichessTimeControl } from '../utils/formatTimeControl';
 import getIconPath from '../utils/getIconPath';
+import isChessCom from '../utils/isChessCom';
 
-import type { ChessComGame } from '../queries/useMonthlyArchives';
+import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../queries/useMonthlyArchives';
 
-export default function Game({ game }: { game: ChessComGame }) {
+function isAI(player: LichessPlayer | LichessAI): player is LichessAI {
+  return (player as LichessAI).aiLevel !== undefined;
+}
+
+export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const loadGame = useBoardStore(state => state.loadGame);
   const username = useSelectGameStore(state => state.username)!;
   const submitGame = useSelectGameStore(state => state.submitGame);
 
-  function getResult() {
-    // if daily game, winner's result is still 'timeout', so use pgn to determine
+  function getChessComResult(game: ChessComGame) {
     const userColor = username.toLowerCase() === game.white.username.toLowerCase() ? 'w' : 'b';
 
     if (game.pgn.endsWith('1-0\n'))
@@ -23,7 +27,52 @@ export default function Game({ game }: { game: ChessComGame }) {
     else return 'draw';
   }
 
-  const result = getResult();
+  function getLichessResult(game: LichessGame) {
+    let userColor = '';
+
+    if (isAI(game.players.white)) {
+      userColor = 'b';
+    }
+    else if (isAI(game.players.black)) {
+      userColor = 'w';
+    }
+    else {
+      userColor = username.toLowerCase() === game.players.white.user.id.toLowerCase() ? 'w' : 'b';
+    }
+
+    if (game.winner === 'white')
+      return userColor === 'w' ? 'win' : 'lose';
+    else if (game.winner === 'black')
+      return userColor === 'w' ? 'lose' : 'win';
+    else return 'draw';
+  }
+
+  function getLichessUsername(player: LichessPlayer | LichessAI) {
+    return isAI(player) ? `lichess AI level ${player.aiLevel}` : player.user.id;
+  }
+
+  function getLichessRating(player: LichessPlayer | LichessAI) {
+    return isAI(player) ? 0 : player.rating;
+  }
+
+  function convertLichessTimeClass(speed: LichessGame['speed']) {
+    if (speed === 'correspondence')
+      return 'daily';
+    if (speed === 'ultraBullet')
+      return 'bullet';
+    if (speed === 'classical')
+      return 'rapid';
+
+    return speed;
+  }
+
+  const result = isChessCom(game) ? getChessComResult(game) : getLichessResult(game);
+  const timeClass = isChessCom(game) ? game.time_class : convertLichessTimeClass(game.speed);
+  const timeControl = isChessCom(game) ? formatChessComTimeControl(game.time_control) : formatLichessTimeControl(game);
+  const wName = isChessCom(game) ? game.white.username : getLichessUsername(game.players.white);
+  const bName = isChessCom(game) ? game.black.username : getLichessUsername(game.players.black);
+  const wRating = isChessCom(game) ? game.white.rating : getLichessRating(game.players.white);
+  const bRating = isChessCom(game) ? game.black.rating : getLichessRating(game.players.black);
 
   return (
     <Card
@@ -37,7 +86,7 @@ export default function Game({ game }: { game: ChessComGame }) {
       isPressable
       onPress={() => {
         loadGame(game.pgn);
-        submitGame();
+        submitGame(game);
       }}
       radius="none"
       shadow="none"
@@ -47,23 +96,23 @@ export default function Game({ game }: { game: ChessComGame }) {
           <img
             alt=""
             className="size-5"
-            src={getIconPath(game.time_class, 'time-controls', 'svg')}
+            src={getIconPath(timeClass, 'time-controls', 'svg')}
           />
           <span className="text-nowrap text-xs text-foreground-500">
-            {formatTimeControl(game.time_control)}
+            {timeControl}
           </span>
         </div>
         <div className="flex flex-col gap-0.5" id="players-info">
           <div className="flex items-center gap-2">
-            <span className="max-w-40 overflow-hidden truncate">{game.white.username}</span>
+            <span className="max-w-40 overflow-hidden truncate">{wName}</span>
             <span className="text-xs font-bold leading-4 text-foreground-500">
-              {game.white.rating}
+              {wRating}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="max-w-40 overflow-hidden truncate">{game.black.username}</span>
+            <span className="max-w-40 overflow-hidden truncate">{bName}</span>
             <span className="text-xs font-bold leading-4 text-foreground-500">
-              {game.black.rating}
+              {bRating}
             </span>
           </div>
         </div>

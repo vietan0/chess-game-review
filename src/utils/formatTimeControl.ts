@@ -1,12 +1,19 @@
 import dayjs from 'dayjs';
 
+import type { ChessComGame, LichessGame } from '../queries/useMonthlyArchives'; // ES 2015
+
 export const dailyIncrementRegex = /(?<=\/)\d+$/;
 export const mainTimeRegex = /\d+(?=\+)|^\d+$/;
 const incrementRegex = /(?<=\+)\d+$/;
 
-// from 600+5 to 10 | 5
-// from 1800 to 30m
-export default function formatTimeControl(timeControl: string) {
+/**
+ * Formats a time control string in the format used by Chess.com.
+ *
+ * @example
+ * formatChessComTimeControl('600+5') // '10 | 5'
+ * formatChessComTimeControl('1800') // '30m'
+ */
+export function formatChessComTimeControl(timeControl: ChessComGame['time_control']) {
   if (timeControl.includes('/')) {
     // daily game
     const dailyIncrement = timeControl.match(dailyIncrementRegex)![0];
@@ -38,4 +45,22 @@ export default function formatTimeControl(timeControl: string) {
   }
 
   return increment ? `${mainTime.slice(0, -1)} | ${increment}` : mainTime;
+}
+
+export function formatLichessTimeControl(game: LichessGame) {
+  if (game.speed === 'correspondence') {
+    // daily game
+    return dayjs.duration(game.daysPerTurn!, 'days').format('D[d]');
+  }
+
+  let mainTime = '';
+
+  if (game.clock.initial < 60) {
+    mainTime = dayjs.duration(game.clock.initial, 'seconds').format('ss[s]');
+  }
+  else {
+    mainTime = dayjs.duration(game.clock.initial, 'seconds').format('m[m]');
+  }
+
+  return game.clock.increment ? `${mainTime.slice(0, -1)} | ${game.clock.increment}` : mainTime;
 }

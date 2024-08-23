@@ -1,5 +1,6 @@
 import useMonthlyArchives from '../queries/useMonthlyArchives';
 import { useSelectGameStore } from '../useSelectGameStore';
+import isChessCom from '../utils/isChessCom';
 import Game from './Game';
 import Loading from './Loading';
 
@@ -13,5 +14,5 @@ export default function Games() {
   if (error)
     return 'Error with Query';
 
-  return games!.map(game => <Game game={game} key={game.uuid} />);
+  return games!.map(game => <Game game={game} key={isChessCom(game) ? game.uuid : game.id} />);
 }

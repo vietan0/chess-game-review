@@ -15,7 +15,7 @@ export default function Months() {
   const username = useSelectGameStore(state => state.username)!;
   const site = useSelectGameStore(state => state.site)!;
   const toSelectGame = useSelectGameStore(state => state.submitMonth);
-  const { data, isLoading, error } = useGameArchives(username, site);
+  const { data, isLoading, error } = useGameArchives(username);
   if (isLoading)
     return <Loading />;
   if (error)

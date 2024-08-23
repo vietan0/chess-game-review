@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import type { ChessComGame, LichessGame } from './queries/useMonthlyArchives';
+
 export type Site = 'chess.com' | 'lichess';
 
 interface Home {
@@ -7,6 +9,7 @@ interface Home {
   username: undefined;
   site: undefined;
   monthLink: undefined;
+  game: undefined;
 }
 
 interface SelectMonth {
@@ -14,6 +17,7 @@ interface SelectMonth {
   username: string;
   site: Site;
   monthLink: undefined;
+  game: undefined;
 }
 
 interface SelectGame {
@@ -21,6 +25,7 @@ interface SelectGame {
   username: string;
   site: Site;
   monthLink: string;
+  game: undefined;
 }
 
 interface Loaded {
@@ -28,6 +33,7 @@ interface Loaded {
   username: string;
   site: Site;
   monthLink: string;
+  game: ChessComGame | LichessGame;
 }
 
 type Stage = Home | SelectMonth | SelectGame | Loaded;
@@ -37,7 +43,7 @@ type StoreType = Stage & {
   backToGames: () => void;
   submitUsername: (username: string, site: Site) => void;
   submitMonth: (monthLink: string) => void;
-  submitGame: () => void;
+  submitGame: (game?: ChessComGame | LichessGame) => void;
   reset: () => void;
 };
 
@@ -46,10 +52,11 @@ export const useSelectGameStore = create<StoreType>(set => ({
   username: undefined,
   site: undefined,
   monthLink: undefined,
+  game: undefined, // only indicate game loaded through sites, stay undefined if loaded from PGNForm
   backToMonths: () => set({ stage: 'select-month' }),
   backToGames: () => set({ stage: 'select-game' }),
   submitUsername: (username: string, site: Site) => set({ stage: 'select-month', username, site }),
   submitMonth: (monthLink: string) => set({ stage: 'select-game', monthLink }),
-  submitGame: () => set({ stage: 'loaded' }),
-  reset: () => set({ stage: 'home', username: undefined, site: undefined, monthLink: undefined }),
+  submitGame: (game?: ChessComGame | LichessGame) => set({ stage: 'loaded', game }),
+  reset: () => set({ stage: 'home', username: undefined, site: undefined, monthLink: undefined, game: undefined }),
 }));

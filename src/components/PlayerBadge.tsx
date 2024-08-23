@@ -5,11 +5,13 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useMemo } from 'react';
 
 import { useBoardStore } from '../useBoardStore';
+import { useSelectGameStore } from '../useSelectGameStore';
 import cn from '../utils/cn';
 import { dailyIncrementRegex, mainTimeRegex } from '../utils/formatTimeControl';
 import formatTimestamp from '../utils/formatTimestamp';
 import getCaptured from '../utils/getCaptured';
 import getDiff from '../utils/getDiff';
+import isChessCom from '../utils/isChessCom';
 import useLoser from '../utils/useLoser';
 import CapturedGroup from './CapturedGroup';
 
@@ -61,6 +63,7 @@ export default function PlayerBadge({ displayedGame, color }: {
   const title = color === 'w' ? header.WhiteTitle : header.BlackTitle;
   const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
   const { loser, loseBy } = useLoser();
+  const game = useSelectGameStore(state => state.game);
 
   const timeLeft = useMemo(() => {
     const oneSideTimestamps = timestamps
@@ -69,21 +72,46 @@ export default function PlayerBadge({ displayedGame, color }: {
         : timestamps.filter((_, i) => i % 2 === 1)
       : null;
 
-    // 1. if game is correspondant, display fixed incrementt
-    if (header.TimeControl) {
+    // 1.a. if game from site is correspondant, display fixed increment
+    if (game) {
+      if (isChessCom(game)) {
+        if (game.time_class === 'daily') {
+          const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
+
+          if (incrementAfterSlash) {
+            // game is correspondant
+            const increment = Number(incrementAfterSlash[0]);
+            const days = dayjs.duration(increment, 'seconds').days();
+
+            return days > 1 ? `${days} days` : `${days} day`;
+          }
+        }
+      }
+      else {
+        // lichess
+        if (game.speed === 'correspondence') {
+          const days = game.daysPerTurn!;
+
+          return days > 1 ? `${days} days` : `${days} day`;
+        }
+      }
+    }
+
+    // 1.b. if game from PGN is correspondant, display fixed increment
+    else if (header.TimeControl) {
       const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
 
       if (incrementAfterSlash) {
         // game is correspondant
         const increment = Number(incrementAfterSlash[0]);
-        const humanized = dayjs.duration(increment, 'seconds').humanize();
+        const days = dayjs.duration(increment, 'seconds').days();
 
-        return humanized;
+        return days > 1 ? `${days} days` : `${days} day`;
       }
     }
 
     // 2. no timestamps in PGN
-    if (!oneSideTimestamps) {
+    else if (!oneSideTimestamps) {
       return null;
     }
 
