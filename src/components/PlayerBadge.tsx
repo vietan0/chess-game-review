@@ -72,44 +72,31 @@ export default function PlayerBadge({ displayedGame, color }: {
         : timestamps.filter((_, i) => i % 2 === 1)
       : null;
 
-    // 1.a. if game from site is correspondant, display fixed increment
-    if (game) {
-      if (isChessCom(game)) {
-        if (game.time_class === 'daily') {
-          const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
+    // 1.a. if chess.com game is correspondant, display fixed increment
+    if (game && isChessCom(game) && game.time_class === 'daily') {
+      const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex)!;
+      const increment = Number(incrementAfterSlash[0]);
+      const days = dayjs.duration(increment, 'seconds').days();
 
-          if (incrementAfterSlash) {
-            // game is correspondant
-            const increment = Number(incrementAfterSlash[0]);
-            const days = dayjs.duration(increment, 'seconds').days();
+      return days > 1 ? `${days} days` : `${days} day`;
+    }
 
-            return days > 1 ? `${days} days` : `${days} day`;
-          }
-        }
-      }
-      else {
-        // lichess
-        if (game.speed === 'correspondence') {
-          const days = game.daysPerTurn!;
+    // 1.b. if lichess game is correspondant, display fixed increment
+    if (game && !isChessCom(game) && game.speed === 'correspondence') {
+      const days = game.daysPerTurn!;
 
-          return days > 1 ? `${days} days` : `${days} day`;
-        }
-      }
+      return days > 1 ? `${days} days` : `${days} day`;
     }
 
     // 1.b. if game from PGN is correspondant, display fixed increment
-    else if (header.TimeControl) {
+    else if (header.TimeControl && header.TimeControl.match(dailyIncrementRegex)) {
       // this would only work if the PGN comes from chess.com
       // other than that, there's no way of determining if it's correspondant
-      const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
+      const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex)!;
+      const increment = Number(incrementAfterSlash[0]);
+      const days = dayjs.duration(increment, 'seconds').days();
 
-      if (incrementAfterSlash) {
-        // game is correspondant
-        const increment = Number(incrementAfterSlash[0]);
-        const days = dayjs.duration(increment, 'seconds').days();
-
-        return days > 1 ? `${days} days` : `${days} day`;
-      }
+      return days > 1 ? `${days} days` : `${days} day`;
     }
 
     // 2. no timestamps in PGN
