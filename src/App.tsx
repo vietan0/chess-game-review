@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Button } from '@nextui-org/button';
-import { Chess } from 'chess.js';
 import { useShallow } from 'zustand/react/shallow';
 
 import Board from './components/Board';
@@ -14,19 +13,10 @@ import cn from './utils/cn';
 import useSoundFx from './utils/useSoundFx';
 
 export default function App() {
-  const {
-    currentGame,
-    currentMoveNum,
-    reset,
-  } = useBoardStore(useShallow(state => ({
-    currentGame: state.currentGame,
-    currentMoveNum: state.currentMoveNum,
+  const { reset } = useBoardStore(useShallow(state => ({
     randomState: state.randomState, // unused, but included to trigger re-render
     reset: state.reset,
   })));
-
-  const history = currentGame.history({ verbose: true });
-  const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
 
   const {
     stage,
@@ -66,7 +56,7 @@ export default function App() {
 
   return (
     <div className="mx-auto flex h-full max-w-7xl justify-center gap-6 p-6" id="App">
-      <Board displayedGame={displayedGame} />
+      <Board />
       <div className="flex max-w-md grow flex-col gap-4" id="Controls">
         <div className="grid grid-cols-[40px_1fr_40px] gap-1">
           <Button

@@ -1,4 +1,4 @@
-import { SQUARES } from 'chess.js';
+import { Chess, SQUARES } from 'chess.js';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -11,9 +11,9 @@ import BoardSquare from './BoardSquare';
 import EndgameBadges from './EndgameBadges';
 import PlayerBadge from './PlayerBadge';
 
-import type { Chess, Color, PieceSymbol, Square } from 'chess.js';
+import type { Color, PieceSymbol, Square } from 'chess.js';
 
-export default function Board({ displayedGame }: { displayedGame: Chess }) {
+export default function Board() {
   const {
     currentGame,
     currentMoveNum,
@@ -46,6 +46,7 @@ export default function Board({ displayedGame }: { displayedGame: Chess }) {
   }, [stage, username, currentGame]);
 
   const history = currentGame.history({ verbose: true });
+  const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
   const currentMove = history[currentMoveNum - 1];
   const nextMove = history[currentMoveNum];
   const board = displayedGame.board();
