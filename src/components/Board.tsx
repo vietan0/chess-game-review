@@ -7,13 +7,17 @@ import { useBoardStore } from '../useBoardStore';
 import { useSelectGameStore } from '../useSelectGameStore';
 import getIconPath from '../utils/getIconPath';
 import translatePiece from '../utils/translatePiece';
+import useSoundFx from '../utils/useSoundFx';
 import BoardSquare from './BoardSquare';
 import EndgameBadges from './EndgameBadges';
+import Highlight from './Highlight';
 import PlayerBadge from './PlayerBadge';
 
 import type { Color, PieceSymbol, Square } from 'chess.js';
 
 export default function Board() {
+  useSoundFx();
+
   const {
     currentGame,
     currentMoveNum,
@@ -43,7 +47,7 @@ export default function Board() {
         flipBoard(true);
       }
     }
-  }, [stage, username, currentGame]);
+  }, [stage]);
 
   const history = currentGame.history({ verbose: true });
   const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
@@ -52,11 +56,7 @@ export default function Board() {
   const board = displayedGame.board();
 
   const boardSquares = SQUARES.map(square => (
-    <BoardSquare
-      isHighlight={currentMove?.from === square || currentMove?.to === square}
-      key={square}
-      square={square}
-    />
+    <BoardSquare key={square} square={square} />
   ));
 
   /**
@@ -134,6 +134,7 @@ export default function Board() {
           {boardSquares}
         </div>
         <div className="absolute size-full" id="pieces">
+          <Highlight />
           {pieces}
         </div>
         <EndgameBadges />
