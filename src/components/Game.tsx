@@ -1,9 +1,10 @@
 import { Card, CardBody } from '@nextui-org/card';
 
+import Result from '../icons/result/Result';
+import TimeClass from '../icons/time-class/TimeClass';
 import { useBoardStore } from '../useBoardStore';
 import { useSelectGameStore } from '../useSelectGameStore';
 import { formatChessComTimeControl, formatLichessTimeControl } from '../utils/formatTimeControl';
-import getIconPath from '../utils/getIconPath';
 import isChessCom from '../utils/isChessCom';
 
 import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../queries/useMonthlyArchives';
@@ -93,11 +94,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
     >
       <CardBody>
         <div className="flex w-10 min-w-10 flex-col items-center gap-1" id="time-control">
-          <img
-            alt=""
-            className="size-5"
-            src={getIconPath(timeClass, 'time-controls', 'svg')}
-          />
+          <TimeClass className="size-5" timeClass={timeClass} />
           <span className="text-nowrap text-xs text-foreground-500">
             {timeControl}
           </span>
@@ -116,7 +113,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
             </span>
           </div>
         </div>
-        <img alt="" className="ml-auto size-5" src={getIconPath(result, 'game-result', 'svg')} />
+        <Result className="ml-auto size-5" result={result} />
       </CardBody>
     </Card>
   );

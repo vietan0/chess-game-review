@@ -99,6 +99,8 @@ export default function PlayerBadge({ displayedGame, color }: {
 
     // 1.b. if game from PGN is correspondant, display fixed increment
     else if (header.TimeControl) {
+      // this would only work if the PGN comes from chess.com
+      // other than that, there's no way of determining if it's correspondant
       const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex);
 
       if (incrementAfterSlash) {

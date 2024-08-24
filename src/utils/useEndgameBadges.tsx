@@ -1,32 +1,41 @@
+import Badge from '../icons/endgame-badges/Badge';
 import { useBoardStore } from '../useBoardStore';
 import useLoser from './useLoser';
+
+type WhiteBadge = 'abandoned' | 'checkmate-white' | 'draw-white' | 'resign-white' | 'timeout-white' | 'winner' | null;
+type BlackBadge = 'abandoned' | 'checkmate-black' | 'draw-black' | 'resign-black' | 'timeout-black' | 'winner' | null;
+
+export type BadgeType = 'abandoned' | 'checkmate-black' | 'checkmate-white' | 'draw-black' | 'draw-white' | 'resign-black' | 'resign-white' | 'timeout-black' | 'timeout-white' | 'winner' | null;
 
 export default function useEndgameBadges() {
   const currentGame = useBoardStore(state => state.currentGame);
   const header = currentGame.header();
   const result = header.Result;
   const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
-  let wkBadgePath;
-  let bkBadgePath;
+  let wResult: WhiteBadge = null;
+  let bResult: BlackBadge = null;
   const { loseBy } = useLoser();
 
   if (!isGameOver) {
-    return ['', ''];
+    wResult = null;
+    bResult = null;
   }
-
-  if (result === '1-0') {
-    wkBadgePath = 'winner';
-    bkBadgePath = `${loseBy!}-black`;
+  else if (result === '1-0') {
+    wResult = 'winner';
+    bResult = (loseBy === null || loseBy === 'abandoned') ? loseBy : `${loseBy}-black`;
   }
   else if (result === '0-1') {
-    wkBadgePath = `${loseBy!}-white`;
-    bkBadgePath = 'winner';
+    wResult = (loseBy === null || loseBy === 'abandoned') ? loseBy : `${loseBy!}-white`;
+    bResult = 'winner';
   }
   else {
     // result must be '1/2-1/2'
-    wkBadgePath = 'draw-white';
-    bkBadgePath = 'draw-black';
+    wResult = 'draw-white';
+    bResult = 'draw-black';
   }
 
-  return [wkBadgePath, bkBadgePath];
+  const wkBadge = <Badge badge={wResult} className="size-7" />;
+  const bkBadge = <Badge badge={bResult} className="size-7" />;
+
+  return [wkBadge, bkBadge];
 }

@@ -13,7 +13,7 @@ export default function useLoser() {
     return { loser: null, loseBy: null };
 
   const loser: Color | null = result === '1-0' ? 'b' : 'w';
-  let loseBy: 'checkmate' | 'resign' | 'timeout' | 'abandoned' | 'unknown' | null;
+  let loseBy: 'checkmate' | 'resign' | 'timeout' | 'abandoned' | null;
 
   if (site.includes('Chess.com')) {
     const termination = header.Termination;
@@ -56,7 +56,7 @@ export default function useLoser() {
       loseBy = 'checkmate';
 
     // if can't differentiate between resign/timeout/abandoned, just don't display at all
-    loseBy = 'unknown';
+    loseBy = null;
   }
 
   return { loser, loseBy };
