@@ -1,14 +1,18 @@
+import { SQUARES } from 'chess.js';
 import { Chess, type Square } from 'chess.js';
 
 import { useBoardStore } from '../useBoardStore';
 import cn from '../utils/cn';
+import translatePiece from '../utils/translatePiece';
 
-export default function Coor({ square }: { square: Square }) {
+function Coor({ square }: { square: Square }) {
   const color = new Chess().squareColor(square);
   const isFlipped = useBoardStore(state => state.isFlipped);
   const isFirstCol = square.includes(isFlipped ? 'h' : 'a');
   const isFirstRow = square.includes(isFlipped ? '8' : '1');
   const cornerSquare = isFlipped ? 'h8' : 'a1';
+  const isCorner = square === cornerSquare;
+  const [x, y] = translatePiece(square, isFlipped);
 
   const file = (
     <span
@@ -32,20 +36,29 @@ export default function Coor({ square }: { square: Square }) {
     </span>
   );
 
-  if (square === cornerSquare) {
+  if (isCorner || isFirstCol || isFirstRow) {
     return (
-      <>
-        {file}
-        {rank}
-      </>
+      <div
+        className="absolute size-[12.5%]"
+        style={{ transform: `translate(${x}%, ${y}%)` }}
+      >
+        {isCorner
+          ? (
+              <>
+                {file}
+                {rank}
+              </>
+            )
+          : isFirstRow ? file : isFirstCol ? rank : null}
+      </div>
     );
   }
+}
 
-  else if (isFirstRow) {
-    return file;
-  }
-
-  else if (isFirstCol) {
-    return rank;
-  }
+export default function Coors() {
+  return (
+    <div id="coors">
+      {SQUARES.map(square => <Coor key={square} square={square} />)}
+    </div>
+  );
 }

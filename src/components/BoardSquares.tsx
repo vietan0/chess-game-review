@@ -1,14 +1,12 @@
-import { Chess, type Square } from 'chess.js';
+import { Chess, SQUARES, type Square } from 'chess.js';
 
 import { useBoardStore } from '../useBoardStore';
 import cn from '../utils/cn';
 import translatePiece from '../utils/translatePiece';
-import Coor from './Coor';
 
-export default function BoardSquare({ square }: { square: Square }) {
-  const chess = new Chess();
+function BoardSquare({ square }: { square: Square }) {
   const isFlipped = useBoardStore(state => state.isFlipped);
-  const color = chess.squareColor(square);
+  const color = new Chess().squareColor(square);
   const [x, y] = translatePiece(square, isFlipped);
 
   return (
@@ -17,10 +15,15 @@ export default function BoardSquare({ square }: { square: Square }) {
         'absolute size-[12.5%]',
         color === 'dark' ? 'bg-darkSquare' : 'bg-lightSquare',
       )}
-      id={square}
       style={{ transform: `translate(${x}%, ${y}%)` }}
-    >
-      <Coor square={square} />
+    />
+  );
+}
+
+export default function BoardSquares() {
+  return (
+    <div className="absolute size-full overflow-hidden rounded" id="background">
+      {SQUARES.map(square => <BoardSquare key={square} square={square} />)}
     </div>
   );
 }

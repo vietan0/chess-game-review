@@ -1,4 +1,4 @@
-import { Chess, SQUARES } from 'chess.js';
+import { Chess } from 'chess.js';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -8,7 +8,8 @@ import { useSelectGameStore } from '../useSelectGameStore';
 import getIconPath from '../utils/getIconPath';
 import translatePiece from '../utils/translatePiece';
 import useSoundFx from '../utils/useSoundFx';
-import BoardSquare from './BoardSquare';
+import BoardSquares from './BoardSquares';
+import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
 import Highlight from './Highlight';
 import PlayerBadge from './PlayerBadge';
@@ -54,10 +55,6 @@ export default function Board() {
   const currentMove = history[currentMoveNum - 1];
   const nextMove = history[currentMoveNum];
   const board = displayedGame.board();
-
-  const boardSquares = SQUARES.map(square => (
-    <BoardSquare key={square} square={square} />
-  ));
 
   /**
    * Generate initial x,y for piece animation.
@@ -130,11 +127,10 @@ export default function Board() {
     <div className="flex flex-col gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} displayedGame={displayedGame} />
       <div className="relative size-[600px]" id="actual-board">
-        <div className="absolute size-full overflow-hidden rounded" id="background">
-          {boardSquares}
-        </div>
+        <BoardSquares />
+        <Highlight />
+        <Coors />
         <div className="absolute size-full" id="pieces">
-          <Highlight />
           {pieces}
         </div>
         <EndgameBadges />
