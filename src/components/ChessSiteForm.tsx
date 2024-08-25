@@ -3,6 +3,7 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
+import useLocalStorage from '../queries/useLocalStorage';
 import { useSelectGameStore } from '../useSelectGameStore';
 
 import type { Site } from '../useSelectGameStore';
@@ -14,10 +15,12 @@ interface Inputs {
 
 export default function ChessSiteForm({ site }: { site: Site }) {
   const submitUsername = useSelectGameStore(state => state.submitUsername);
-  const { handleSubmit, control, formState } = useForm<Inputs>({ defaultValues: { username: '' } });
+  const { item: lastUsername, set } = useLocalStorage(`${site}-username`);
+  const { handleSubmit, control, formState, watch } = useForm<Inputs>({ defaultValues: { username: lastUsername || '' } });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     submitUsername(data.username, site);
+    set(`${site}-username`, data.username);
   };
 
   return (
@@ -36,7 +39,7 @@ export default function ChessSiteForm({ site }: { site: Site }) {
       <Button
         className="h-12"
         color="primary"
-        isDisabled={!formState.isDirty || !formState.isValid}
+        isDisabled={watch('username') === '' || !formState.isValid}
         radius="sm"
         type="submit"
       >

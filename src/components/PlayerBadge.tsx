@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { Chess } from 'chess.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -16,21 +17,21 @@ import useLoser from '../utils/useLoser';
 import CapturedGroup from './CapturedGroup';
 
 import type { Capturable } from '../utils/getCaptured';
-import type { Chess, Color } from 'chess.js';
+import type { Color } from 'chess.js';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
-export default function PlayerBadge({ displayedGame, color }: {
-  displayedGame: Chess;
+export default function PlayerBadge({ color }: {
   color: Color;
 }) {
-  const board = displayedGame.board();
   const currentGame = useBoardStore(state => state.currentGame);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const timestamps = useBoardStore(state => state.timestamps);
   const history = currentGame.history({ verbose: true });
   const header = currentGame.header();
+  const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
+  const board = displayedGame.board();
 
   const timeControl = useMemo(() => {
     if (!header.TimeControl)

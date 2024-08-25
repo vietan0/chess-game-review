@@ -71,6 +71,7 @@ export default function PGNForm() {
         </CardBody>
         <CardFooter>
           <Button
+            color="primary"
             disableAnimation
             fullWidth
             isDisabled={!formState.isDirty || !formState.isValid}

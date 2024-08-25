@@ -1,5 +1,6 @@
 import { Chess } from 'chess.js';
 import { useEffect } from 'react';
+import useSound from 'use-sound';
 import { useShallow } from 'zustand/react/shallow';
 
 import capture from '../sound/capture.mp3';
@@ -9,15 +10,13 @@ import moveSelf from '../sound/move-self.mp3';
 import promote from '../sound/promote.mp3';
 import { useBoardStore } from '../useBoardStore';
 
-const sound: Record<string, HTMLAudioElement> = {
-  moveSelf: new Audio(moveSelf),
-  moveCheck: new Audio(moveCheck),
-  castle: new Audio(castle),
-  capture: new Audio(capture),
-  promote: new Audio(promote),
-};
-
 export default function useSoundFx() {
+  const [playMoveSelf] = useSound(moveSelf);
+  const [playMoveCheck] = useSound(moveCheck);
+  const [playCastle] = useSound(castle);
+  const [playCapture] = useSound(capture);
+  const [playPromote] = useSound(promote);
+
   const {
     currentGame,
     currentMoveNum,
@@ -33,53 +32,40 @@ export default function useSoundFx() {
   const currentMove = history[currentMoveNum - 1];
 
   useEffect(() => {
-    function stopAll() {
-      for (const key in sound) {
-        sound[key].pause();
-        sound[key].currentTime = 0;
-      }
-    }
-
     function playSound() {
       if (!currentMove) {
         // starting position
-        stopAll();
 
         if (lastNav === -1) {
-          sound.moveSelf.play();
+          playMoveSelf();
         }
       }
 
       else {
         if (new Chess(currentMove.after).inCheck()) {
-          stopAll();
-          sound.moveCheck.play();
+          playMoveCheck();
 
           return;
         }
 
         if (currentMove.flags.includes('p')) {
-          stopAll();
-          sound.promote.play();
+          playPromote();
 
           return;
         }
 
         if (currentMove.flags.includes('c') || currentMove.flags.includes('e')) {
-          stopAll();
-          sound.capture.play();
+          playCapture();
 
           return;
         }
 
         if (currentMove.flags.includes('k') || currentMove.flags.includes('q')) {
-          stopAll();
-          sound.castle.play();
+          playCastle();
         }
 
         else {
-          stopAll();
-          sound.moveSelf.play();
+          playMoveSelf();
         }
       }
     }

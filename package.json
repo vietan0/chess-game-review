@@ -32,6 +32,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.2",
     "tailwind-merge": "^2.4.0",
+    "use-sound": "^4.0.3",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
