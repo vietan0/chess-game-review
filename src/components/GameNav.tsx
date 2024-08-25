@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Button } from '@nextui-org/button';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
@@ -25,6 +26,12 @@ export default function GameNav() {
     toFinalMove: state.toFinalMove,
     reset: state.reset,
   })));
+
+  useHotkeys('right', () => toNextMove());
+  useHotkeys('left', () => toPrevMove());
+  useHotkeys('up', () => toFirstMove());
+  useHotkeys('down', () => toFinalMove());
+  useHotkeys('x', () => flipBoard());
 
   const resetSelectGameStore = useSelectGameStore(state => state.reset);
   const history = currentGame.history({ verbose: true });

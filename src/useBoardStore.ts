@@ -38,8 +38,20 @@ export const useBoardStore = create<StoreType>(set => ({
   }),
   flipBoard: (newVal?: boolean) => set(state => ({ isFlipped: typeof newVal === 'boolean' ? newVal : !state.isFlipped, lastNav: 0 })),
   toFirstMove: () => set({ currentMoveNum: 0, lastNav: 0 }),
-  toPrevMove: () => set(state => ({ currentMoveNum: state.currentMoveNum - 1, lastNav: -1 })),
-  toNextMove: () => set(state => ({ currentMoveNum: state.currentMoveNum + 1, lastNav: 1 })),
+  toPrevMove: () => set((state) => {
+    const history = state.currentGame.history({ verbose: true });
+    if (history.length === 0 || state.currentMoveNum === 0)
+      return state;
+
+    return { currentMoveNum: state.currentMoveNum - 1, lastNav: -1 };
+  }),
+  toNextMove: () => set((state) => {
+    const history = state.currentGame.history({ verbose: true });
+    if (history.length === 0 || state.currentMoveNum === history.length)
+      return state;
+
+    return { currentMoveNum: state.currentMoveNum + 1, lastNav: 1 };
+  }),
   toFinalMove: () => set(state => ({ currentMoveNum: state.currentGame.history().length, lastNav: 0 })),
   reset: () => set({
     currentGame: new Chess(),
