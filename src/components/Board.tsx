@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
@@ -10,6 +11,11 @@ import EndgameBadges from './EndgameBadges';
 import Highlight from './Highlight';
 import Pieces from './Pieces';
 import PlayerBadge from './PlayerBadge';
+
+if (import.meta.env.DEV) {
+  mountStoreDevtool('selectGameStore', useSelectGameStore);
+  mountStoreDevtool('boardStore', useBoardStore);
+}
 
 export default function Board() {
   useSoundFx();

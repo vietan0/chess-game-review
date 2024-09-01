@@ -9,6 +9,7 @@ import Forms from './Forms';
 import GameNav from './GameNav';
 import Games from './Games';
 import Months from './Months';
+import Review from './Review';
 
 export default function Controls() {
   const reset = useBoardStore(state => state.reset);
@@ -77,7 +78,7 @@ export default function Controls() {
             ? <Months />
             : stage === 'select-game'
               ? <Games />
-              : 'loaded' }
+              : <Review />}
       </div>
       <GameNav />
     </div>

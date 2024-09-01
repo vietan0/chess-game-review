@@ -7,6 +7,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     open: true,
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
   },
   test: {
     environment: 'happy-dom',
