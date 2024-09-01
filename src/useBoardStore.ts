@@ -23,7 +23,7 @@ export const useBoardStore = create<StoreType>(set => ({
   currentGame: new Chess(),
   currentMoveNum: 0, // 0 means starting position, 1 means first move
   isFlipped: false,
-  lastNav: 1,
+  lastNav: 0,
   timestamps: null,
   randomState: 0,
   loadGame: (pgn: string) => set((state) => {
@@ -31,7 +31,7 @@ export const useBoardStore = create<StoreType>(set => ({
 
     return {
       currentMoveNum: 0,
-      lastNav: 1,
+      lastNav: 0,
       timestamps: pgn.match(timestampRegex),
       randomState: Math.random(), // trigger re-render manually, because Chess.loadPgn() won't
     };

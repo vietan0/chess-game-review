@@ -35,7 +35,7 @@ export default function useMonthlyArchives(monthLink: string) {
   const site = useSelectGameStore(state => state.site)!;
 
   return useQuery({
-    queryKey: ['gameArchives', monthLink, site],
+    queryKey: ['monthlyArchives', monthLink, site],
     queryFn: async () =>
       site === 'chess.com' ? fetchChessComGames(monthLink) : fetchLichessGames(monthLink),
     staleTime: 5 * 60 * 1000,
