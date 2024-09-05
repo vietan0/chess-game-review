@@ -3,6 +3,7 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../useBoardStore';
+import { useEvalStore } from '../useEvalStore';
 import { useSelectGameStore } from '../useSelectGameStore';
 import useSoundFx from '../utils/useSoundFx';
 import BoardSquares from './BoardSquares';
@@ -15,6 +16,7 @@ import PlayerBadge from './PlayerBadge';
 if (import.meta.env.DEV) {
   mountStoreDevtool('selectGameStore', useSelectGameStore);
   mountStoreDevtool('boardStore', useBoardStore);
+  mountStoreDevtool('EvalStore', useEvalStore);
 }
 
 export default function Board() {
