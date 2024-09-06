@@ -2,9 +2,9 @@ import { Chess } from 'chess.js';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useBoardStore } from '../useBoardStore';
-import getIconPath from '../utils/getIconPath';
-import translatePiece from '../utils/translatePiece';
+import { useBoardStore } from '../../stores/useBoardStore';
+import getIconPath from '../../utils/getIconPath';
+import translatePiece from '../../utils/translatePiece';
 
 import type { Color, PieceSymbol, Square } from 'chess.js';
 

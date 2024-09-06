@@ -1,5 +1,5 @@
-import Board from './components/Board';
-import Controls from './components/Controls';
+import Board from './components/board/Board';
+import Controls from './components/controls/Controls';
 
 export default function App() {
   return (

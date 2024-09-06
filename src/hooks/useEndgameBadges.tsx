@@ -1,5 +1,5 @@
 import Badge from '../icons/endgame-badges/Badge';
-import { useBoardStore } from '../useBoardStore';
+import { useBoardStore } from '../stores/useBoardStore';
 import useLoser from './useLoser';
 
 type WhiteBadge = 'abandoned' | 'checkmate-white' | 'draw-white' | 'resign-white' | 'timeout-white' | 'winner' | null;

@@ -1,4 +1,4 @@
-import { useBoardStore } from '../useBoardStore';
+import { useBoardStore } from '../stores/useBoardStore';
 
 import type { Color } from 'chess.js';
 

@@ -1,8 +1,8 @@
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 
-import chesscomLogo from '../icons/chesscom.png';
-import lichessLogo from '../icons/lichess.png';
-import pgnLogo from '../icons/pgn.png';
+import chesscomLogo from '../../icons/game-src/chesscom.png';
+import lichessLogo from '../../icons/game-src/lichess.png';
+import pgnLogo from '../../icons/game-src/pgn.png';
 import ChessSiteForm from './ChessSiteForm';
 import PGNForm from './PGNForm';
 

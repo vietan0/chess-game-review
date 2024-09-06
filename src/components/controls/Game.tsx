@@ -1,13 +1,13 @@
 import { Card, CardBody } from '@nextui-org/card';
 
-import Result from '../icons/result/Result';
-import TimeClass from '../icons/time-class/TimeClass';
-import { useBoardStore } from '../useBoardStore';
-import { useSelectGameStore } from '../useSelectGameStore';
-import { formatChessComTimeControl, formatLichessTimeControl } from '../utils/formatTimeControl';
-import isChessCom from '../utils/isChessCom';
+import Result from '../../icons/result/Result';
+import TimeClass from '../../icons/time-class/TimeClass';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { formatChessComTimeControl, formatLichessTimeControl } from '../../utils/formatTimeControl';
+import isChessCom from '../../utils/isChessCom';
 
-import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../queries/useMonthlyArchives';
+import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../../queries/useMonthlyArchives';
 
 function isAI(player: LichessPlayer | LichessAI): player is LichessAI {
   return (player as LichessAI).aiLevel !== undefined;

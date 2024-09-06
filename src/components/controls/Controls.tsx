@@ -2,9 +2,9 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { Button } from '@nextui-org/button';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useBoardStore } from '../useBoardStore';
-import { useSelectGameStore } from '../useSelectGameStore';
-import cn from '../utils/cn';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import cn from '../../utils/cn';
 import Forms from './Forms';
 import GameNav from './GameNav';
 import Games from './Games';

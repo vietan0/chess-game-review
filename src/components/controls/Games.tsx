@@ -1,8 +1,8 @@
-import useMonthlyArchives from '../queries/useMonthlyArchives';
-import { useSelectGameStore } from '../useSelectGameStore';
-import isChessCom from '../utils/isChessCom';
+import useMonthlyArchives from '../../queries/useMonthlyArchives';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import isChessCom from '../../utils/isChessCom';
+import Loading from '../Loading';
 import Game from './Game';
-import Loading from './Loading';
 
 export default function Games() {
   const monthLink = useSelectGameStore(state => state.monthLink);

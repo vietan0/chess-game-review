@@ -4,10 +4,10 @@ import { Chess, DEFAULT_POSITION } from 'chess.js';
 import { useCallback, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import useStockfish from '../queries/useStockfish';
-import { useBoardStore } from '../useBoardStore';
-import { useEvalStore } from '../useEvalStore';
-import Loading from './Loading';
+import useStockfish from '../../queries/useStockfish';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useEvalStore } from '../../stores/useEvalStore';
+import Loading from '../Loading';
 
 const depth = 12;
 

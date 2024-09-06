@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import objectSupport from 'dayjs/plugin/objectSupport';
 
-import { useSelectGameStore } from '../useSelectGameStore';
+import { useSelectGameStore } from '../stores/useSelectGameStore';
 import { groupChessComLinksByYear, groupLichessLinksByYear } from '../utils/groupChessComLinksByYear';
 
 dayjs.extend(objectSupport);

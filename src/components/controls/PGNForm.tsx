@@ -4,8 +4,8 @@ import { Card, CardBody, CardFooter } from '@nextui-org/card';
 import { Textarea } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
-import { useBoardStore } from '../useBoardStore';
-import { useSelectGameStore } from '../useSelectGameStore';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
 
 import type { SubmitHandler } from 'react-hook-form';
 

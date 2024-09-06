@@ -5,18 +5,18 @@ import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useMemo } from 'react';
 
-import { useBoardStore } from '../useBoardStore';
-import { useSelectGameStore } from '../useSelectGameStore';
-import cn from '../utils/cn';
-import { dailyIncrementRegex, mainTimeRegex } from '../utils/formatTimeControl';
-import formatTimestamp from '../utils/formatTimestamp';
-import getCaptured from '../utils/getCaptured';
-import getDiff from '../utils/getDiff';
-import isChessCom from '../utils/isChessCom';
-import useLoser from '../utils/useLoser';
+import useLoser from '../../hooks/useLoser';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import cn from '../../utils/cn';
+import { dailyIncrementRegex, mainTimeRegex } from '../../utils/formatTimeControl';
+import formatTimestamp from '../../utils/formatTimestamp';
+import getCaptured from '../../utils/getCaptured';
+import getDiff from '../../utils/getDiff';
+import isChessCom from '../../utils/isChessCom';
 import CapturedGroup from './CapturedGroup';
 
-import type { Capturable } from '../utils/getCaptured';
+import type { Capturable } from '../../utils/getCaptured';
 import type { Color } from 'chess.js';
 
 dayjs.extend(duration);

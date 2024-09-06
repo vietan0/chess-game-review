@@ -1,7 +1,7 @@
-import { useBoardStore } from '../useBoardStore';
-import translatePiece from '../utils/translatePiece';
-import useEndgameBadges from '../utils/useEndgameBadges';
-import useKingSquares from '../utils/useKingSquares';
+import useEndgameBadges from '../../hooks/useEndgameBadges';
+import useKingSquares from '../../hooks/useKingSquares';
+import { useBoardStore } from '../../stores/useBoardStore';
+import translatePiece from '../../utils/translatePiece';
 
 export default function EndgameBadges() {
   const [wkBadge, bkBadge] = useEndgameBadges();

@@ -1,7 +1,7 @@
 import { useShallow } from 'zustand/react/shallow';
 
-import { useBoardStore } from '../useBoardStore';
-import translatePiece from '../utils/translatePiece';
+import { useBoardStore } from '../../stores/useBoardStore';
+import translatePiece from '../../utils/translatePiece';
 
 export default function Highlight() {
   const {

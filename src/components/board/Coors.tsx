@@ -1,9 +1,9 @@
 import { SQUARES } from 'chess.js';
 import { Chess, type Square } from 'chess.js';
 
-import { useBoardStore } from '../useBoardStore';
-import cn from '../utils/cn';
-import translatePiece from '../utils/translatePiece';
+import { useBoardStore } from '../../stores/useBoardStore';
+import cn from '../../utils/cn';
+import translatePiece from '../../utils/translatePiece';
 
 function Coor({ square }: { square: Square }) {
   const color = new Chess().squareColor(square);

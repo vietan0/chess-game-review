@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 import objectSupport from 'dayjs/plugin/objectSupport';
 import { nanoid } from 'nanoid';
 
-import useGameArchives from '../queries/useGameArchives';
-import { useSelectGameStore } from '../useSelectGameStore';
-import cn from '../utils/cn';
-import { getUnitFromLichessLink } from '../utils/groupChessComLinksByYear';
-import Loading from './Loading';
+import useGameArchives from '../../queries/useGameArchives';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import cn from '../../utils/cn';
+import { getUnitFromLichessLink } from '../../utils/groupChessComLinksByYear';
+import Loading from '../Loading';
 
 dayjs.extend(objectSupport);
 

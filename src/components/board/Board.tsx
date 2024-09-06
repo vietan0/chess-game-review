@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useBoardStore } from '../useBoardStore';
-import { useEvalStore } from '../useEvalStore';
-import { useSelectGameStore } from '../useSelectGameStore';
-import useSoundFx from '../utils/useSoundFx';
+import useSoundFx from '../../hooks/useSoundFx';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useEvalStore } from '../../stores/useEvalStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';

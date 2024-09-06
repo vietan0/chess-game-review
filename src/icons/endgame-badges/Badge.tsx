@@ -9,7 +9,7 @@ import TimeoutBlack from './TimeoutBlack';
 import TimeoutWhite from './TimeoutWhite';
 import Winner from './Winner';
 
-import type { BadgeType } from '../../utils/useEndgameBadges';
+import type { BadgeType } from '../../hooks/useEndgameBadges';
 import type { SVGProps } from 'react';
 
 interface BadgeProps extends SVGProps<SVGSVGElement> {

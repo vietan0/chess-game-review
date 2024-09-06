@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
 
-import getIconPath from '../utils/getIconPath';
+import getIconPath from '../../utils/getIconPath';
 
-import type { Capturable } from '../utils/getCaptured';
+import type { Capturable } from '../../utils/getCaptured';
 import type { Color } from 'chess.js';
 
 export default function CapturedGroup({ color, number, piece }: {

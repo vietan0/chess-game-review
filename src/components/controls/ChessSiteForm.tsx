@@ -3,10 +3,10 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
-import useLocalStorage from '../queries/useLocalStorage';
-import { useSelectGameStore } from '../useSelectGameStore';
+import useLocalStorage from '../../queries/useLocalStorage';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
 
-import type { Site } from '../useSelectGameStore';
+import type { Site } from '../../stores/useSelectGameStore';
 import type { SubmitHandler } from 'react-hook-form';
 
 interface Inputs {

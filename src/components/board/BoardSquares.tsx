@@ -1,8 +1,8 @@
 import { Chess, SQUARES, type Square } from 'chess.js';
 
-import { useBoardStore } from '../useBoardStore';
-import cn from '../utils/cn';
-import translatePiece from '../utils/translatePiece';
+import { useBoardStore } from '../../stores/useBoardStore';
+import cn from '../../utils/cn';
+import translatePiece from '../../utils/translatePiece';
 
 function BoardSquare({ square }: { square: Square }) {
   const isFlipped = useBoardStore(state => state.isFlipped);

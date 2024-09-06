@@ -1,4 +1,4 @@
-import { useBoardStore } from '../useBoardStore';
+import { useBoardStore } from '../stores/useBoardStore';
 
 export default function useKingSquares() {
   const currentGame = useBoardStore(state => state.currentGame);

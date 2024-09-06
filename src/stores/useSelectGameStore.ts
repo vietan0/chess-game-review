@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { ChessComGame, LichessGame } from './queries/useMonthlyArchives';
+import type { ChessComGame, LichessGame } from '../queries/useMonthlyArchives';
 
 export type Site = 'chess.com' | 'lichess';
 

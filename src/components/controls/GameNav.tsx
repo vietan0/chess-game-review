@@ -3,8 +3,8 @@ import { Button } from '@nextui-org/button';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useBoardStore } from '../useBoardStore';
-import { useSelectGameStore } from '../useSelectGameStore';
+import { useBoardStore } from '../../stores/useBoardStore';
+import { useSelectGameStore } from '../../stores/useSelectGameStore';
 
 export default function GameNav() {
   const {

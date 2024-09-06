@@ -3,12 +3,12 @@ import { useEffect } from 'react';
 import useSound from 'use-sound';
 import { useShallow } from 'zustand/react/shallow';
 
-import capture from '../sound/capture.mp3';
-import castle from '../sound/castle.mp3';
-import moveCheck from '../sound/move-check.mp3';
-import moveSelf from '../sound/move-self.mp3';
-import promote from '../sound/promote.mp3';
-import { useBoardStore } from '../useBoardStore';
+import capture from '../sounds/capture.mp3';
+import castle from '../sounds/castle.mp3';
+import moveCheck from '../sounds/move-check.mp3';
+import moveSelf from '../sounds/move-self.mp3';
+import promote from '../sounds/promote.mp3';
+import { useBoardStore } from '../stores/useBoardStore';
 
 export default function useSoundFx() {
   const [playMoveSelf] = useSound(moveSelf);
