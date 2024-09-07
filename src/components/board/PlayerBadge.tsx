@@ -153,7 +153,7 @@ export default function PlayerBadge({ color }: {
   const diff = getDiff(board, color);
 
   return (
-    <div className="flex items-center justify-between gap-2">
+    <div className="flex w-[600px] items-center justify-between gap-2">
       <div className="flex items-start gap-2">
         <Icon
           className={cn('text-[40px]', color === 'b' && 'bg-default-100 text-background')}

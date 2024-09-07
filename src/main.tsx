@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <NextUIProvider>
-        <main className="h-screen bg-content1 text-foreground dark">
+        <main className="h-screen bg-default-50 text-foreground dark">
           <App />
         </main>
       </NextUIProvider>

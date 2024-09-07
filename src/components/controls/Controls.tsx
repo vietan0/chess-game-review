@@ -38,11 +38,12 @@ export default function Controls() {
     }
 
     else if (stage === 'loaded') {
+      reset();
+
       if (site) {
         backToGames();
       }
       else {
-        reset();
         resetSelectGame();
       }
     }

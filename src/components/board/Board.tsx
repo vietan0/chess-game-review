@@ -9,6 +9,7 @@ import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
+import EvalBar from './EvalBar';
 import Highlight from './Highlight';
 import Pieces from './Pieces';
 import PlayerBadge from './PlayerBadge';
@@ -50,14 +51,17 @@ export default function Board() {
   }, [stage]);
 
   return (
-    <div className="flex flex-col gap-2" id="Board">
+    <div className="flex flex-col items-end gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} />
-      <div className="relative size-[600px]" id="actual-board">
-        <BoardSquares />
-        <Highlight />
-        <Coors />
-        <Pieces />
-        <EndgameBadges />
+      <div className="flex gap-3" id="Board&Bar">
+        <EvalBar />
+        <div className="relative size-[600px]" id="actual-board">
+          <BoardSquares />
+          <Highlight />
+          <Coors />
+          <Pieces />
+          <EndgameBadges />
+        </div>
       </div>
       <PlayerBadge color={isFlipped ? 'b' : 'w'} />
     </div>
