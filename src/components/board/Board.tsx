@@ -17,7 +17,7 @@ import PlayerBadge from './PlayerBadge';
 if (import.meta.env.DEV) {
   mountStoreDevtool('selectGameStore', useSelectGameStore);
   mountStoreDevtool('boardStore', useBoardStore);
-  mountStoreDevtool('EvalStore', useEvalStore);
+  mountStoreDevtool('evalStore', useEvalStore);
 }
 
 export default function Board() {

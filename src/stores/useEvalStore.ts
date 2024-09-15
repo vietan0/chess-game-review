@@ -9,16 +9,18 @@ export interface MoveEval {
 
 interface StoreType {
   best3Moves: MoveEval[][]; // in LAN format
+  outputs: string[];
   computed: {
     readonly cps: (string | number)[];
     readonly winPercents: string[];
   };
-  saveMove: (moveEval: MoveEval) => void;
+  saveMove: (moveEval: MoveEval, output: string) => void;
   reset: () => void;
 }
 
 export const useEvalStore = create<StoreType>((set, get) => ({
   best3Moves: [],
+  outputs: [],
   computed: {
     get cps() {
       return get().best3Moves.map((subArr, i) => {
@@ -71,27 +73,31 @@ export const useEvalStore = create<StoreType>((set, get) => ({
       });
     },
   },
-  saveMove: (moveEval: MoveEval) => set(({ best3Moves: best3MovesLans }) => {
-    // same node = same move
-    if (best3MovesLans.some(subArr => subArr.some(obj => obj.nodes === moveEval.nodes)) === false) {
-      // 1. if array doesn't include a subarray that includes an object with `nodes`
-      // --> create a subarray, add object
-      // if (JSON.stringify(moveEval) !== JSON.stringify(best3MovesLans[best3MovesLans.length - 1]))
-      // prevent duplicate if there are duplicated listener added in development (after every Vite HMR save)
-      return { best3Moves: [...best3MovesLans, [moveEval]] };
-      // else return { best3MovesLans };
-    }
-    else {
-      // 2. array already has subArr with this nodes
-      // --> add newItem to subArr
-      const lastSubArr = best3MovesLans[best3MovesLans.length - 1];
-      const moddedLastSubArr = [...lastSubArr, moveEval];
-      // replace last subArr with addedLastSubArr
-      const modded = [...best3MovesLans];
-      modded.splice(-1, 1, moddedLastSubArr);
+  saveMove: (moveEval: MoveEval, output: string) => set(({ best3Moves, outputs }) => {
+    return {
+      best3Moves: [...best3Moves, [moveEval]],
+      outputs: [...outputs, output],
+    };
 
-      return { best3Moves: modded };
-    }
+    // prepare for saving 3 moves:
+    // how to recognize if an output is describing multiPv 1/2/3 of the same fen or the next fen?
+    // can't use `nodes` because it's not unique
+
+    // if (moveEval is not from the same position, which means it's the next position) {
+    //   // create a subarray, add object
+    //   return { best3Moves: [...best3Moves, [moveEval]], outputs: [...outputs, message] };
+    // }
+    // else {
+    //   // 2. array already has subArr of best moves in this current position
+    //   // --> add newItem to subArr
+    //   const lastSubArr = best3Moves[best3Moves.length - 1];
+    //   const moddedLastSubArr = [...lastSubArr, moveEval];
+    //   // replace last subArr with addedLastSubArr
+    //   const modded = [...best3Moves];
+    //   modded.splice(-1, 1, moddedLastSubArr);
+
+    //   return { best3Moves: modded, output: [...outputs, message] };
+    // }
   }),
-  reset: () => set({ best3Moves: [] }),
+  reset: () => set({ best3Moves: [], outputs: [] }),
 }));
