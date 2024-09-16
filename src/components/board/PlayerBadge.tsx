@@ -65,6 +65,8 @@ export default function PlayerBadge({ color }: {
   const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
   const { loser, loseBy } = useLoser();
   const game = useSelectGameStore(state => state.game);
+  const captured = getCaptured(history, currentMoveNum, color);
+  const diff = getDiff(board, color);
 
   const timeLeft = useMemo(() => {
     const oneSideTimestamps = timestamps
@@ -89,7 +91,7 @@ export default function PlayerBadge({ color }: {
       return days > 1 ? `${days} days` : `${days} day`;
     }
 
-    // 1.b. if game from PGN is correspondant, display fixed increment
+    // 1.c. if game from PGN is correspondant, display fixed increment
     else if (header.TimeControl && header.TimeControl.match(dailyIncrementRegex)) {
       // this would only work if the PGN comes from chess.com
       // other than that, there's no way of determining if it's correspondant
@@ -112,13 +114,27 @@ export default function PlayerBadge({ color }: {
         return timeControl ? formatTimestamp(timeControl) : null;
       }
 
-      // final move, override with 0:00 if timeout
-      if (
-        currentMoveNum === history.length
-        && loser === color
-        && loseBy === 'timeout'
-      ) {
-        return '0:00';
+      // final move
+      if (currentMoveNum === history.length) {
+        // override with 0:00 if lose by timeout
+        if (loser === color && loseBy === 'timeout')
+          return '0:00';
+
+        // override with 0:00 if draw by insufficient vs timeout
+        if (header.Result === '1/2-1/2'
+          && (header.Termination === 'Game drawn by timeout vs insufficient material' /* chess.com */
+          || header.Termination === 'Time forfeit' /* lichess */
+          )) {
+          if (captured.p === 8
+            && captured.n === 2
+            && captured.b === 2
+            && captured.r === 2
+            && captured.q === 1
+          ) {
+            // this side is the one who timeouts
+            return '0:00';
+          }
+        }
       }
 
       if (color === 'w') {
@@ -148,9 +164,6 @@ export default function PlayerBadge({ color }: {
       }
     }
   }, [currentMoveNum, color, timeControl, header, loser, loseBy]);
-
-  const captured = getCaptured(history, currentMoveNum, color);
-  const diff = getDiff(board, color);
 
   return (
     <div className="flex w-[600px] items-center justify-between gap-2">
