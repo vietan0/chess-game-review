@@ -21,19 +21,27 @@ export default function Review() {
 
   const {
     analyzeState,
+    isListening,
+    fenIndex,
     best3Moves,
     cps,
     saveMove,
-    begin,
-    finish,
+    listen,
+    stopListen,
+    analyze,
+    finishAnalyze,
     reset,
   } = useEvalStore(useShallow(state => ({
     analyzeState: state.analyzeState,
+    isListening: state.isListening,
+    fenIndex: state.fenIndex,
     best3Moves: state.best3Moves,
     cps: state.computed.cps,
     saveMove: state.saveMove,
-    begin: state.begin,
-    finish: state.finish,
+    listen: state.listen,
+    stopListen: state.stopListen,
+    analyze: state.analyze,
+    finishAnalyze: state.finishAnalyze,
     reset: state.reset,
   })));
 
@@ -52,11 +60,14 @@ export default function Review() {
       message.includes('info')
       && message.includes('depth')
       && !message.includes('currmove')
-      && !message.includes('bound')) {
+      && !message.includes('bound')
+    ) {
       const depthRegex = /(?<=\sdepth\s)\w+/;
       const currDepth = Number(message.match(depthRegex)![0]);
       const nodesRegex = /(?<=nodes\s)\w+/;
       const nodes = Number(message.match(nodesRegex)![0]);
+      const multiPvRegex = /(?<=multipv\s)\d/;
+      const multiPv = Number(message.match(multiPvRegex)![0]);
       const pvRegex = /(?<=\spv\s)\w+/;
       const pv = message.match(pvRegex)![0];
       // score could be 'cp x' or 'mate y'
@@ -68,14 +79,18 @@ export default function Review() {
       const mate = mateMatch ? Number(mateMatch) : undefined;
 
       if (currDepth === depth) {
-        saveMove({ nodes, pv, cp, mate }, message);
+        saveMove({ nodes, pv, multiPv, cp, mate }, message);
       }
+    }
+
+    if (message.includes('bestmove')) {
+      stopListen(fens.length);
     }
   }, []);
 
   useEffect(() => {
     if (stockfish) {
-      // stockfish.postMessage('setoption name MultiPV value 3');
+      stockfish.postMessage('setoption name MultiPV value 3');
       (stockfish as any).addMessageListener(outputListener);
 
       return () => {
@@ -93,24 +108,24 @@ export default function Review() {
 
   useEffect(() => {
     if (completePercentage === 100) {
-      finish();
+      finishAnalyze();
     }
   }, [completePercentage]);
 
-  function analyze() {
-    begin();
-
-    if (!stockfish) {
-      console.log('No Stockfish found');
-
-      return;
+  useEffect(() => {
+    /*
+      Instead of sending all the fens to Stockfish at once,
+      we send one fen at a time, listen to its output,
+      and only send the next fen when the previous one is done (when isListening is 'false' again)
+    */
+    if (stockfish && analyzeState === 'analyzing') {
+      if (!isListening) {
+        stockfish.postMessage(`position fen ${fens[fenIndex]}`);
+        stockfish.postMessage(`go depth ${depth}`);
+        listen();
+      }
     }
-
-    for (const fen of fens) {
-      stockfish.postMessage(`position fen ${fen}`);
-      stockfish.postMessage(`go depth ${depth}`);
-    }
-  }
+  }, [stockfish, analyzeState, isListening]);
 
   if (isLoading || isFetching)
     return <Loading />;
@@ -135,11 +150,23 @@ export default function Review() {
       )}
       <div>
         <p>
-          fens.length =
+          analyzeState:
+          {analyzeState}
+        </p>
+        <p>
+          isListening:
+          {isListening.toString()}
+        </p>
+        <p>
+          fenIndex:
+          {fenIndex}
+        </p>
+        <p>
+          fens.length:
           {fens.length}
         </p>
         <p>
-          best3Moves.length =
+          best3Moves.length:
           {best3Moves.length}
         </p>
         <div className="grid grid-cols-[30px,_70px,_1fr] gap-4">

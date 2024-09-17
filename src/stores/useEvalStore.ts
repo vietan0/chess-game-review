@@ -3,12 +3,15 @@ import { create } from 'zustand';
 export interface MoveEval {
   nodes: number;
   pv: string;
+  multiPv: number;
   cp?: number;
   mate?: number; // technically mate and cp are mutual exclusive
 }
 
 interface StoreType {
   analyzeState: 'idle' | 'analyzing' | 'finished';
+  isListening: boolean;
+  fenIndex: number;
   best3Moves: MoveEval[][]; // in LAN format
   outputs: string[];
   computed: {
@@ -16,13 +19,17 @@ interface StoreType {
     readonly winPercents: string[];
   };
   saveMove: (moveEval: MoveEval, output: string) => void;
-  begin: () => void;
-  finish: () => void;
+  listen: () => void;
+  stopListen: (fensLength: number) => void;
+  analyze: () => void;
+  finishAnalyze: () => void;
   reset: () => void;
 }
 
 export const useEvalStore = create<StoreType>((set, get) => ({
   analyzeState: 'idle',
+  isListening: false,
+  fenIndex: 0,
   best3Moves: [],
   outputs: [],
   computed: {
@@ -78,32 +85,31 @@ export const useEvalStore = create<StoreType>((set, get) => ({
     },
   },
   saveMove: (moveEval: MoveEval, output: string) => set(({ best3Moves, outputs }) => {
-    return {
-      best3Moves: [...best3Moves, [moveEval]],
-      outputs: [...outputs, output],
-    };
+    if (moveEval.multiPv === 1) {
+      return {
+        best3Moves: [...best3Moves, [moveEval]],
+        outputs: [...outputs, output],
+      };
+    }
+    else {
+      const lastSubArr = best3Moves[best3Moves.length - 1];
+      const moddedLastSubArr = [...lastSubArr, moveEval];
+      // replace last subArr with moddedLastSubArr
+      const modded = [...best3Moves];
+      modded.splice(-1, 1, moddedLastSubArr);
 
-    // prepare for saving 3 moves:
-    // how to recognize if an output is describing multiPv 1/2/3 of the same fen or the next fen?
-    // can't use `nodes` because it's not unique
-
-    // if (moveEval is not from the same position, which means it's the next position) {
-    //   // create a subarray, add object
-    //   return { best3Moves: [...best3Moves, [moveEval]], outputs: [...outputs, message] };
-    // }
-    // else {
-    //   // 2. array already has subArr of best moves in this current position
-    //   // --> add newItem to subArr
-    //   const lastSubArr = best3Moves[best3Moves.length - 1];
-    //   const moddedLastSubArr = [...lastSubArr, moveEval];
-    //   // replace last subArr with addedLastSubArr
-    //   const modded = [...best3Moves];
-    //   modded.splice(-1, 1, moddedLastSubArr);
-
-    //   return { best3Moves: modded, output: [...outputs, message] };
-    // }
+      return {
+        best3Moves: modded,
+        output: [...outputs, output],
+      };
+    }
   }),
-  begin: () => set({ best3Moves: [], analyzeState: 'analyzing', outputs: [] }),
-  finish: () => set({ analyzeState: 'finished' }),
+  listen: () => set({ isListening: true }),
+  stopListen: (fensLength: number) => set(({ fenIndex }) => ({
+    isListening: false,
+    fenIndex: fenIndex === fensLength - 1 ? fenIndex : fenIndex + 1,
+  })),
+  analyze: () => set({ best3Moves: [], analyzeState: 'analyzing', outputs: [] }),
+  finishAnalyze: () => set({ analyzeState: 'finished' }),
   reset: () => set({ best3Moves: [], analyzeState: 'idle', outputs: [] }),
 }));
