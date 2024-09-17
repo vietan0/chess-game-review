@@ -4,6 +4,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
+import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 
 export default function GameNav() {
@@ -27,6 +28,8 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
+  const analyzeState = useEvalStore(state => state.analyzeState);
+
   useHotkeys('right', () => toNextMove());
   useHotkeys('left', () => toPrevMove());
   useHotkeys('up', () => toFirstMove());
@@ -43,7 +46,7 @@ export default function GameNav() {
           aria-label="First move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || analyzeState !== 'finished'}
           isIconOnly
           onPress={toFirstMove}
           radius="sm"
@@ -54,7 +57,7 @@ export default function GameNav() {
           aria-label="Previous move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || analyzeState !== 'finished'}
           isIconOnly
           onPress={toPrevMove}
           radius="sm"
@@ -65,7 +68,7 @@ export default function GameNav() {
           aria-label="Next move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || analyzeState !== 'finished'}
           isIconOnly
           onPress={toNextMove}
           radius="sm"
@@ -76,7 +79,7 @@ export default function GameNav() {
           aria-label="Last move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || analyzeState !== 'finished'}
           isIconOnly
           onPress={toFinalMove}
           radius="sm"

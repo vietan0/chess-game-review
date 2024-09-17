@@ -8,6 +8,7 @@ export interface MoveEval {
 }
 
 interface StoreType {
+  analyzeState: 'idle' | 'analyzing' | 'finished';
   best3Moves: MoveEval[][]; // in LAN format
   outputs: string[];
   computed: {
@@ -15,10 +16,13 @@ interface StoreType {
     readonly winPercents: string[];
   };
   saveMove: (moveEval: MoveEval, output: string) => void;
+  begin: () => void;
+  finish: () => void;
   reset: () => void;
 }
 
 export const useEvalStore = create<StoreType>((set, get) => ({
+  analyzeState: 'idle',
   best3Moves: [],
   outputs: [],
   computed: {
@@ -99,5 +103,7 @@ export const useEvalStore = create<StoreType>((set, get) => ({
     //   return { best3Moves: modded, output: [...outputs, message] };
     // }
   }),
-  reset: () => set({ best3Moves: [], outputs: [] }),
+  begin: () => set({ best3Moves: [], analyzeState: 'analyzing', outputs: [] }),
+  finish: () => set({ analyzeState: 'finished' }),
+  reset: () => set({ best3Moves: [], analyzeState: 'idle', outputs: [] }),
 }));

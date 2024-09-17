@@ -2,7 +2,7 @@ import { Button } from '@nextui-org/button';
 import { CircularProgress } from '@nextui-org/progress';
 import { useQueryClient } from '@tanstack/react-query';
 import { Chess, DEFAULT_POSITION } from 'chess.js';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import useStockfish from '../../queries/useStockfish';
@@ -20,20 +20,25 @@ export default function Review() {
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
   const {
+    analyzeState,
     best3Moves,
     cps,
-    reset,
     saveMove,
+    begin,
+    finish,
+    reset,
   } = useEvalStore(useShallow(state => ({
+    analyzeState: state.analyzeState,
     best3Moves: state.best3Moves,
     cps: state.computed.cps,
-    reset: state.reset,
     saveMove: state.saveMove,
+    begin: state.begin,
+    finish: state.finish,
+    reset: state.reset,
   })));
 
   const best3MovesSan = best3Moves.map((subArr, i) => subArr.map(obj => lanToSan(obj.pv, i)));
   const completePercentage = Math.floor((best3Moves.length / (currentGame.isCheckmate() ? fens.length - 1 : fens.length)) * 100); // if checkmate, best3Moves has one less item than fens
-  const [analyzeState, setAnalyzeState] = useState<'idle' | 'analyzing' | 'finished'>('idle');
 
   function lanToSan(lan: string, i: number) {
     const possibleMoves = new Chess(fens[i]).moves({ verbose: true });
@@ -88,13 +93,12 @@ export default function Review() {
 
   useEffect(() => {
     if (completePercentage === 100) {
-      setAnalyzeState('finished');
+      finish();
     }
   }, [completePercentage]);
 
   function analyze() {
-    reset();
-    setAnalyzeState('analyzing');
+    begin();
 
     if (!stockfish) {
       console.log('No Stockfish found');
