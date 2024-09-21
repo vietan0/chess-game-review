@@ -16,7 +16,7 @@ interface StoreType {
   outputs: string[];
   computed: {
     readonly cps: (string | number)[];
-    readonly winPercents: string[];
+    readonly advs: string[];
   };
   saveMove: (moveEval: MoveEval, output: string) => void;
   listen: () => void;
@@ -38,13 +38,18 @@ export const useEvalStore = create<StoreType>((set, get) => ({
         const bestMove = subArr[0];
 
         if (typeof bestMove.cp === 'number') {
+          /*
+            Since my Stockfish would give a 1500 cp where chesscom/lichess would give a 750-800,
+            I deflate it by 0.6 to arbitrarily map it closer to their results.
+            https://www.desmos.com/calculator/gqiwyxdsu3
+          */
           if (i % 2 === 0) {
             // it's white's turn
-            return bestMove.cp;
+            return Math.round(bestMove.cp * 0.6);
           }
           else {
             // it's black's turn
-            return -bestMove.cp;
+            return Math.round(-bestMove.cp * 0.6);
           }
         }
         else {
@@ -70,17 +75,14 @@ export const useEvalStore = create<StoreType>((set, get) => ({
         }
       });
     },
-    get winPercents() {
+    get advs() {
       return get().computed.cps.map((cp) => {
         if (typeof cp === 'string') {
           // mate in y
           return cp;
         }
-        else {
-          const winPercent = 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * cp)) - 1);
 
-          return `${winPercent.toFixed(1)}%`;
-        }
+        return (cp / 100).toFixed(1);
       });
     },
   },

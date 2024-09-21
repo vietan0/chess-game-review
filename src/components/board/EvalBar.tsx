@@ -10,23 +10,7 @@ export default function EvalBar() {
   const isFlipped = useBoardStore(state => state.isFlipped);
   const lastNav = useBoardStore(state => state.lastNav);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
-  const cps = useEvalStore(state => state.computed.cps);
-
-  const advs = cps.map((cp) => {
-    if (typeof cp === 'string') {
-      // mate in y
-      return cp;
-    }
-    else {
-      /*
-        Since my Stockfish would give a 1500 cp where chesscom/lichess would give a 750-800,
-        I multiply it by 0.6 to arbitrarily map it closer to their results.
-        https://www.desmos.com/calculator/gqiwyxdsu3
-      */
-      return (cp * 0.6 / 100).toFixed(1);
-    }
-  });
-
+  const advs = useEvalStore(state => state.computed.advs);
   const result = currentGame.header().Result;
 
   const adv = useMemo(() => {
@@ -90,12 +74,12 @@ export default function EvalBar() {
     if (adv === '0-1')
       return 0;
 
-    if (Number(adv) > 4)
+    if (Number(adv) > 5)
       return maxHNoMate;
-    if (Number(adv) < -4)
+    if (Number(adv) < -5)
       return minHNoMate;
 
-    return 67.5 * Number(adv) + 300;
+    return 54 * Number(adv) + 300;
   }
 
   return (
