@@ -77,6 +77,15 @@ export default function PlayerBadge({ color }: {
 
     // 1.a. if chess.com game is correspondant, display fixed increment
     if (game && isChessCom(game) && game.time_class === 'daily') {
+      if (Object.entries(header).length === 0) {
+        return null;
+      }
+
+      if (header.Event === 'vs Computer') {
+        // if game vs bot, no time control
+        return null;
+      }
+
       const incrementAfterSlash = header.TimeControl.match(dailyIncrementRegex)!;
       const increment = Number(incrementAfterSlash[0]);
       const days = dayjs.duration(increment, 'seconds').days();

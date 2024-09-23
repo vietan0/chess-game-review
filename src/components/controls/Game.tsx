@@ -9,8 +9,15 @@ import isChessCom from '../../utils/isChessCom';
 
 import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../../queries/useMonthlyArchives';
 
-function isAI(player: LichessPlayer | LichessAI): player is LichessAI {
+function isLichessAI(player: LichessPlayer | LichessAI): player is LichessAI {
   return (player as LichessAI).aiLevel !== undefined;
+}
+
+function isChessComBotGame(game: ChessComGame) {
+  const botRegex = /-BOT$/;
+
+  return (game.time_class === 'daily'
+    && (botRegex.test(game.white.username) || botRegex.test(game.black.username)));
 }
 
 export default function Game({ game }: { game: ChessComGame | LichessGame }) {
@@ -31,10 +38,10 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   function getLichessResult(game: LichessGame) {
     let userColor = '';
 
-    if (isAI(game.players.white)) {
+    if (isLichessAI(game.players.white)) {
       userColor = 'b';
     }
-    else if (isAI(game.players.black)) {
+    else if (isLichessAI(game.players.black)) {
       userColor = 'w';
     }
     else {
@@ -49,11 +56,11 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   }
 
   function getLichessUsername(player: LichessPlayer | LichessAI) {
-    return isAI(player) ? `lichess AI level ${player.aiLevel}` : player.user.id;
+    return isLichessAI(player) ? `lichess AI level ${player.aiLevel}` : player.user.id;
   }
 
   function getLichessRating(player: LichessPlayer | LichessAI) {
-    return isAI(player) ? 0 : player.rating;
+    return isLichessAI(player) ? 0 : player.rating;
   }
 
   function convertLichessTimeClass(speed: LichessGame['speed']) {
@@ -68,8 +75,19 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   }
 
   const result = isChessCom(game) ? getChessComResult(game) : getLichessResult(game);
-  const timeClass = isChessCom(game) ? game.time_class : convertLichessTimeClass(game.speed);
-  const timeControl = isChessCom(game) ? formatChessComTimeControl(game.time_control) : formatLichessTimeControl(game);
+
+  const timeClass = isChessCom(game)
+    ? isChessComBotGame(game)
+      ? 'bot'
+      : game.time_class
+    : convertLichessTimeClass(game.speed);
+
+  const timeControl = isChessCom(game)
+    ? isChessComBotGame(game)
+      ? null
+      : formatChessComTimeControl(game.time_control)
+    : formatLichessTimeControl(game);
+
   const wName = isChessCom(game) ? game.white.username : getLichessUsername(game.players.white);
   const bName = isChessCom(game) ? game.black.username : getLichessUsername(game.players.black);
   const wRating = isChessCom(game) ? game.white.rating : getLichessRating(game.players.white);
@@ -78,7 +96,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   return (
     <Card
       classNames={{
-        base: 'text-sm outline outline-1 outline-default-100',
+        base: 'text-sm border-b-1 border-default-100',
         body: 'flex-row gap-3 items-center pl-2 pr-4 py-3',
       }}
       disableAnimation

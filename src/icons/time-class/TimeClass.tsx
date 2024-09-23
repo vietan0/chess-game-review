@@ -1,4 +1,5 @@
 import Blitz from './Blitz';
+import Bot from './Bot';
 import Bullet from './Bullet';
 import Daily from './Daily';
 import Rapid from './Rapid';
@@ -6,7 +7,7 @@ import Rapid from './Rapid';
 import type { SVGProps } from 'react';
 
 interface TimeClassProps extends SVGProps<SVGSVGElement> {
-  timeClass: 'bullet' | 'blitz' | 'rapid' | 'daily';
+  timeClass: 'bullet' | 'blitz' | 'rapid' | 'daily' | 'bot';
 }
 
 export default function TimeClass({ timeClass, ...props }: TimeClassProps) {
@@ -22,5 +23,9 @@ export default function TimeClass({ timeClass, ...props }: TimeClassProps) {
     return <Rapid {...props} />;
   }
 
-  return <Daily {...props} />;
+  if (timeClass === 'daily') {
+    return <Daily {...props} />;
+  }
+
+  return <Bot {...props} />;
 }
