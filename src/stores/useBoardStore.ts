@@ -10,6 +10,7 @@ interface StoreType {
   randomState: number;
   loadGame: (pgn: string) => void;
   flipBoard: (newVal?: boolean) => void;
+  toMove: (moveNum: number) => void;
   toFirstMove: () => void;
   toPrevMove: () => void;
   toNextMove: () => void;
@@ -37,6 +38,7 @@ export const useBoardStore = create<StoreType>(set => ({
     };
   }),
   flipBoard: (newVal?: boolean) => set(state => ({ isFlipped: typeof newVal === 'boolean' ? newVal : !state.isFlipped, lastNav: 0 })),
+  toMove: (moveNum: number) => set({ currentMoveNum: moveNum, lastNav: 0 }),
   toFirstMove: () => set({ currentMoveNum: 0, lastNav: 0 }),
   toPrevMove: () => set((state) => {
     const history = state.currentGame.history({ verbose: true });

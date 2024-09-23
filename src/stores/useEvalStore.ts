@@ -113,5 +113,10 @@ export const useEvalStore = create<StoreType>((set, get) => ({
   })),
   analyze: () => set({ best3Moves: [], analyzeState: 'analyzing', outputs: [] }),
   finishAnalyze: () => set({ analyzeState: 'finished' }),
-  reset: () => set({ best3Moves: [], analyzeState: 'idle', outputs: [] }),
+  reset: () => set({
+    best3Moves: [],
+    analyzeState: 'idle',
+    fenIndex: 0,
+    outputs: [],
+  }),
 }));

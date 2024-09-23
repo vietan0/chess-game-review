@@ -8,6 +8,7 @@ import { TooltipWithBounds, defaultStyles, withTooltip } from '@visx/tooltip';
 import { bisector } from '@visx/vendor/d3-array';
 import { useCallback, useMemo } from 'react';
 
+import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
@@ -93,7 +94,9 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
   }: AreaProps & WithTooltipProvidedProps<TooltipData>) => {
     const cps = useEvalStore(state => state.computed.cps); // turn this on when put in Review page
     const cpObj = cps.map((val, i) => ({ val, i }));
-    const advs = useEvalStore(state => state.computed.advs); // turn this on when put in Review page
+    const advs = useEvalStore(state => state.computed.advs);
+    const currentMoveNum = useBoardStore(state => state.currentMoveNum);
+    const toMove = useBoardStore(state => state.toMove);
     const graphH = 80;
 
     const getNumericValue = (item: { val: string | number; i: number }) => {
@@ -134,6 +137,10 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     });
 
     const bisectIndex = bisector<TooltipData, number>(d => d.i).left;
+
+    function handleClick() {
+      toMove(tooltipData!.i);
+    }
 
     const handleTooltip = useCallback((event: React.TouchEvent<SVGRectElement> | React.MouseEvent<SVGRectElement>) => {
       const { x } = localPoint(event) || { x: 0 };
@@ -181,8 +188,10 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
           />
           <line className="stroke-default-500/50" id="x-axis" strokeWidth={2} x1="0" x2={width} y1="40" y2="40" />
           <Bar
+            className="cursor-pointer"
             fill="transparent"
             height={graphH}
+            onClick={handleClick}
             onMouseLeave={() => hideTooltip()}
             onMouseMove={handleTooltip}
             onTouchMove={handleTooltip}
@@ -191,6 +200,13 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
             width={width}
             x={margin.left}
             y={margin.top}
+          />
+          <Line
+            className="stroke-danger-500"
+            from={{ x: xScale(currentMoveNum), y: margin.top }}
+            pointerEvents="none"
+            strokeWidth={3}
+            to={{ x: xScale(currentMoveNum), y: graphH + margin.top }}
           />
           {tooltipData && (
             <g>
