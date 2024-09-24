@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Button } from '@nextui-org/button';
+import { Helmet } from 'react-helmet-async';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
@@ -13,6 +14,8 @@ import Review from './Review';
 
 export default function Controls() {
   const reset = useBoardStore(state => state.reset);
+  const currentGame = useBoardStore(state => state.currentGame);
+  const header = currentGame.header();
 
   const {
     stage,
@@ -51,6 +54,13 @@ export default function Controls() {
 
   return (
     <div className="flex max-w-md grow flex-col gap-4" id="Controls">
+      <Helmet>
+        <title>
+          {stage === 'loaded'
+            ? `${header.White !== '?' ? header.White : 'White'} vs. ${header.Black !== '?' ? header.Black : 'Black'} | Game Review`
+            : 'Game Review'}
+        </title>
+      </Helmet>
       <div className="grid grid-cols-[40px_1fr_40px] gap-1">
         <Button
           aria-label="Back"

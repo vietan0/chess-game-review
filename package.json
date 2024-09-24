@@ -38,6 +38,7 @@
     "nanoid": "^5.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.52.2",
     "react-hotkeys-hook": "^4.5.0",
     "stockfish-nnue.wasm": "1.0.0-1946a675.smolnet",
