@@ -158,7 +158,7 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
 
       showTooltip({
         tooltipData: d,
-        tooltipLeft: x,
+        tooltipLeft: xScale(getIndex(d)),
         tooltipTop: yScale(getNumericValue(d)),
       });
     }, [showTooltip, xScale, yScale]);
@@ -201,35 +201,17 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
             x={margin.left}
             y={margin.top}
           />
-          <Line
-            className="stroke-danger-500"
-            from={{ x: xScale(currentMoveNum), y: margin.top }}
-            pointerEvents="none"
-            strokeWidth={3}
-            to={{ x: xScale(currentMoveNum), y: graphH + margin.top }}
-          />
           {tooltipData && (
             <g>
               <Line
-                className="stroke-primary-500/50"
+                className="stroke-default-500/25"
                 from={{ x: tooltipLeft, y: margin.top }}
                 pointerEvents="none"
                 strokeWidth={2}
                 to={{ x: tooltipLeft, y: graphH + margin.top }}
               />
               <circle
-                cx={tooltipLeft}
-                cy={tooltipTop + 1}
-                fill="black"
-                fillOpacity={0.1}
-                pointerEvents="none"
-                r={4}
-                stroke="black"
-                strokeOpacity={0.1}
-                strokeWidth={2}
-              />
-              <circle
-                className="fill-primary-500"
+                className="fill-default-500"
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 pointerEvents="none"
@@ -239,6 +221,24 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
               />
             </g>
           )}
+          <g>
+            <Line
+              className="stroke-primary-500/50"
+              from={{ x: xScale(currentMoveNum), y: margin.top }}
+              pointerEvents="none"
+              strokeWidth={3}
+              to={{ x: xScale(currentMoveNum), y: graphH + margin.top }}
+            />
+            <circle
+              className="fill-primary-500"
+              cx={xScale(currentMoveNum)}
+              cy={yScale(getNumericValue(cpObj[currentMoveNum]))}
+              pointerEvents="none"
+              r={4}
+              stroke="white"
+              strokeWidth={2}
+            />
+          </g>
         </svg>
         {tooltipData
         && (

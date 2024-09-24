@@ -9,6 +9,7 @@ import useStockfish from '../../queries/useStockfish';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import Loading from '../Loading';
+import EvalGraph from './EvalGraph';
 
 const depth = 12;
 
@@ -169,18 +170,17 @@ export default function Review() {
           best3Moves.length:
           {best3Moves.length}
         </p>
-        <div className="grid grid-cols-[30px,_70px,_1fr] gap-4">
+        {analyzeState === 'finished' && <EvalGraph />}
+        <div className="grid grid-cols-[30px,_1fr] gap-4">
           <code className="justify-self-end font-bold">i</code>
-          <code className="justify-self-end font-bold">CP</code>
           <code className="font-bold">Best 3 Moves</code>
         </div>
         {cps.map((_, i) => (
           <div
-            className="grid grid-cols-[30px,_70px,_1fr] gap-4"
+            className="grid grid-cols-[30px,_1fr] gap-4"
             key={i}
           >
             <code className="justify-self-end">{i}</code>
-            <code className="justify-self-end">{cps[i]}</code>
             <code>{JSON.stringify(best3MovesSan[i])}</code>
           </div>
         ))}
