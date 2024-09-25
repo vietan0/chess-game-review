@@ -1,8 +1,8 @@
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 
-import chesscomLogo from '../../icons/game-src/chesscom.png';
-import lichessLogo from '../../icons/game-src/lichess.png';
-import pgnLogo from '../../icons/game-src/pgn.png';
+import ChessCom from '../../icons/game-src/ChessCom';
+import Lichess from '../../icons/game-src/Lichess';
+import Pgn from '../../icons/game-src/Pgn';
 import ChessSiteForm from './ChessSiteForm';
 import PGNForm from './PGNForm';
 
@@ -15,7 +15,7 @@ export default function Forms() {
       <AccordionItem
         aria-label="Load from chess.com"
         key="chess.com"
-        startContent={<img className="size-4" src={chesscomLogo} />}
+        startContent={<ChessCom className="size-4" />}
         title="chess.com"
       >
         <ChessSiteForm site="chess.com" />
@@ -23,7 +23,7 @@ export default function Forms() {
       <AccordionItem
         aria-label="Load from lichess"
         key="lichess"
-        startContent={<img className="size-4" src={lichessLogo} />}
+        startContent={<Lichess className="size-4" />}
         title="lichess"
       >
         <ChessSiteForm site="lichess" />
@@ -31,7 +31,7 @@ export default function Forms() {
       <AccordionItem
         aria-label="PGN"
         key="pgn"
-        startContent={<img className="size-4" src={pgnLogo} />}
+        startContent={<Pgn className="size-4" />}
         title="PGN"
       >
         <PGNForm />
