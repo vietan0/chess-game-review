@@ -28,7 +28,7 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
-  const analyzeState = useEvalStore(state => state.analyzeState);
+  const reviewState = useEvalStore(state => state.reviewState);
 
   useHotkeys('right', () => toNextMove());
   useHotkeys('left', () => toPrevMove());
@@ -46,7 +46,7 @@ export default function GameNav() {
           aria-label="First move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0 || analyzeState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || reviewState !== 'finished'}
           isIconOnly
           onPress={toFirstMove}
           radius="sm"
@@ -57,7 +57,7 @@ export default function GameNav() {
           aria-label="Previous move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0 || analyzeState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || reviewState !== 'finished'}
           isIconOnly
           onPress={toPrevMove}
           radius="sm"
@@ -68,7 +68,7 @@ export default function GameNav() {
           aria-label="Next move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length || analyzeState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || reviewState !== 'finished'}
           isIconOnly
           onPress={toNextMove}
           radius="sm"
@@ -79,7 +79,7 @@ export default function GameNav() {
           aria-label="Last move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length || analyzeState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || reviewState !== 'finished'}
           isIconOnly
           onPress={toFinalMove}
           radius="sm"

@@ -9,7 +9,7 @@ export interface MoveEval {
 }
 
 interface StoreType {
-  analyzeState: 'idle' | 'analyzing' | 'finished';
+  reviewState: 'idle' | 'reviewing' | 'finished';
   isListening: boolean;
   fenIndex: number;
   best3Moves: MoveEval[][]; // in LAN format
@@ -21,13 +21,13 @@ interface StoreType {
   saveMove: (moveEval: MoveEval, output: string) => void;
   listen: () => void;
   stopListen: (fensLength: number) => void;
-  analyze: () => void;
-  finishAnalyze: () => void;
+  review: () => void;
+  finishReview: () => void;
   reset: () => void;
 }
 
 export const useEvalStore = create<StoreType>((set, get) => ({
-  analyzeState: 'idle',
+  reviewState: 'idle',
   isListening: false,
   fenIndex: 0,
   best3Moves: [],
@@ -111,11 +111,11 @@ export const useEvalStore = create<StoreType>((set, get) => ({
     isListening: false,
     fenIndex: fenIndex === fensLength - 1 ? fenIndex : fenIndex + 1,
   })),
-  analyze: () => set({ best3Moves: [], analyzeState: 'analyzing', outputs: [] }),
-  finishAnalyze: () => set({ analyzeState: 'finished' }),
+  review: () => set({ best3Moves: [], reviewState: 'reviewing', outputs: [] }),
+  finishReview: () => set({ reviewState: 'finished' }),
   reset: () => set({
     best3Moves: [],
-    analyzeState: 'idle',
+    reviewState: 'idle',
     fenIndex: 0,
     outputs: [],
   }),

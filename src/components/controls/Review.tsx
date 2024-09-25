@@ -21,7 +21,7 @@ export default function Review() {
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
   const {
-    analyzeState,
+    reviewState,
     isListening,
     fenIndex,
     best3Moves,
@@ -29,11 +29,11 @@ export default function Review() {
     saveMove,
     listen,
     stopListen,
-    analyze,
-    finishAnalyze,
+    review,
+    finishReview,
     reset,
   } = useEvalStore(useShallow(state => ({
-    analyzeState: state.analyzeState,
+    reviewState: state.reviewState,
     isListening: state.isListening,
     fenIndex: state.fenIndex,
     best3Moves: state.best3Moves,
@@ -41,8 +41,8 @@ export default function Review() {
     saveMove: state.saveMove,
     listen: state.listen,
     stopListen: state.stopListen,
-    analyze: state.analyze,
-    finishAnalyze: state.finishAnalyze,
+    review: state.review,
+    finishReview: state.finishReview,
     reset: state.reset,
   })));
 
@@ -115,7 +115,7 @@ export default function Review() {
 
   useEffect(() => {
     if (completePercentage === 100) {
-      finishAnalyze();
+      finishReview();
     }
   }, [completePercentage]);
 
@@ -125,7 +125,7 @@ export default function Review() {
       we send one fen at a time, listen to its output,
       and only send the next fen when the previous one is done (when isListening is 'false' again)
     */
-    if (stockfish && analyzeState === 'analyzing') {
+    if (stockfish && reviewState === 'reviewing') {
       if (!isListening) {
         stockfish.postMessage(`position fen ${fens[fenIndex]}`);
         stockfish.postMessage(`go depth ${depth}`);
@@ -133,7 +133,7 @@ export default function Review() {
         listen();
       }
     }
-  }, [stockfish, analyzeState, isListening]);
+  }, [stockfish, reviewState, isListening]);
 
   useEffect(() => {
     console.info(isListening);
@@ -147,10 +147,10 @@ export default function Review() {
 
   return (
     <div id="Review">
-      {analyzeState === 'idle' && <Button className="mr-2" color="primary" onPress={analyze}>Analyze</Button>}
-      {analyzeState === 'analyzing' && (
+      {reviewState === 'idle' && <Button className="mr-2" color="primary" onPress={review}>Review</Button>}
+      {reviewState === 'reviewing' && (
         <CircularProgress
-          aria-label="Analyzing..."
+          aria-label="Reviewing..."
           classNames={{
             svg: 'w-20 h-20',
             value: 'text-md font-semibold text-white',
@@ -162,8 +162,8 @@ export default function Review() {
       )}
       <div>
         <p>
-          analyzeState:
-          {analyzeState}
+          reviewState:
+          {reviewState}
         </p>
         <p>
           isListening:
@@ -181,7 +181,7 @@ export default function Review() {
           best3Moves.length:
           {best3Moves.length}
         </p>
-        {analyzeState === 'finished' && <EvalGraph />}
+        {reviewState === 'finished' && <EvalGraph />}
         <div className="grid grid-cols-[30px,_1fr] gap-4">
           <code className="justify-self-end font-bold">i</code>
           <code className="font-bold">Best 3 Moves</code>
