@@ -1,4 +1,3 @@
-/* eslint-disable unused-imports/no-unused-vars */
 import { curveMonotoneX } from '@visx/curve';
 import { localPoint } from '@visx/event';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
@@ -12,64 +11,6 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
-
-const cps = [
-  25,
-  12,
-  28,
-  38,
-  37,
-  9,
-  51,
-  20,
-  165,
-  86,
-  301,
-  138,
-  286,
-  33,
-  34,
-  -89,
-  -41,
-  -49,
-  -26,
-  -42,
-  -16,
-  -164,
-  -87,
-  -281,
-  -94,
-  -98,
-  -71,
-  -76,
-  -85,
-  -411,
-  -401,
-  -560,
-  -475,
-  -489,
-  -344,
-  -337,
-  -161,
-  -230,
-  -257,
-  -314,
-  -279,
-  -844,
-  -886,
-  '-M2',
-  '-M1',
-  '-M1',
-];
-
-function cpToAdv(cp: string | number) {
-  if (typeof cp === 'string') {
-    // mate in y
-    return cp;
-  }
-
-  return (cp / 100).toFixed(1);
-}
 
 interface TooltipData {
   val: string | number;

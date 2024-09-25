@@ -53,6 +53,12 @@ export default function Review() {
     const possibleMoves = new Chess(fens[i]).moves({ verbose: true });
     const found = possibleMoves.find(move => move.lan === lan)!;
 
+    if (!found) {
+      console.log(`cant find legal move ${lan} in fen [${i}]: ${fens[i]}`);
+
+      return `lan-${lan}`;
+    }
+
     return found!.san;
   }
 
@@ -123,10 +129,15 @@ export default function Review() {
       if (!isListening) {
         stockfish.postMessage(`position fen ${fens[fenIndex]}`);
         stockfish.postMessage(`go depth ${depth}`);
+        console.info(`posted position and go for fenIndex ${fenIndex}`);
         listen();
       }
     }
   }, [stockfish, analyzeState, isListening]);
+
+  useEffect(() => {
+    console.info(isListening);
+  }, [isListening]);
 
   if (isLoading || isFetching)
     return <Loading />;

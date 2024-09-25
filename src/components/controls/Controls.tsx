@@ -82,7 +82,7 @@ export default function Controls() {
           {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
         </a>
       </div>
-      <div className="grow overflow-scroll">
+      <div className="grow overflow-scroll px-4">
         {stage === 'home'
           ? <Forms />
           : stage === 'select-month'
