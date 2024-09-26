@@ -1,4 +1,7 @@
+import { DEFAULT_POSITION } from 'chess.js';
 import { create } from 'zustand';
+
+import { useBoardStore } from './useBoardStore';
 
 export interface MoveEval {
   nodes: number;
@@ -34,7 +37,8 @@ export const useEvalStore = create<StoreType>((set, get) => ({
   outputs: [],
   computed: {
     get cps() {
-      return get().best3Moves.map((subArr, i) => {
+      // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
+      const beforeMate = get().best3Moves.map((subArr, i) => {
         const bestMove = subArr[0];
 
         if (typeof bestMove.cp === 'number') {
@@ -74,11 +78,26 @@ export const useEvalStore = create<StoreType>((set, get) => ({
           }
         }
       });
+
+      const currentGame = useBoardStore.getState().currentGame;
+      const isCheckmate = currentGame.isCheckmate();
+      const fens = [DEFAULT_POSITION, ...currentGame.history({ verbose: true }).map(move => move.after)];
+
+      if (isCheckmate && beforeMate.length === fens.length - 1) {
+        // only push the checkmate after done analyzing
+        const result = currentGame.header().Result; // '1-0' or '0-1'
+        const afterMate = [...beforeMate, result];
+
+        return afterMate;
+      }
+      else {
+        return beforeMate;
+      }
     },
     get advs() {
       return get().computed.cps.map((cp) => {
         if (typeof cp === 'string') {
-          // mate in y
+          // e.g. "+M1", "1-0", return as-is
           return cp;
         }
 

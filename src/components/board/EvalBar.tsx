@@ -11,23 +11,7 @@ export default function EvalBar() {
   const lastNav = useBoardStore(state => state.lastNav);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const advs = useEvalStore(state => state.computed.advs);
-  const result = currentGame.header().Result;
-
-  const adv = useMemo(() => {
-    if (advs.length === 0)
-      return '0.0';
-
-    if (!advs[currentMoveNum]) {
-      /*
-        Special case: when game ends in checkmate, advs has one less item than fens.
-        So when currentMoveNum is the final move, `advs[currentMoveNum]` returns undefined.
-        When that happens, display 1-0 or 0-1.
-      */
-      return result;
-    }
-
-    return advs[currentMoveNum];
-  }, [advs, currentMoveNum]);
+  const adv = (advs.length === 0) ? '0.0' : advs[currentMoveNum];
 
   const initAdv = advs.length === 0
     ? '0.0'

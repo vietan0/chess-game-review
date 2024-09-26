@@ -33,7 +33,7 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     tooltipTop = 0,
     tooltipLeft = 0,
   }: AreaProps & WithTooltipProvidedProps<TooltipData>) => {
-    const cps = useEvalStore(state => state.computed.cps); // turn this on when put in Review page
+    const cps = useEvalStore(state => state.computed.cps);
     const cpObj = cps.map((val, i) => ({ val, i }));
     const advs = useEvalStore(state => state.computed.advs);
     const currentMoveNum = useBoardStore(state => state.currentMoveNum);
@@ -45,12 +45,11 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
         return item.val;
       }
 
-      else if (item.val.startsWith('-')) {
+      else if (item.val.startsWith('-') || item.val === '0-1') {
         return -2000;
       }
-      else {
-        return 2000;
-      }
+
+      return 2000;
     };
 
     const getIndex = (item: { val: string | number; i: number }) => {
