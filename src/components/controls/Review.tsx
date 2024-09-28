@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import useStockfish from '../../queries/useStockfish';
 import { useBoardStore } from '../../stores/useBoardStore';
+import { useCalcStore } from '../../stores/useCalcStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import Loading from '../Loading';
 import EvalGraph from './EvalGraph';
@@ -19,25 +20,25 @@ export default function Review() {
   const currentGame = useBoardStore(state => state.currentGame);
   const history = currentGame.history({ verbose: true });
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
+  const populate = useCalcStore(state => state.populate);
+  const resetCalc = useCalcStore(state => state.reset);
 
   const {
     reviewState,
     isListening,
     fenIndex,
     best3Moves,
-    cps,
     saveMove,
     listen,
     stopListen,
     review,
     finishReview,
-    reset,
+    reset: resetEval,
   } = useEvalStore(useShallow(state => ({
     reviewState: state.reviewState,
     isListening: state.isListening,
     fenIndex: state.fenIndex,
     best3Moves: state.best3Moves,
-    cps: state.computed.cps,
     saveMove: state.saveMove,
     listen: state.listen,
     stopListen: state.stopListen,
@@ -108,7 +109,8 @@ export default function Review() {
 
   useEffect(() => {
     return () => {
-      reset();
+      resetEval();
+      resetCalc();
       queryClient.invalidateQueries({ queryKey: ['stockfish'] }); // force recreate Stockfish worker every subsequent mounts
     };
   }, []);
@@ -116,6 +118,7 @@ export default function Review() {
   useEffect(() => {
     if (completePercentage === 100) {
       finishReview();
+      populate();
     }
   }, [completePercentage]);
 
@@ -186,13 +189,13 @@ export default function Review() {
           <code className="justify-self-end font-bold">i</code>
           <code className="font-bold">Best 3 Moves</code>
         </div>
-        {cps.map((_, i) => (
+        {best3MovesSan.map((subArr, i) => (
           <div
             className="grid grid-cols-[30px,_1fr] gap-4"
             key={i}
           >
             <code className="justify-self-end">{i}</code>
-            <code>{JSON.stringify(best3MovesSan[i])}</code>
+            <code>{JSON.stringify(subArr)}</code>
           </div>
         ))}
       </div>

@@ -8,7 +8,7 @@ import { bisector } from '@visx/vendor/d3-array';
 import { useCallback, useMemo } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
-import { useEvalStore } from '../../stores/useEvalStore';
+import { useCalcStore } from '../../stores/useCalcStore';
 
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
@@ -33,9 +33,9 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     tooltipTop = 0,
     tooltipLeft = 0,
   }: AreaProps & WithTooltipProvidedProps<TooltipData>) => {
-    const cps = useEvalStore(state => state.computed.cps);
+    const cps = useCalcStore(state => state.cps);
     const cpObj = cps.map((val, i) => ({ val, i }));
-    const advs = useEvalStore(state => state.computed.advs);
+    const advs = useCalcStore(state => state.advs);
     const currentMoveNum = useBoardStore(state => state.currentMoveNum);
     const toMove = useBoardStore(state => state.toMove);
     const graphH = 80;

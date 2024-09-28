@@ -4,8 +4,10 @@ import { useShallow } from 'zustand/react/shallow';
 
 import useSoundFx from '../../hooks/useSoundFx';
 import { useBoardStore } from '../../stores/useBoardStore';
+import { useCalcStore } from '../../stores/useCalcStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
@@ -18,6 +20,8 @@ if (import.meta.env.DEV) {
   mountStoreDevtool('selectGameStore', useSelectGameStore);
   mountStoreDevtool('boardStore', useBoardStore);
   mountStoreDevtool('evalStore', useEvalStore);
+  mountStoreDevtool('settingsStore', useSettingsStore);
+  mountStoreDevtool('calcStore', useCalcStore);
 }
 
 export default function Board() {

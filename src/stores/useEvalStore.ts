@@ -1,14 +1,11 @@
-import { DEFAULT_POSITION } from 'chess.js';
 import { create } from 'zustand';
-
-import { useBoardStore } from './useBoardStore';
 
 export interface MoveEval {
   nodes: number;
   pv: string;
   multiPv: number;
   cp?: number;
-  mate?: number; // technically mate and cp are mutual exclusive
+  mate?: number; // cp and mate are mutual exclusive
 }
 
 interface StoreType {
@@ -17,10 +14,6 @@ interface StoreType {
   fenIndex: number;
   best3Moves: MoveEval[][]; // in LAN format
   outputs: string[];
-  computed: {
-    readonly cps: (string | number)[];
-    readonly advs: string[];
-  };
   saveMove: (moveEval: MoveEval, output: string) => void;
   listen: () => void;
   stopListen: (fensLength: number) => void;
@@ -29,82 +22,13 @@ interface StoreType {
   reset: () => void;
 }
 
-export const useEvalStore = create<StoreType>((set, get) => ({
+// rename `eval` to `sendMsgToStockfish` or something
+export const useEvalStore = create<StoreType>(set => ({
   reviewState: 'idle',
   isListening: false,
   fenIndex: 0,
   best3Moves: [],
   outputs: [],
-  computed: {
-    get cps() {
-      // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
-      const beforeMate = get().best3Moves.map((subArr, i) => {
-        const bestMove = subArr[0];
-
-        if (typeof bestMove.cp === 'number') {
-          /*
-            Since my Stockfish would give a 1500 cp where chesscom/lichess would give a 750-800,
-            I deflate it by 0.6 to arbitrarily map it closer to their results.
-            https://www.desmos.com/calculator/gqiwyxdsu3
-          */
-          if (i % 2 === 0) {
-            // it's white's turn
-            return Math.round(bestMove.cp * 0.6);
-          }
-          else {
-            // it's black's turn
-            return Math.round(-bestMove.cp * 0.6);
-          }
-        }
-        else {
-          if (i % 2 === 0) {
-            // it's white's turn
-            if (bestMove.mate! > 0) {
-              // white has mate
-              return `+M${Math.abs(bestMove.mate!)}`;
-            }
-            else {
-              return `-M${Math.abs(bestMove.mate!)}`;
-            }
-          }
-          else {
-            // it's black's turn
-            if (bestMove.mate! > 0) {
-              return `-M${Math.abs(bestMove.mate!)}`;
-            }
-            else {
-              return `+M${Math.abs(bestMove.mate!)}`;
-            }
-          }
-        }
-      });
-
-      const currentGame = useBoardStore.getState().currentGame;
-      const isCheckmate = currentGame.isCheckmate();
-      const fens = [DEFAULT_POSITION, ...currentGame.history({ verbose: true }).map(move => move.after)];
-
-      if (isCheckmate && beforeMate.length === fens.length - 1) {
-        // only push the checkmate after done analyzing
-        const result = currentGame.header().Result; // '1-0' or '0-1'
-        const afterMate = [...beforeMate, result];
-
-        return afterMate;
-      }
-      else {
-        return beforeMate;
-      }
-    },
-    get advs() {
-      return get().computed.cps.map((cp) => {
-        if (typeof cp === 'string') {
-          // e.g. "+M1", "1-0", return as-is
-          return cp;
-        }
-
-        return (cp / 100).toFixed(1);
-      });
-    },
-  },
   saveMove: (moveEval: MoveEval, output: string) => set(({ best3Moves, outputs }) => {
     if (moveEval.multiPv === 1) {
       return {
