@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import useLocalStorage from '../queries/useLocalStorage';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 interface StoreType {
   settings: { showRatings: boolean };
