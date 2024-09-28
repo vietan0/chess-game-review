@@ -4,6 +4,7 @@ import Result from '../../icons/result/Result';
 import TimeClass from '../../icons/time-class/TimeClass';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import { formatChessComTimeControl, formatLichessTimeControl } from '../../utils/formatTimeControl';
 import isChessCom from '../../utils/isChessCom';
 
@@ -24,6 +25,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const loadGame = useBoardStore(state => state.loadGame);
   const username = useSelectGameStore(state => state.username)!;
   const submitGame = useSelectGameStore(state => state.submitGame);
+  const showRatings = useSettingsStore(state => state.settings.showRatings);
 
   function getChessComResult(game: ChessComGame) {
     const userColor = username.toLowerCase() === game.white.username.toLowerCase() ? 'w' : 'b';
@@ -90,8 +92,8 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
 
   const wName = isChessCom(game) ? game.white.username : getLichessUsername(game.players.white);
   const bName = isChessCom(game) ? game.black.username : getLichessUsername(game.players.black);
-  const wRating = isChessCom(game) ? game.white.rating : getLichessRating(game.players.white);
-  const bRating = isChessCom(game) ? game.black.rating : getLichessRating(game.players.black);
+  const wRating = showRatings ? isChessCom(game) ? game.white.rating : getLichessRating(game.players.white) : null;
+  const bRating = showRatings ? isChessCom(game) ? game.black.rating : getLichessRating(game.players.black) : null;
 
   return (
     <Card

@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <NextUIProvider>
         <HelmetProvider>
-          <main className="h-screen bg-default-50 text-foreground dark">
+          <main className="h-screen">
             <App />
           </main>
         </HelmetProvider>

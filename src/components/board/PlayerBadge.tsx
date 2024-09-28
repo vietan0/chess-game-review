@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import useLoser from '../../hooks/useLoser';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useSettingsStore } from '../../stores/useSettingsStore';
 import cn from '../../utils/cn';
 import { dailyIncrementRegex, mainTimeRegex } from '../../utils/formatTimeControl';
 import formatTimestamp from '../../utils/formatTimestamp';
@@ -32,6 +33,7 @@ export default function PlayerBadge({ color }: {
   const header = currentGame.header();
   const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
   const board = displayedGame.board();
+  const showRatings = useSettingsStore(state => state.settings.showRatings);
 
   const timeControl = useMemo(() => {
     if (!header.TimeControl)
@@ -189,7 +191,7 @@ export default function PlayerBadge({ color }: {
               </span>
             )}
             <span className="text-sm">{name}</span>
-            {rating && (
+            {rating && showRatings && (
               <span className="ml-1 text-xs font-bold text-foreground-500">
                 {rating}
               </span>

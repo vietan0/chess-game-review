@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import Settings from './Settings';
 
 export default function GameNav() {
   const {
@@ -108,6 +109,7 @@ export default function GameNav() {
         >
           Reset
         </Button>
+        <Settings />
       </div>
     </div>
   );
