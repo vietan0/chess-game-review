@@ -20,14 +20,10 @@ function extractEval(moveEval: MoveEval, i: number) {
     https://www.desmos.com/calculator/gqiwyxdsu3
    */
   function normalizeCp(cp: number, i: number) {
-    if (i % 2 === 0) {
-    // it's white's turn
-      return Math.round(cp * 0.6);
-    }
-    else {
-    // it's black's turn
-      return Math.round(-cp * 0.6);
-    }
+    // if it's black's turn, flip the sign
+    const normalized = (i % 2 === 0) ? cp : -cp;
+
+    return Math.round(normalized * 0.6);
   }
 
   /**
@@ -35,7 +31,7 @@ function extractEval(moveEval: MoveEval, i: number) {
    */
   function normalizeMate(mate: number, i: number) {
     if (i % 2 === 0) {
-    // it's white's turn
+      // it's white's turn
       if (mate > 0) {
       // white has mate
         return `+M${Math.abs(mate)}`;
@@ -45,7 +41,7 @@ function extractEval(moveEval: MoveEval, i: number) {
       }
     }
     else {
-    // it's black's turn
+      // it's black's turn
       if (mate > 0) {
         return `-M${Math.abs(mate)}`;
       }
@@ -124,15 +120,13 @@ function getCps(best3Moves: MoveEval[][], currentGame: Chess) {
   }
 }
 
-function getAdvs(cps: (string | number)[]) {
-  return cps.map((cp) => {
-    if (typeof cp === 'string') {
-      // e.g. "+M1", "1-0", return as-is
-      return cp;
-    }
+export function formatCp(cp: string | number) {
+  if (typeof cp === 'string') {
+    // e.g. "+M1", "1-0", return as-is
+    return cp;
+  }
 
-    return (cp / 100).toFixed(1);
-  });
+  return (cp / 100).toFixed(1);
 }
 
 function getWinPercents(cps: (string | number)[]) {
@@ -152,7 +146,6 @@ function getWinPercents(cps: (string | number)[]) {
 interface StoreType {
   best3MovesAltered: MoveEval[][];
   cps: (string | number)[];
-  advs: string[];
   winPercents: string[];
   populate: () => void;
   reset: () => void;
@@ -161,7 +154,6 @@ interface StoreType {
 export const useCalcStore = create<StoreType>(set => ({
   best3MovesAltered: [],
   cps: [],
-  advs: [],
   winPercents: [],
   populate: () => set(() => {
     // should only be called once, after best3Moves is filled
@@ -170,10 +162,9 @@ export const useCalcStore = create<StoreType>(set => ({
     const history = currentGame.history({ verbose: true });
     const best3MovesAltered = alterBest3Moves(best3Moves, history);
     const cps = getCps(best3MovesAltered, currentGame);
-    const advs = getAdvs(cps);
     const winPercents = getWinPercents(cps);
 
-    return { best3MovesAltered, cps, advs, winPercents };
+    return { best3MovesAltered, cps, winPercents };
   }),
-  reset: () => set({ best3MovesAltered: [], cps: [], advs: [], winPercents: [] }),
+  reset: () => set({ best3MovesAltered: [], cps: [], winPercents: [] }),
 }));
