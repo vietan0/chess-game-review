@@ -38,7 +38,7 @@ interface Loaded {
 
 type Stage = Home | SelectMonth | SelectGame | Loaded;
 
-type StoreType = Stage & {
+type SelectGameStore = Stage & {
   backToMonths: () => void;
   backToGames: () => void;
   submitUsername: (username: string, site: Site) => void;
@@ -47,7 +47,7 @@ type StoreType = Stage & {
   reset: () => void;
 };
 
-export const useSelectGameStore = create<StoreType>(set => ({
+export const useSelectGameStore = create<SelectGameStore>(set => ({
   stage: 'home',
   username: undefined,
   site: undefined,

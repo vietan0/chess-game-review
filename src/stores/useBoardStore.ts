@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js';
 import { create } from 'zustand';
 
-interface StoreType {
+interface BoardStore {
   currentGame: Chess;
   currentMoveNum: number;
   isFlipped: boolean;
@@ -20,7 +20,7 @@ interface StoreType {
 
 const timestampRegex = /(?<=%clk\s)[\d:.]+/g;
 
-export const useBoardStore = create<StoreType>(set => ({
+export const useBoardStore = create<BoardStore>(set => ({
   currentGame: new Chess(),
   currentMoveNum: 0, // 0 means starting position, 1 means first move
   isFlipped: false,

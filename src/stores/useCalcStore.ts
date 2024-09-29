@@ -143,7 +143,7 @@ function getWinPercents(cps: (string | number)[]) {
   });
 }
 
-interface StoreType {
+interface CalcStore {
   best3MovesAltered: MoveEval[][];
   cps: (string | number)[];
   winPercents: string[];
@@ -151,7 +151,7 @@ interface StoreType {
   reset: () => void;
 }
 
-export const useCalcStore = create<StoreType>(set => ({
+export const useCalcStore = create<CalcStore>(set => ({
   best3MovesAltered: [],
   cps: [],
   winPercents: [],

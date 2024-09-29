@@ -2,12 +2,12 @@ import { create } from 'zustand';
 
 import useLocalStorage from '../hooks/useLocalStorage';
 
-interface StoreType {
+interface SettingsStore {
   settings: { showRatings: boolean };
   toggleShowRatings: () => void;
 }
 
-export const useSettingsStore = create<StoreType>((set) => {
+export const useSettingsStore = create<SettingsStore>((set) => {
   const { item, set: setItem } = useLocalStorage('showRatings');
 
   return {

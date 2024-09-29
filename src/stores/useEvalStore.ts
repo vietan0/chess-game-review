@@ -8,7 +8,7 @@ export interface MoveEval {
   mate?: number; // cp and mate are mutual exclusive
 }
 
-interface StoreType {
+interface EvalStore {
   reviewState: 'idle' | 'reviewing' | 'finished';
   isListening: boolean;
   fenIndex: number;
@@ -23,7 +23,7 @@ interface StoreType {
 }
 
 // rename `eval` to `sendMsgToStockfish` or something
-export const useEvalStore = create<StoreType>(set => ({
+export const useEvalStore = create<EvalStore>(set => ({
   reviewState: 'idle',
   isListening: false,
   fenIndex: 0,
