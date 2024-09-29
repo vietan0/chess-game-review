@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
-import { formatCp, useCalcStore } from '../../stores/useCalcStore';
+import { formatCp, useEvalStore } from '../../stores/useEvalStore';
 import cn from '../../utils/cn';
 
 export default function EvalBar() {
@@ -10,7 +10,7 @@ export default function EvalBar() {
   const isFlipped = useBoardStore(state => state.isFlipped);
   const lastNav = useBoardStore(state => state.lastNav);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
-  const cps = useCalcStore(state => state.cps);
+  const cps = useEvalStore(state => state.cps);
   const advs = cps.map(formatCp);
   const adv = (advs.length === 0) ? '0.0' : advs[currentMoveNum];
 

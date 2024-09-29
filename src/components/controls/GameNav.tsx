@@ -4,8 +4,8 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
-import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import Settings from './Settings';
 
 export default function GameNav() {
@@ -29,7 +29,7 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
-  const reviewState = useEvalStore(state => state.reviewState);
+  const reviewState = useStockfishOutputStore(state => state.reviewState);
 
   useHotkeys('right', () => toNextMove());
   useHotkeys('left', () => toPrevMove());

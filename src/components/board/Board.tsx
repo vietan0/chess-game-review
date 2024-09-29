@@ -4,10 +4,10 @@ import { useShallow } from 'zustand/react/shallow';
 
 import useSoundFx from '../../hooks/useSoundFx';
 import { useBoardStore } from '../../stores/useBoardStore';
-import { useCalcStore } from '../../stores/useCalcStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
@@ -19,9 +19,9 @@ import PlayerBadge from './PlayerBadge';
 if (import.meta.env.DEV) {
   mountStoreDevtool('selectGameStore', useSelectGameStore);
   mountStoreDevtool('boardStore', useBoardStore);
-  mountStoreDevtool('evalStore', useEvalStore);
+  mountStoreDevtool('stockfishOutputStore', useStockfishOutputStore);
   mountStoreDevtool('settingsStore', useSettingsStore);
-  mountStoreDevtool('calcStore', useCalcStore);
+  mountStoreDevtool('evalStore', useEvalStore);
 }
 
 export default function Board() {

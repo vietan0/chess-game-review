@@ -7,8 +7,8 @@ import { useShallow } from 'zustand/react/shallow';
 
 import useStockfish from '../../queries/useStockfish';
 import { useBoardStore } from '../../stores/useBoardStore';
-import { useCalcStore } from '../../stores/useCalcStore';
 import { useEvalStore } from '../../stores/useEvalStore';
+import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import Loading from '../Loading';
 import EvalGraph from './EvalGraph';
 
@@ -20,8 +20,8 @@ export default function Review() {
   const currentGame = useBoardStore(state => state.currentGame);
   const history = currentGame.history({ verbose: true });
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
-  const populate = useCalcStore(state => state.populate);
-  const resetCalc = useCalcStore(state => state.reset);
+  const populate = useEvalStore(state => state.populate);
+  const resetCalc = useEvalStore(state => state.reset);
 
   const {
     reviewState,
@@ -34,7 +34,7 @@ export default function Review() {
     review,
     finishReview,
     reset: resetEval,
-  } = useEvalStore(useShallow(state => ({
+  } = useStockfishOutputStore(useShallow(state => ({
     reviewState: state.reviewState,
     isListening: state.isListening,
     fenIndex: state.fenIndex,
