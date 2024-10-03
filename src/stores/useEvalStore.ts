@@ -61,7 +61,7 @@ function extractEval(moveEval: MoveEval, i: number) {
 
 /**
  * If previous played move is in top 3,
- * reuse played move's cp/mate as current position's bestMove.
+ * reuse played move's cp as current position's bestMove.
  */
 function alterBest3Moves(best3Moves: MoveEval[][], history: Move[]) {
   const best3MovesAltered = [...best3Moves];
@@ -77,14 +77,11 @@ function alterBest3Moves(best3Moves: MoveEval[][], history: Move[]) {
       const prevMoveEval = subArrAltered.find(subArr => subArr.pv === prevMove?.lan);
 
       if (prevMoveEval) {
-        const { cp, mate } = prevMoveEval;
-        let alteredBestMoveEval: MoveEval;
+        const { cp } = prevMoveEval;
+        const alteredBestMoveEval = { ...bestMoveEval };
 
         if (cp) {
-          alteredBestMoveEval = { ...bestMoveEval, cp: -cp };
-        }
-        else {
-          alteredBestMoveEval = { ...bestMoveEval, mate: -mate! };
+          alteredBestMoveEval.cp = -cp;
         }
 
         subArrAltered = [alteredBestMoveEval, ...subArr.slice(1)];
