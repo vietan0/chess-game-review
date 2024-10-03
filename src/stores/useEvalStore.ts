@@ -126,24 +126,56 @@ export function formatCp(cp: string | number) {
   return (cp / 100).toFixed(1);
 }
 
-function getWinPercents(cps: (string | number)[]) {
-  return cps.map((cp) => {
+function getAccuracy(cps: (string | number)[]): [number, number] {
+  function calcAcc(before: number, after: number, i: number) {
+    const diff = i % 2 === 0 ? before - after : after - before;
+    if (diff <= 0)
+      return 100;
+    const a = 99.99;
+    const b = -0.14;
+    const c = 0;
+    const acc = a * Math.exp(b * diff) - c;
+
+    return acc;
+  }
+
+  const winPercents = cps.map((cp) => {
     if (typeof cp === 'number') {
-      return (50 + 50 * (2 / (1 + Math.exp(-0.00368208 * cp)) - 1)).toFixed(1);
+      return 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * cp)) - 1);
     }
     else if (cp.startsWith('-') || cp === '0-1') {
-      return '0';
+      return 0;
     }
     else {
-      return '100';
+      return 100;
     }
   });
+
+  const wAccArr = [];
+  const bAccArr = [];
+
+  for (let i = 0; i < winPercents.length - 1; i++) {
+    const acc = calcAcc(winPercents[i], winPercents[i + 1], i);
+
+    if (i % 2 === 0) {
+      wAccArr.push(acc);
+    }
+    else {
+      bAccArr.push(acc);
+    }
+  }
+
+  const wAcc = wAccArr.reduce((a, b) => a + b, 0) / wAccArr.length;
+  const bAcc = bAccArr.reduce((a, b) => a + b, 0) / wAccArr.length;
+  const formatted: [number, number] = [Number(wAcc.toFixed(1)), Number(bAcc.toFixed(1))];
+
+  return formatted;
 }
 
 interface EvalStore {
   best3MovesAltered: MoveEval[][];
   cps: (string | number)[];
-  winPercents: string[];
+  accuracy: [number, number];
   populate: () => void;
   reset: () => void;
 }
@@ -151,7 +183,7 @@ interface EvalStore {
 export const useEvalStore = create<EvalStore>(set => ({
   best3MovesAltered: [],
   cps: [],
-  winPercents: [],
+  accuracy: [0, 0],
   populate: () => set(() => {
     // should only be called once, after best3Moves is filled
     const best3Moves = useStockfishOutputStore.getState().best3Moves;
@@ -159,9 +191,9 @@ export const useEvalStore = create<EvalStore>(set => ({
     const history = currentGame.history({ verbose: true });
     const best3MovesAltered = alterBest3Moves(best3Moves, history);
     const cps = getCps(best3MovesAltered, currentGame);
-    const winPercents = getWinPercents(cps);
+    const accuracy = getAccuracy(cps);
 
-    return { best3MovesAltered, cps, winPercents };
+    return { best3MovesAltered, cps, accuracy };
   }),
-  reset: () => set({ best3MovesAltered: [], cps: [], winPercents: [] }),
+  reset: () => set({ best3MovesAltered: [], cps: [], accuracy: [0, 0] }),
 }));

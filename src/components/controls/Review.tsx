@@ -20,6 +20,7 @@ export default function Review() {
   const currentGame = useBoardStore(state => state.currentGame);
   const history = currentGame.history({ verbose: true });
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
+  const accuracy = useEvalStore(state => state.accuracy);
   const populate = useEvalStore(state => state.populate);
   const resetCalc = useEvalStore(state => state.reset);
 
@@ -183,6 +184,10 @@ export default function Review() {
         <p>
           best3Moves.length:
           {best3Moves.length}
+        </p>
+        <p>
+          accuracy:
+          {JSON.stringify(accuracy)}
         </p>
         {reviewState === 'finished' && <EvalGraph />}
         <div className="grid grid-cols-[30px,_1fr] gap-4">
