@@ -15,10 +15,7 @@ function isLichessAI(player: LichessPlayer | LichessAI): player is LichessAI {
 }
 
 function isChessComBotGame(game: ChessComGame) {
-  const botRegex = /-BOT$/;
-
-  return (game.time_class === 'daily'
-    && (botRegex.test(game.white.username) || botRegex.test(game.black.username)));
+  return game.time_control.endsWith('/0');
 }
 
 export default function Game({ game }: { game: ChessComGame | LichessGame }) {
