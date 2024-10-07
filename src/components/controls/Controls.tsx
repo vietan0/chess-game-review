@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import cn from '../../utils/cn';
+import useNames from '../../utils/useNames';
 import Forms from './Forms';
 import GameNav from './GameNav';
 import Games from './Games';
@@ -14,8 +15,7 @@ import Review from './Review';
 
 export default function Controls() {
   const reset = useBoardStore(state => state.reset);
-  const currentGame = useBoardStore(state => state.currentGame);
-  const header = currentGame.header();
+  const [wName, bName] = useNames();
 
   const {
     stage,
@@ -57,7 +57,7 @@ export default function Controls() {
       <Helmet>
         <title>
           {stage === 'loaded'
-            ? `${header.White !== '?' ? header.White : 'White'} vs. ${header.Black !== '?' ? header.Black : 'Black'} | Game Review`
+            ? `${wName} vs. ${bName} | Game Review`
             : 'Game Review'}
         </title>
       </Helmet>

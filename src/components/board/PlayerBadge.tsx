@@ -15,6 +15,7 @@ import formatTimestamp from '../../utils/formatTimestamp';
 import getCaptured from '../../utils/getCaptured';
 import getDiff from '../../utils/getDiff';
 import isChessCom from '../../utils/isChessCom';
+import useNames from '../../utils/useNames';
 import CapturedGroup from './CapturedGroup';
 
 import type { Capturable } from '../../utils/getCaptured';
@@ -48,20 +49,8 @@ export default function PlayerBadge({ color }: {
     return inPgnFormat;
   }, [header]);
 
-  const name = useMemo(() => {
-    if (color === 'w') {
-      if (header.White && header.White !== '?')
-        return header.White;
-
-      return 'White';
-    }
-
-    if (header.Black && header.Black !== '?')
-      return header.Black;
-
-    return 'Black';
-  }, [color, header]);
-
+  const [wName, bName] = useNames();
+  const name = color === 'w' ? wName : bName;
   const rating = color === 'w' ? header.WhiteElo : header.BlackElo;
   const title = color === 'w' ? header.WhiteTitle : header.BlackTitle;
   const turn = currentMoveNum === 0 ? null : currentMoveNum % 2 === 1 ? 'w' : 'b';
