@@ -5,7 +5,6 @@ import type { ChessComGame, LichessGame } from '../queries/useMonthlyArchives';
 export type Site = 'chess.com' | 'lichess';
 
 interface Home {
-  stage: 'home';
   username: undefined;
   site: undefined;
   monthLink: undefined;
@@ -13,7 +12,6 @@ interface Home {
 }
 
 interface SelectMonth {
-  stage: 'select-month';
   username: string;
   site: Site;
   monthLink: undefined;
@@ -21,7 +19,6 @@ interface SelectMonth {
 }
 
 interface SelectGame {
-  stage: 'select-game';
   username: string;
   site: Site;
   monthLink: string;
@@ -29,18 +26,15 @@ interface SelectGame {
 }
 
 interface Loaded {
-  stage: 'loaded';
   username: string;
   site: Site;
   monthLink: string;
   game: ChessComGame | LichessGame;
 }
 
-type Stage = Home | SelectMonth | SelectGame | Loaded;
+type SelectStages = Home | SelectMonth | SelectGame | Loaded;
 
-type SelectGameStore = Stage & {
-  backToMonths: () => void;
-  backToGames: () => void;
+type SelectGameStore = SelectStages & {
   submitUsername: (username: string, site: Site) => void;
   submitMonth: (monthLink: string) => void;
   submitGame: (game?: ChessComGame | LichessGame) => void;
@@ -48,15 +42,12 @@ type SelectGameStore = Stage & {
 };
 
 export const useSelectGameStore = create<SelectGameStore>(set => ({
-  stage: 'home',
   username: undefined,
   site: undefined,
   monthLink: undefined,
   game: undefined, // only indicate game loaded through sites, stay undefined if loaded from PGNForm
-  backToMonths: () => set({ stage: 'select-month' }),
-  backToGames: () => set({ stage: 'select-game' }),
-  submitUsername: (username: string, site: Site) => set({ stage: 'select-month', username, site }),
-  submitMonth: (monthLink: string) => set({ stage: 'select-game', monthLink }),
-  submitGame: (game?: ChessComGame | LichessGame) => set({ stage: 'loaded', game }),
-  reset: () => set({ stage: 'home', username: undefined, site: undefined, monthLink: undefined, game: undefined }),
+  submitUsername: (username: string, site: Site) => set({ username, site }),
+  submitMonth: (monthLink: string) => set({ monthLink }),
+  submitGame: (game?: ChessComGame | LichessGame) => set({ game }),
+  reset: () => set({ username: undefined, site: undefined, monthLink: undefined, game: undefined }),
 }));

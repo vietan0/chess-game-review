@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import Settings from './Settings';
 
@@ -38,6 +39,7 @@ export default function GameNav() {
   useHotkeys('x', () => flipBoard());
 
   const resetSelectGameStore = useSelectGameStore(state => state.reset);
+  const setStage = useStageStore(state => state.setStage);
   const history = currentGame.history({ verbose: true });
 
   return (
@@ -104,6 +106,7 @@ export default function GameNav() {
           onPress={() => {
             reset();
             resetSelectGameStore();
+            setStage('home');
           }}
           size="sm"
         >

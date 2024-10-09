@@ -7,6 +7,7 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
@@ -22,6 +23,7 @@ if (import.meta.env.DEV) {
   mountStoreDevtool('stockfishOutputStore', useStockfishOutputStore);
   mountStoreDevtool('settingsStore', useSettingsStore);
   mountStoreDevtool('evalStore', useEvalStore);
+  mountStoreDevtool('stageStore', useStageStore);
 }
 
 export default function Board() {
@@ -37,7 +39,7 @@ export default function Board() {
     flipBoard: state.flipBoard,
   })));
 
-  const stage = useSelectGameStore(state => state.stage);
+  const stage = useStageStore(state => state.stage);
   const username = useSelectGameStore(state => state.username);
 
   useEffect(() => {

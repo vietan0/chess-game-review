@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStageStore } from '../../stores/useStageStore';
 
 import type { Site } from '../../stores/useSelectGameStore';
 import type { SubmitHandler } from 'react-hook-form';
@@ -15,12 +16,14 @@ interface Inputs {
 
 export default function ChessSiteForm({ site }: { site: Site }) {
   const submitUsername = useSelectGameStore(state => state.submitUsername);
+  const setStage = useStageStore(state => state.setStage);
   const { item: lastUsername, set } = useLocalStorage(`${site}-username`);
   const { handleSubmit, control, formState, watch } = useForm<Inputs>({ defaultValues: { username: lastUsername || '' } });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     submitUsername(data.username, site);
     set(`${site}-username`, data.username);
+    setStage('select-month');
   };
 
   return (

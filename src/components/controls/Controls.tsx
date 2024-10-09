@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStageStore } from '../../stores/useStageStore';
 import cn from '../../utils/cn';
 import useNames from '../../utils/useNames';
 import Forms from './Forms';
@@ -15,40 +16,43 @@ import Review from './Review';
 
 export default function Controls() {
   const reset = useBoardStore(state => state.reset);
+  const stage = useStageStore(state => state.stage);
+  const setStage = useStageStore(state => state.setStage);
   const [wName, bName] = useNames();
 
   const {
-    stage,
     site,
-    backToMonths,
-    backToGames,
-    resetSelectGame,
+    resetSelectGameStore,
   } = useSelectGameStore(useShallow(state => ({
-    stage: state.stage,
     site: state.site,
-    backToMonths: state.backToMonths,
-    backToGames: state.backToGames,
-    resetSelectGame: state.reset,
+    resetSelectGameStore: state.reset,
   })));
 
   function back() {
     if (stage === 'select-month') {
-      resetSelectGame();
+      resetSelectGameStore();
+      setStage('home');
     }
 
     else if (stage === 'select-game') {
-      backToMonths();
+      setStage('select-month');
     }
 
-    else if (stage === 'loaded') {
+    // TODO: merge these two stages - start reviewing right after loaded
+    else if (stage === 'loaded' || stage === 'review-overview') {
       reset();
 
       if (site) {
-        backToGames();
+        setStage('select-game');
       }
       else {
-        resetSelectGame();
+        resetSelectGameStore();
+        setStage('home');
       }
+    }
+    else {
+      // stage === 'review-moves'
+      setStage('review-overview');
     }
   }
 

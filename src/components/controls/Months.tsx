@@ -5,6 +5,7 @@ import { nanoid } from 'nanoid';
 
 import useGameArchives from '../../queries/useGameArchives';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStageStore } from '../../stores/useStageStore';
 import cn from '../../utils/cn';
 import { getUnitFromLichessLink } from '../../utils/groupChessComLinksByYear';
 import Loading from '../Loading';
@@ -14,7 +15,8 @@ dayjs.extend(objectSupport);
 export default function Months() {
   const username = useSelectGameStore(state => state.username)!;
   const site = useSelectGameStore(state => state.site)!;
-  const toSelectGame = useSelectGameStore(state => state.submitMonth);
+  const submitMonth = useSelectGameStore(state => state.submitMonth);
+  const setStage = useStageStore(state => state.setStage);
   const { data, isLoading, error } = useGameArchives(username);
   if (isLoading)
     return <Loading />;
@@ -41,7 +43,10 @@ export default function Months() {
                   <Button
                     className="mb-1 mr-1 inline-block min-w-16"
                     key={link}
-                    onPress={() => toSelectGame(link)}
+                    onPress={() => {
+                      setStage('select-game');
+                      submitMonth(link);
+                    }}
                     radius="sm"
                     variant="ghost"
                   >

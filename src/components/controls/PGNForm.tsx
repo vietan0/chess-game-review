@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
+import { useStageStore } from '../../stores/useStageStore';
 
 import type { SubmitHandler } from 'react-hook-form';
 
@@ -16,6 +17,7 @@ interface Inputs {
 export default function PGNForm() {
   const loadGame = useBoardStore(state => state.loadGame);
   const submitGame = useSelectGameStore(state => state.submitGame);
+  const setStage = useStageStore(state => state.setStage);
 
   const { handleSubmit, control, setError, formState } = useForm<Inputs>({
     defaultValues: {
@@ -27,6 +29,7 @@ export default function PGNForm() {
     try {
       loadGame(data.pgn);
       submitGame();
+      setStage('loaded');
     }
     catch (error) {
       const err = error as Error;

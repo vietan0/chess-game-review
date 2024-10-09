@@ -5,6 +5,7 @@ import TimeClass from '../../icons/time-class/TimeClass';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import { useStageStore } from '../../stores/useStageStore';
 import { formatChessComTimeControl, formatLichessTimeControl } from '../../utils/formatTimeControl';
 import isChessCom from '../../utils/isChessCom';
 
@@ -23,6 +24,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const username = useSelectGameStore(state => state.username)!;
   const submitGame = useSelectGameStore(state => state.submitGame);
   const showRatings = useSettingsStore(state => state.settings.showRatings);
+  const setStage = useStageStore(state => state.setStage);
 
   function getChessComResult(game: ChessComGame) {
     const userColor = username.toLowerCase() === game.white.username.toLowerCase() ? 'w' : 'b';
@@ -103,6 +105,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
       isHoverable
       isPressable
       onPress={() => {
+        setStage('loaded');
         loadGame(game.pgn);
         submitGame(game);
       }}
