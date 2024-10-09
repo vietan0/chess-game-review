@@ -7,8 +7,7 @@ export interface MoveEval {
   cp?: number;
   mate?: number; // cp and mate are mutual exclusive
 }
-
-interface StockfishOutputStore {
+export interface StockfishOutputStore {
   reviewState: 'idle' | 'reviewing' | 'finished';
   isListening: boolean;
   fenIndex: number;
@@ -20,8 +19,8 @@ interface StockfishOutputStore {
   review: () => void;
   finishReview: () => void;
   reset: () => void;
+  mock: (obj: Partial<StockfishOutputStore>) => void;
 }
-
 export const useStockfishOutputStore = create<StockfishOutputStore>(set => ({
   reviewState: 'idle',
   isListening: false,
@@ -44,7 +43,7 @@ export const useStockfishOutputStore = create<StockfishOutputStore>(set => ({
 
       return {
         best3Moves: modded,
-        output: [...outputs, output],
+        outputs: [...outputs, output],
       };
     }
   }),
@@ -61,4 +60,5 @@ export const useStockfishOutputStore = create<StockfishOutputStore>(set => ({
     fenIndex: 0,
     outputs: [],
   }),
+  mock: (obj: Partial<StockfishOutputStore>) => set(state => ({ ...state, ...obj })),
 }));
