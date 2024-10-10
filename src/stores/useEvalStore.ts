@@ -11,7 +11,7 @@ import type { Chess, Move } from 'chess.js';
  *
  * @return The evaluation in the format of a centipawn value or a mate value.
  */
-function extractEval(moveEval: MoveEval, i: number) {
+export function extractEval(moveEval: MoveEval, i: number) {
   /**
    * Normalizes the Stockfish's centipawn value to always indicate from white's perspective (positive = white's winning, negative = white's losing).
    *
