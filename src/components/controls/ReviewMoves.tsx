@@ -1,8 +1,9 @@
 import { Button } from '@nextui-org/button';
 import { Chess, DEFAULT_POSITION } from 'chess.js';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import openings from '../../openings';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { extractEval, formatCp, useEvalStore } from '../../stores/useEvalStore';
 import cn from '../../utils/cn';
@@ -29,6 +30,15 @@ export default function ReviewMoves() {
     [best3MovesAltered],
   );
 
+  const [openingName, setOpeningName] = useState('');
+
+  useEffect(() => {
+    const currentFen = fens[currentMoveNum];
+    const found = openings.find(opening => opening.fen.includes(currentFen.split(' ')[0]));
+    if (found && found.name !== openingName)
+      setOpeningName(found.name);
+  }, [currentMoveNum]);
+
   function lanToSan(lan: string, i: number) {
     const possibleMoves = new Chess(fens[i]).moves({ verbose: true });
     const found = possibleMoves.find(move => move.lan === lan)!;
@@ -45,7 +55,7 @@ export default function ReviewMoves() {
   const historyPairs = makePair(history);
 
   return (
-    <div className="grid h-full grid-rows-[auto,_1fr,_80px] gap-2" id="ReviewMoves">
+    <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-2" id="ReviewMoves">
       <div className="flex flex-col gap-1">
         {best3MovesSan[currentMoveNum].map((move, i) => {
           const cp = extractEval(move, currentMoveNum);
@@ -74,6 +84,7 @@ export default function ReviewMoves() {
           );
         })}
       </div>
+      <p className="text-small">{openingName}</p>
       <div className="overflow-scroll">
         <div className="flex flex-col">
           {historyPairs.map((pair, i) => (
