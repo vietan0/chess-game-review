@@ -1,5 +1,5 @@
 import { Button } from '@nextui-org/button';
-import { CircularProgress } from '@nextui-org/progress';
+import { Progress } from '@nextui-org/progress';
 import { useQueryClient } from '@tanstack/react-query';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useCallback, useEffect } from 'react';
@@ -176,12 +176,9 @@ export default function Review() {
     <div className="h-full" id="Review">
       {reviewState === 'idle' && <Button className="mr-2" color="primary" onPress={review}>Review</Button>}
       {reviewState === 'reviewing' && (
-        <CircularProgress
+        <Progress
           aria-label="Reviewing..."
-          classNames={{
-            svg: 'w-20 h-20',
-            value: 'text-md font-semibold text-white',
-          }}
+          classNames={{ value: 'font-bold mx-auto' }}
           showValueLabel={true}
           size="lg"
           value={completePercentage}
