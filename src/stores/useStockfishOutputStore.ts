@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { useStageStore } from './useStageStore';
+
 export interface MoveEval {
   nodes: number;
   pv: string;
@@ -8,7 +10,6 @@ export interface MoveEval {
   mate?: number; // cp and mate are mutual exclusive
 }
 export interface StockfishOutputStore {
-  reviewState: 'idle' | 'reviewing' | 'finished';
   isListening: boolean;
   fenIndex: number;
   best3Moves: MoveEval[][]; // in LAN format
@@ -17,12 +18,10 @@ export interface StockfishOutputStore {
   listen: () => void;
   stopListen: (fensLength: number) => void;
   review: () => void;
-  finishReview: () => void;
   reset: () => void;
   mock: (obj: Partial<StockfishOutputStore>) => void;
 }
 export const useStockfishOutputStore = create<StockfishOutputStore>(set => ({
-  reviewState: 'idle',
   isListening: false,
   fenIndex: 0,
   best3Moves: [],
@@ -52,13 +51,12 @@ export const useStockfishOutputStore = create<StockfishOutputStore>(set => ({
     isListening: false,
     fenIndex: fenIndex === fensLength - 1 ? fenIndex : fenIndex + 1,
   })),
-  review: () => set({ best3Moves: [], reviewState: 'reviewing', outputs: [] }),
-  finishReview: () => set({ reviewState: 'finished' }),
-  reset: () => set({
-    best3Moves: [],
-    reviewState: 'idle',
-    fenIndex: 0,
-    outputs: [],
+  review: () => set(() => {
+    const setStage = useStageStore.getState().setStage;
+    setStage('reviewing');
+
+    return { best3Moves: [], fenIndex: 0, outputs: [] };
   }),
+  reset: () => set({ best3Moves: [], fenIndex: 0, outputs: [] }),
   mock: (obj: Partial<StockfishOutputStore>) => set(state => ({ ...state, ...obj })),
 }));

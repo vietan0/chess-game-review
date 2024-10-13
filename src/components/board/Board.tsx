@@ -39,11 +39,11 @@ export default function Board() {
     flipBoard: state.flipBoard,
   })));
 
-  const stage = useStageStore(state => state.stage);
+  const isLoaded = useStageStore(state => state.computed.isLoaded);
   const username = useSelectGameStore(state => state.username);
 
   useEffect(() => {
-    if (stage === 'loaded' && username) {
+    if (isLoaded && username) {
       // if game loaded through a site
       const white = currentGame.header().White;
 
@@ -54,7 +54,7 @@ export default function Board() {
         flipBoard(true);
       }
     }
-  }, [stage]);
+  }, [isLoaded]);
 
   return (
     <div className="flex flex-col items-end gap-2" id="Board">

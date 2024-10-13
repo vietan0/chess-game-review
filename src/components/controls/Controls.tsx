@@ -16,9 +16,16 @@ import Review from './Review';
 
 export default function Controls() {
   const reset = useBoardStore(state => state.reset);
-  const stage = useStageStore(state => state.stage);
-  const setStage = useStageStore(state => state.setStage);
-  const [wName, bName] = useNames();
+
+  const {
+    stage,
+    setStage,
+    isLoaded,
+  } = useStageStore(useShallow(state => ({
+    stage: state.stage,
+    setStage: state.setStage,
+    isLoaded: state.computed.isLoaded,
+  })));
 
   const {
     site,
@@ -27,6 +34,8 @@ export default function Controls() {
     site: state.site,
     resetSelectGameStore: state.reset,
   })));
+
+  const [wName, bName] = useNames();
 
   function back() {
     if (stage === 'select-month') {
@@ -38,8 +47,7 @@ export default function Controls() {
       setStage('select-month');
     }
 
-    // TODO: merge these two stages - start reviewing right after loaded
-    else if (stage === 'loaded' || stage === 'review-overview') {
+    else if (stage === 'loaded' || stage === 'reviewing' || stage === 'review-overview') {
       reset();
 
       if (site) {
@@ -50,8 +58,7 @@ export default function Controls() {
         setStage('home');
       }
     }
-    else {
-      // stage === 'review-moves'
+    else if (stage === 'review-moves') {
       setStage('review-overview');
     }
   }
@@ -60,7 +67,7 @@ export default function Controls() {
     <div className="flex max-w-md grow flex-col gap-4" id="Controls">
       <Helmet>
         <title>
-          {stage === 'loaded'
+          {isLoaded
             ? `${wName} vs. ${bName} | Game Review`
             : 'Game Review'}
         </title>

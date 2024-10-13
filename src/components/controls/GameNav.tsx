@@ -6,7 +6,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useStageStore } from '../../stores/useStageStore';
-import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
 import Settings from './Settings';
 
 export default function GameNav() {
@@ -30,8 +29,6 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
-  const reviewState = useStockfishOutputStore(state => state.reviewState);
-
   useHotkeys('right', () => toNextMove());
   useHotkeys('left', () => toPrevMove());
   useHotkeys('up', () => toFirstMove());
@@ -40,6 +37,7 @@ export default function GameNav() {
 
   const resetSelectGameStore = useSelectGameStore(state => state.reset);
   const setStage = useStageStore(state => state.setStage);
+  const reviewFinished = useStageStore(state => state.computed.reviewFinished);
   const history = currentGame.history({ verbose: true });
 
   return (
@@ -49,7 +47,7 @@ export default function GameNav() {
           aria-label="First move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0 || reviewState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toFirstMove}
           radius="sm"
@@ -60,7 +58,7 @@ export default function GameNav() {
           aria-label="Previous move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === 0 || reviewState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toPrevMove}
           radius="sm"
@@ -71,7 +69,7 @@ export default function GameNav() {
           aria-label="Next move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length || reviewState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={toNextMove}
           radius="sm"
@@ -82,7 +80,7 @@ export default function GameNav() {
           aria-label="Last move"
           className="grow text-3xl"
           disableRipple
-          isDisabled={history.length === 0 || currentMoveNum === history.length || reviewState !== 'finished'}
+          isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={toFinalMove}
           radius="sm"

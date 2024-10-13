@@ -35,7 +35,6 @@ d5 {[%clk 0:15:09.2][%timestamp 194]} 6. exd5 {[%clk 0:15:08.3][%timestamp 341]}
 {[%clk 0:15:11.7][%timestamp 44]} 1-0`;
 
 const stockfishOutputStates: Partial<StockfishOutputStore> = {
-  reviewState: 'finished',
   isListening: false,
   fenIndex: 17,
   best3Moves: [
@@ -469,7 +468,7 @@ export default function useMockState() {
   useEffect(() => {
     loadGame(pgn);
     submitGame();
-    setStage('loaded');
+    setStage('review-overview');
     mock(stockfishOutputStates);
     populate();
   }, []);

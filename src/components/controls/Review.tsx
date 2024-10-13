@@ -26,10 +26,8 @@ export default function Review() {
   const resetEval = useEvalStore(state => state.reset);
   const stage = useStageStore(state => state.stage);
   const setStage = useStageStore(state => state.setStage);
-  const isLoaded = useStageStore(state => state.computed.isLoaded);
 
   const {
-    reviewState,
     isListening,
     fenIndex,
     best3Moves,
@@ -37,10 +35,8 @@ export default function Review() {
     listen,
     stopListen,
     review,
-    finishReview,
     reset: resetSfOutput,
   } = useStockfishOutputStore(useShallow(state => ({
-    reviewState: state.reviewState,
     isListening: state.isListening,
     fenIndex: state.fenIndex,
     best3Moves: state.best3Moves,
@@ -48,7 +44,6 @@ export default function Review() {
     listen: state.listen,
     stopListen: state.stopListen,
     review: state.review,
-    finishReview: state.finishReview,
     reset: state.reset,
   })));
 
@@ -99,23 +94,17 @@ export default function Review() {
   }, [stockfish]);
 
   useEffect(() => {
-    // force recreate Stockfish worker every subsequent mounts
     return () => {
+      // force recreate Stockfish worker every subsequent mounts
       queryClient.invalidateQueries({ queryKey: ['stockfish'] });
+      // reset states when leave Review page
+      resetSfOutput();
+      resetEval();
     };
   }, []);
 
   useEffect(() => {
-    // reset states when leave Review page
-    if (!isLoaded) {
-      resetSfOutput();
-      resetEval();
-    }
-  }, [stage]);
-
-  useEffect(() => {
     if (completePercentage === 100) {
-      finishReview();
       populate();
       setStage('review-overview');
     }
@@ -127,7 +116,7 @@ export default function Review() {
       we send one fen at a time, listen to its output,
       and only send the next fen when the previous one is done (when isListening is 'false' again)
     */
-    if (stockfish && reviewState === 'reviewing') {
+    if (stockfish && stage === 'reviewing') {
       if (!isListening) {
         listen();
         stockfish.postMessage(`position fen ${fens[fenIndex]}`);
@@ -135,11 +124,7 @@ export default function Review() {
         console.info(`posted position and go for fenIndex ${fenIndex}`);
       }
     }
-  }, [stockfish, reviewState, isListening]);
-
-  useEffect(() => {
-    console.info(isListening);
-  }, [isListening]);
+  }, [stockfish, stage, isListening]);
 
   if (isLoading || isFetching)
     return <Loading />;
@@ -150,8 +135,8 @@ export default function Review() {
   const statesDiv = (
     <div id="states">
       <p>
-        reviewState:
-        {reviewState}
+        stage:
+        {stage}
       </p>
       <p>
         isListening:
@@ -174,17 +159,23 @@ export default function Review() {
 
   return (
     <div className="h-full" id="Review">
-      {reviewState === 'idle' && <Button className="mr-2" color="primary" onPress={review}>Review</Button>}
-      {reviewState === 'reviewing' && (
-        <Progress
-          aria-label="Reviewing..."
-          classNames={{ value: 'font-bold mx-auto' }}
-          showValueLabel={true}
-          size="lg"
-          value={completePercentage}
-        />
-      )}
-      {stage === 'review-overview' ? <ReviewOverview /> : <ReviewMoves /> }
+      {stage === 'loaded'
+        ? <Button className="mr-2" color="primary" onPress={review}>Review</Button>
+        : stage === 'reviewing'
+          ? (
+              <Progress
+                aria-label="Reviewing..."
+                classNames={{ value: 'font-bold mx-auto' }}
+                showValueLabel={true}
+                size="lg"
+                value={completePercentage}
+              />
+            )
+          : stage === 'review-overview'
+            ? <ReviewOverview />
+            : stage === 'review-moves'
+              ? <ReviewMoves />
+              : null}
     </div>
   );
 }
