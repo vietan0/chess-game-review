@@ -30,7 +30,7 @@ export default function ReviewMoves() {
     [best3MovesAltered],
   );
 
-  const [openingName, setOpeningName] = useState('');
+  const [openingName, setOpeningName] = useState('Starting Position');
 
   useEffect(() => {
     const currentFen = fens[currentMoveNum];
@@ -55,7 +55,7 @@ export default function ReviewMoves() {
   const historyPairs = makePair(history);
 
   return (
-    <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-2" id="ReviewMoves">
+    <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
         {best3MovesSan[currentMoveNum].map((move, i) => {
           const cp = extractEval(move, currentMoveNum);

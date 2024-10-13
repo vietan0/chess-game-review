@@ -14,18 +14,18 @@ export default function ReviewOverview() {
   const setStage = useStageStore(state => state.setStage);
 
   return (
-    <div id="ReviewOverview">
+    <div className="text-small" id="ReviewOverview">
       <EvalGraph />
       <div className="mt-4 flex flex-col gap-2" id="accuracy">
-        <div className="grid grid-cols-[180px,_1fr,_1fr] items-center gap-4">
-          <p>Players</p>
-          <p className="overflow-x-scroll text-ellipsis font-bold">{wName}</p>
-          <p className="overflow-x-scroll text-ellipsis font-bold">{bName}</p>
+        <div className="grid grid-cols-[120px,_1fr,_1fr] items-center gap-4">
+          <p className="text-foreground-500">Players</p>
+          <p className="justify-self-center overflow-x-scroll text-ellipsis font-bold">{wName}</p>
+          <p className="justify-self-center overflow-x-scroll text-ellipsis font-bold">{bName}</p>
         </div>
-        <div className="grid grid-cols-[180px,_1fr,_1fr] items-center gap-4">
-          <p>Accuracy</p>
-          <div><span className="inline-block rounded bg-white px-3 py-2 font-bold text-background">{accuracy[0]}</span></div>
-          <div><span className="inline-block rounded bg-default-100 px-3 py-2 font-bold">{accuracy[1]}</span></div>
+        <div className="grid grid-cols-[120px,_1fr,_1fr] items-center gap-4">
+          <p className="text-foreground-500">Accuracy</p>
+          <div className="justify-self-center"><span className="inline-block rounded bg-white px-3 py-2 font-bold text-background">{accuracy[0]}</span></div>
+          <div className="justify-self-center"><span className="inline-block rounded bg-default-100 px-3 py-2 font-bold">{accuracy[1]}</span></div>
         </div>
       </div>
       <p>Move Classifications</p>

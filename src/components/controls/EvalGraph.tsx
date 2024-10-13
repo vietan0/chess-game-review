@@ -9,6 +9,7 @@ import { useCallback, useMemo } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
+import { useStageStore } from '../../stores/useStageStore';
 
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
@@ -37,6 +38,8 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     const cpObj = cps.map((val, i) => ({ val, i }));
     const currentMoveNum = useBoardStore(state => state.currentMoveNum);
     const toMove = useBoardStore(state => state.toMove);
+    const stage = useStageStore(state => state.stage);
+    const setStage = useStageStore(state => state.setStage);
     const graphH = 80;
 
     const getNumericValue = (item: { val: string | number; i: number }) => {
@@ -79,6 +82,8 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
 
     function handleClick() {
       toMove(tooltipData!.i);
+      if (stage === 'review-overview')
+        setStage('review-moves');
     }
 
     const handleTooltip = useCallback((event: React.TouchEvent<SVGRectElement> | React.MouseEvent<SVGRectElement>) => {

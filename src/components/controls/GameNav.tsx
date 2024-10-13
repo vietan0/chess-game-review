@@ -29,16 +29,24 @@ export default function GameNav() {
     reset: state.reset,
   })));
 
-  useHotkeys('right', () => toNextMove());
+  const resetSelectGameStore = useSelectGameStore(state => state.reset);
+  const stage = useStageStore(state => state.stage);
+  const setStage = useStageStore(state => state.setStage);
+  const reviewFinished = useStageStore(state => state.computed.reviewFinished);
+  const history = currentGame.history({ verbose: true });
+
+  useHotkeys('right', () => {
+    toNextMove();
+
+    if (stage === 'review-overview' && currentMoveNum === 0) {
+      setStage('review-moves');
+    }
+  });
+
   useHotkeys('left', () => toPrevMove());
   useHotkeys('up', () => toFirstMove());
   useHotkeys('down', () => toFinalMove());
   useHotkeys('x', () => flipBoard());
-
-  const resetSelectGameStore = useSelectGameStore(state => state.reset);
-  const setStage = useStageStore(state => state.setStage);
-  const reviewFinished = useStageStore(state => state.computed.reviewFinished);
-  const history = currentGame.history({ verbose: true });
 
   return (
     <div className="mt-auto flex flex-col gap-2" id="GameNav">
@@ -71,7 +79,13 @@ export default function GameNav() {
           disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
-          onPress={toNextMove}
+          onPress={() => {
+            toNextMove();
+
+            if (stage === 'review-overview' && currentMoveNum === 0) {
+              setStage('review-moves');
+            }
+          }}
           radius="sm"
         >
           <Icon icon="material-symbols:chevron-right-rounded" />

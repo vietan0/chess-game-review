@@ -132,35 +132,20 @@ export default function Review() {
   if (error)
     return 'Error while loading Stockfish';
 
-  const statesDiv = (
-    <div id="states">
-      <p>
-        stage:
-        {stage}
-      </p>
-      <p>
-        isListening:
-        {isListening.toString()}
-      </p>
-      <p>
-        fenIndex:
-        {fenIndex}
-      </p>
-      <p>
-        fens.length:
-        {fens.length}
-      </p>
-      <p>
-        best3Moves.length:
-        {best3Moves.length}
-      </p>
-    </div>
-  );
-
   return (
     <div className="h-full" id="Review">
       {stage === 'loaded'
-        ? <Button className="mr-2" color="primary" onPress={review}>Review</Button>
+        ? (
+            <Button
+              className="h-12 text-medium font-bold"
+              color="primary"
+              fullWidth
+              onPress={review}
+              radius="sm"
+            >
+              Generate Review
+            </Button>
+          )
         : stage === 'reviewing'
           ? (
               <Progress
