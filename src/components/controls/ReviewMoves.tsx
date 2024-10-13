@@ -1,6 +1,6 @@
 import { Button } from '@nextui-org/button';
 import { Chess, DEFAULT_POSITION } from 'chess.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import openings from '../../openings';
@@ -84,7 +84,7 @@ export default function ReviewMoves() {
           );
         })}
       </div>
-      <p className="text-small">{openingName}</p>
+      <p className="text-small text-foreground-500">{openingName}</p>
       <div className="overflow-scroll">
         <div className="flex flex-col">
           {historyPairs.map((pair, i) => (
@@ -112,6 +112,7 @@ export default function ReviewMoves() {
 }
 
 function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
+  const ref = useRef<HTMLButtonElement>(null);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const toMove = useBoardStore(state => state.toMove);
   let realIndex = pairIndex * 2 + 1;
@@ -119,6 +120,12 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
   if (move.color === 'b') {
     realIndex += 1;
   }
+
+  useEffect(() => {
+    if (currentMoveNum === realIndex) {
+      ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [currentMoveNum]);
 
   return (
     <Button
@@ -130,6 +137,7 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
       disableRipple
       onPress={() => toMove(realIndex)}
       radius="sm"
+      ref={ref}
       size="sm"
       variant="light"
     >
