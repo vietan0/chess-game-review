@@ -1,5 +1,6 @@
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
 
+import useLocalStorage from '../../hooks/useLocalStorage';
 import ChessCom from '../../icons/game-src/ChessCom';
 import Lichess from '../../icons/game-src/Lichess';
 import Pgn from '../../icons/game-src/Pgn';
@@ -7,10 +8,16 @@ import ChessSiteForm from './ChessSiteForm';
 import PGNForm from './PGNForm';
 
 export default function Forms() {
+  const { item: gameInput, set } = useLocalStorage('game-input');
+
   return (
     <Accordion
-      defaultExpandedKeys={['chess.com']}
+      defaultExpandedKeys={[gameInput || '']}
       isCompact
+      onSelectionChange={(keys) => {
+        const selected = Array.from(keys)[0] as string;
+        set('game-input', selected || '');
+      }}
     >
       <AccordionItem
         aria-label="Load from chess.com"
