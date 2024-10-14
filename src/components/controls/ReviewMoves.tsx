@@ -90,7 +90,7 @@ export default function ReviewMoves() {
           {historyPairs.map((pair, i) => (
             <div
               className={cn(
-                'grid grid-cols-[20px,_70px,_70px] items-center justify-items-start gap-2 pl-2',
+                'grid grid-cols-[30px,_90px,_90px] items-center justify-items-start gap-2 pl-2',
                 i % 2 === 1 && 'bg-default-100/50',
               )}
               key={i}
@@ -123,7 +123,9 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
 
   useEffect(() => {
     if (currentMoveNum === realIndex) {
-      ref.current?.scrollIntoView({ behavior: 'smooth' });
+      if (window.innerWidth >= 1024) {
+        ref.current?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }, [currentMoveNum]);
 

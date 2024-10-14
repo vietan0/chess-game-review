@@ -64,7 +64,7 @@ export default function Controls() {
   }
 
   return (
-    <div className="flex max-w-md grow flex-col gap-4" id="Controls">
+    <div className="flex h-[500px] w-[642px] min-w-[310px] grow flex-col gap-4 lg:size-auto lg:max-w-[480px]" id="Controls">
       <Helmet>
         <title>
           {isLoaded

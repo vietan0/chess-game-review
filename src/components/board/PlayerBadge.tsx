@@ -202,7 +202,7 @@ export default function PlayerBadge({ color }: {
       {timeLeft && (
         <div
           className={cn(
-            'flex min-w-32 items-center justify-between gap-1 rounded px-2 py-1 text-right font-mono text-lg',
+            'flex min-w-32 items-center justify-between gap-1 rounded px-2 py-1 text-right font-mono text-xl',
             color === 'w' ? 'bg-foreground text-foreground-50' : 'bg-default-100 text-foreground',
             color !== turn ? 'opacity-100' : 'opacity-40',
           )}

@@ -3,7 +3,7 @@ import Controls from './components/controls/Controls';
 
 export default function App() {
   return (
-    <div className="mx-auto flex h-full max-w-7xl justify-center gap-6 p-6" id="App">
+    <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 p-6 lg:h-full lg:flex-row lg:items-stretch" id="App">
       <Board />
       <Controls />
     </div>

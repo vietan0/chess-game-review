@@ -24,8 +24,8 @@ export default function ReviewOverview() {
         </div>
         <div className="grid grid-cols-[120px,_1fr,_1fr] items-center gap-4">
           <p className="text-foreground-500">Accuracy</p>
-          <div className="justify-self-center"><span className="inline-block rounded bg-white px-3 py-2 font-bold text-background">{accuracy[0]}</span></div>
-          <div className="justify-self-center"><span className="inline-block rounded bg-default-100 px-3 py-2 font-bold">{accuracy[1]}</span></div>
+          <div className="justify-self-center"><span className="inline-block rounded bg-white px-3 py-2 text-lg font-bold text-background">{accuracy[0]}</span></div>
+          <div className="justify-self-center"><span className="inline-block rounded bg-default-100 px-3 py-2 text-lg font-bold">{accuracy[1]}</span></div>
         </div>
       </div>
       <p>Move Classifications</p>

@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <NextUIProvider>
         <HelmetProvider>
-          <main className="h-screen">
+          <main className="lg:h-screen">
             <App />
           </main>
         </HelmetProvider>
