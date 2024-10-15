@@ -57,7 +57,7 @@ export default function ReviewMoves() {
   return (
     <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
-        {best3MovesSan[currentMoveNum].map((move, i) => {
+        {best3MovesSan[currentMoveNum]?.map((move, i) => {
           const cp = extractEval(move, currentMoveNum);
           const adv = formatCp(cp);
           let whiteHasAdv: boolean;
