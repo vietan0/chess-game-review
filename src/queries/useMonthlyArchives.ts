@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useSelectGameStore } from '../stores/useSelectGameStore';
-import { readStream } from '../utils/nd-json';
+import readStream from '../utils/nd-json';
 
 interface ChessComPlayer {
   'rating': number;

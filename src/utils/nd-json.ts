@@ -2,7 +2,7 @@
 // @ts-nocheck
 // Function taken from https://gist.github.com/ornicar/a097406810939cf7be1df8ea30e94f3e
 
-export function readStream(processLine) {
+export default function readStream(processLine) {
   return (response) => {
     const stream = response.body.getReader();
     const matcher = /\r?\n/;
