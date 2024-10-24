@@ -1,24 +1,28 @@
 import { DEFAULT_POSITION } from 'chess.js';
 import { create } from 'zustand';
 
+import classify from '../utils/classify';
 import { useBoardStore } from './useBoardStore';
 import { type MoveEval, useStockfishOutputStore } from './useStockfishOutputStore';
 
+import type { Classification } from '../utils/classify';
 import type { Chess, Move } from 'chess.js';
 
+type MoveEvalMerged = Omit<MoveEval, 'cp' | 'mate'> & {
+  eval: string | number;
+};
+type MoveEvalMod = MoveEvalMerged & {
+  classification: Classification;
+};
+
 /**
- * Retrieves the evaluation from a move evaluation, handling both centipawn and mate values.
+ * Normalize Stockfish's centipawn and mate value from a move, to always indicate from white's perspective (positive = white's winning, negative = white's losing).
  *
- * @return The evaluation in the format of a centipawn value or a mate value.
- */
-export function extractEval(moveEval: MoveEval, i: number) {
-  /**
-   * Normalizes the Stockfish's centipawn value to always indicate from white's perspective (positive = white's winning, negative = white's losing).
-   *
-   * Also, since my Stockfish would give a `1500` cp where chesscom/lichess would give a `750`-`800`,
+ * Also, since my Stockfish would give a `1500` cp where chesscom/lichess would give a `750`-`800`,
     I deflate it by `0.6` to arbitrarily map it closer to their results.
     https://www.desmos.com/calculator/gqiwyxdsu3
-   */
+ */
+function normalizeEval(moveEval: MoveEval, i: number) {
   function normalizeCp(cp: number, i: number) {
     // if it's black's turn, flip the sign
     const normalized = (i % 2 === 0) ? cp : -cp;
@@ -26,9 +30,6 @@ export function extractEval(moveEval: MoveEval, i: number) {
     return Math.round(normalized * 0.6);
   }
 
-  /**
-   * Normalizes Stockfish's mate value to always indicate from white's perspective (positive = white's winning, negative = white's losing).
-   */
   function normalizeMate(mate: number, i: number) {
     if (i % 2 === 0) {
       // it's white's turn
@@ -61,14 +62,14 @@ export function extractEval(moveEval: MoveEval, i: number) {
 
 /**
  * If previous played move is in top 3,
- * reuse played move's cp as current position's bestMove.
+ * reuse played move's `cp` as current position's bestMove's `cp`.
  */
-function alterBest3Moves(best3Moves: MoveEval[][], history: Move[]) {
-  const best3MovesAltered = [...best3Moves];
+function reuseCp(best3Moves: MoveEval[][], history: Move[]) {
+  const reusedCp = [...best3Moves];
   let subArrAltered: MoveEval[] = [];
 
-  for (let i = 0; i < best3Moves.length; i++) {
-    const subArr = best3Moves[i];
+  for (let i = 0; i < reusedCp.length; i++) {
+    const subArr = reusedCp[i];
     const bestMoveEval = subArr[0];
     subArrAltered = i === 0 ? subArr : subArrAltered;
 
@@ -92,16 +93,108 @@ function alterBest3Moves(best3Moves: MoveEval[][], history: Move[]) {
     }
 
     // replace
-    best3MovesAltered[i] = subArrAltered;
+    reusedCp[i] = subArrAltered;
   }
 
-  return best3MovesAltered;
+  return reusedCp;
 }
 
-function getCps(best3Moves: MoveEval[][], currentGame: Chess) {
+function sortBest3Moves(best3Moves: MoveEvalMerged[][]) {
+  // sort after reusing cp
+  return best3Moves.map((subArr, i) => {
+    const sortedSubArr = [...subArr].sort((a, b) => {
+      /*
+        if i is even, it's White to move: +M5, +M10, 3, 0, -3, -M10, -M5
+        if i is odd, it's Black to move: -M5, -M10, -3, 0, 3, +M10, +M5
+      */
+      function decreaseSort(a: MoveEvalMerged, b: MoveEvalMerged) {
+        if (typeof a.eval === 'string') {
+          if (typeof b.eval === 'string') {
+            // 1. both strings
+            if (a.eval[0] === b.eval[0]) {
+            // 1a. same sign
+              const aNum = Number(a.eval.slice(2));
+              const bNum = Number(a.eval.slice(2));
+
+              // both positive
+              if (a.eval[0] === '+') {
+                return aNum <= bNum ? -1 : 1;
+              }
+              // both negative
+              else {
+                return aNum >= bNum ? -1 : 1;
+              }
+            }
+            else {
+            // 1b. opposite sign
+              return a.eval[0] === '+' ? -1 : 1;
+            }
+          }
+          else {
+            // 2. string to number
+            return a.eval[0] === '+' ? -1 : 1;
+          }
+        }
+        else {
+          if (typeof b.eval === 'number') {
+            // 3. both numbers
+            return a.eval >= b.eval ? -1 : 1;
+          }
+          else {
+            // 4. number to string
+            return b.eval[0] === '-' ? -1 : 1;
+          }
+        }
+      }
+
+      if (i % 2 === 0) {
+        return decreaseSort(a, b);
+      }
+      else {
+        return decreaseSort(a, b) * -1;
+      }
+    });
+
+    return sortedSubArr;
+  });
+}
+
+function modBest3Moves(best3Moves: MoveEval[][], history: Move[]): MoveEvalMod[][] {
+  // Step 1: reuse cp
+  const reusedCp = reuseCp(best3Moves, history);
+
+  // Step 2: merge `cp` and `mate` into `eval`
+  const normalized = reusedCp.map((subArr, i) => subArr.map(moveEval => ({
+    pv: moveEval.pv,
+    nodes: moveEval.nodes,
+    multiPv: moveEval.multiPv,
+    eval: normalizeEval(moveEval, i),
+  })));
+
+  // Step 3: resort after reusing cp
+  const sorted = sortBest3Moves(normalized);
+
+  // Step 4: add classification
+  const classified = sorted.map((subArr, i) => {
+    const beforeEval = subArr[0].eval;
+
+    const addedClass = subArr.map((moveEval, _i, arr) => {
+      const afterEval = moveEval.eval;
+      const classification = classify(beforeEval, afterEval, i, arr.length === 1);
+
+      return { ...moveEval, classification };
+    });
+
+    return addedClass;
+  });
+
+  return classified;
+}
+
+function getCps(best3MovesMod: MoveEvalMod[][], currentGame: Chess) {
   const history = currentGame.history({ verbose: true });
   // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
-  const beforeMate = best3Moves.map((subArr, i) => extractEval(subArr[0], i));
+  const beforeMate = best3MovesMod.map(subArr => subArr[0].eval);
   const isCheckmate = currentGame.isCheckmate();
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
@@ -173,7 +266,7 @@ function getAccuracy(cps: (string | number)[]): [number, number] {
 }
 
 interface EvalStore {
-  best3MovesAltered: MoveEval[][];
+  best3MovesMod: MoveEvalMod[][];
   cps: (string | number)[];
   accuracy: [number, number];
   populate: () => void;
@@ -181,7 +274,7 @@ interface EvalStore {
 }
 
 export const useEvalStore = create<EvalStore>(set => ({
-  best3MovesAltered: [],
+  best3MovesMod: [],
   cps: [],
   accuracy: [0, 0],
   populate: () => set(() => {
@@ -189,11 +282,11 @@ export const useEvalStore = create<EvalStore>(set => ({
     const best3Moves = useStockfishOutputStore.getState().best3Moves;
     const currentGame = useBoardStore.getState().currentGame;
     const history = currentGame.history({ verbose: true });
-    const best3MovesAltered = alterBest3Moves(best3Moves, history);
-    const cps = getCps(best3MovesAltered, currentGame);
+    const best3MovesMod = modBest3Moves(best3Moves, history);
+    const cps = getCps(best3MovesMod, currentGame);
     const accuracy = getAccuracy(cps);
 
-    return { best3MovesAltered, cps, accuracy };
+    return { best3MovesMod, cps, accuracy };
   }),
-  reset: () => set({ best3MovesAltered: [], cps: [], accuracy: [0, 0] }),
+  reset: () => set({ best3MovesMod: [], cps: [], accuracy: [0, 0] }),
 }));

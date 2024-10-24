@@ -5,7 +5,8 @@ import { useShallow } from 'zustand/react/shallow';
 
 import openings from '../../openings';
 import { useBoardStore } from '../../stores/useBoardStore';
-import { extractEval, formatCp, useEvalStore } from '../../stores/useEvalStore';
+import { formatCp, useEvalStore } from '../../stores/useEvalStore';
+import classify from '../../utils/classify';
 import cn from '../../utils/cn';
 import makePair from '../../utils/makePair';
 import EvalGraph from './EvalGraph';
@@ -23,13 +24,8 @@ export default function ReviewMoves() {
 
   const history = currentGame.history({ verbose: true });
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
-  const best3MovesAltered = useEvalStore(state => state.best3MovesAltered);
-
-  const best3MovesSan = useMemo(
-    () => best3MovesAltered.map((subArr, i) => subArr.map(obj => ({ ...obj, pv: lanToSan(obj.pv, i) }))),
-    [best3MovesAltered],
-  );
-
+  const best3MovesMod = useEvalStore(state => state.best3MovesMod);
+  const cps = useEvalStore(state => state.cps);
   const [openingName, setOpeningName] = useState('Starting Position');
 
   useEffect(() => {
@@ -53,33 +49,82 @@ export default function ReviewMoves() {
   }
 
   const historyPairs = makePair(history);
+  const currentMove = history[currentMoveNum - 1];
+  const advs = cps.map(formatCp);
+  const adv = (advs.length === 0) ? '0.0' : advs[currentMoveNum];
+
+  const whiteHasAdv = useMemo(() => {
+    let whiteHasAdv: boolean;
+
+    if (typeof cps[currentMoveNum] === 'number') {
+      whiteHasAdv = cps[currentMoveNum] >= 0;
+    }
+    else {
+      whiteHasAdv = cps[currentMoveNum].startsWith('+');
+    }
+
+    return whiteHasAdv;
+  }, [currentMoveNum]);
+
+  const currentMoveClass = useMemo(() => {
+    // if played move is in top 3
+    // find class in best3MovesMod array (specifically for 'forced' case)
+    // else call classify() again
+    if (currentMoveNum === 0)
+      return '';
+
+    return classify(cps[currentMoveNum - 1], cps[currentMoveNum], currentMoveNum - 1, best3MovesMod[currentMoveNum - 1].length === 1);
+  }, [currentMoveNum]);
 
   return (
     <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
-        {best3MovesSan[currentMoveNum]?.map((move, i) => {
-          const cp = extractEval(move, currentMoveNum);
-          const adv = formatCp(cp);
+        {currentMoveNum > 0 && (
+          <>
+            <p className="flex justify-between gap-2">
+              <span>
+                <span className="font-bold">
+                  {currentMove.san}
+                </span>
+                {' '}
+                was
+                {' '}
+                {currentMoveClass}
+              </span>
+              <span
+                className={cn(
+                  'w-12 rounded-sm px-2 py-1 text-center font-bold',
+                  whiteHasAdv ? 'bg-foreground text-background' : 'bg-default-100',
+                )}
+              >
+                {(adv.startsWith('-') || adv.startsWith('+')) ? adv.slice(1) : adv}
+              </span>
+            </p>
+          </>
+        )}
+        {best3MovesMod[currentMoveNum - 1]?.map((move, i) => {
           let whiteHasAdv: boolean;
+          const adv = formatCp(move.eval);
 
-          if (typeof cp === 'number') {
-            whiteHasAdv = cp >= 0;
+          if (typeof move.eval === 'number') {
+            whiteHasAdv = move.eval >= 0;
           }
           else {
-            whiteHasAdv = cp.startsWith('+');
+            whiteHasAdv = move.eval.startsWith('+');
           }
 
           return (
-            <div className="grid grid-cols-[60px,_1fr] items-center justify-items-start gap-4 text-small" key={i}>
-              <p className="font-bold">{move.pv}</p>
+            <div className="grid grid-cols-[60px,_60px,_1fr] items-center justify-items-start gap-4 text-small" key={i}>
+              <p className="font-bold">{lanToSan(move.pv, currentMoveNum - 1)}</p>
               <p
                 className={cn(
-                  'rounded-sm px-2 py-1 font-bold',
+                  'w-12 rounded-sm px-2 py-1 text-center font-bold',
                   whiteHasAdv ? 'bg-foreground text-background' : 'bg-default-100',
                 )}
               >
                 {(adv.startsWith('-') || adv.startsWith('+')) ? adv.slice(1) : adv}
               </p>
+              <p>{move.classification}</p>
             </div>
           );
         })}
