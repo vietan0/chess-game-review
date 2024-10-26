@@ -23,6 +23,7 @@
     "@nextui-org/switch": "^2.0.34",
     "@nextui-org/system": "^2.2.5",
     "@nextui-org/theme": "^2.2.9",
+    "@rollup/plugin-dsv": "^3.0.5",
     "@tanstack/react-query": "^5.51.24",
     "@tanstack/react-query-devtools": "^5.51.24",
     "@visx/curve": "^3.3.0",
