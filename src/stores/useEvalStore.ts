@@ -8,10 +8,10 @@ import { type MoveEval, useStockfishOutputStore } from './useStockfishOutputStor
 import type { Classification } from '../utils/classify';
 import type { Chess, Move } from 'chess.js';
 
-type MoveEvalMerged = Omit<MoveEval, 'cp' | 'mate'> & {
+export type MoveEvalMerged = Omit<MoveEval, 'cp' | 'mate'> & {
   eval: string | number;
 };
-type MoveEvalMod = MoveEvalMerged & {
+export type MoveEvalWithClass = MoveEvalMerged & {
   classification: Classification;
 };
 
@@ -159,7 +159,7 @@ function sortBest3Moves(best3Moves: MoveEvalMerged[][]) {
   });
 }
 
-function modBest3Moves(best3Moves: MoveEval[][], history: Move[]): MoveEvalMod[][] {
+function classifyBest3Moves(best3Moves: MoveEval[][], history: Move[]) {
   // Step 1: reuse cp
   const reusedCp = reuseCp(best3Moves, history);
 
@@ -175,12 +175,20 @@ function modBest3Moves(best3Moves: MoveEval[][], history: Move[]): MoveEvalMod[]
   const sorted = sortBest3Moves(normalized);
 
   // Step 4: add classification
-  const classified = sorted.map((subArr, i) => {
+  const classified = sorted.map<MoveEvalWithClass[]>((subArr, i) => {
     const beforeEval = subArr[0].eval;
 
-    const addedClass = subArr.map((moveEval, _i, arr) => {
+    const addedClass = subArr.map((moveEval, _, arr) => {
       const afterEval = moveEval.eval;
-      const classification = classify(beforeEval, afterEval, i, arr.length === 1);
+
+      const classification = classify({
+        subArr: arr,
+        lan: moveEval.pv,
+        history,
+        i,
+        beforeEval,
+        afterEval,
+      });
 
       return { ...moveEval, classification };
     });
@@ -191,7 +199,27 @@ function modBest3Moves(best3Moves: MoveEval[][], history: Move[]): MoveEvalMod[]
   return classified;
 }
 
-function getCps(best3MovesMod: MoveEvalMod[][], currentGame: Chess) {
+function classifyActualMoves(best3MovesWithClass: MoveEvalWithClass[][], cps: (string | number)[], history: Move[]) {
+  return history.map((move, i, arr) => {
+    // if actual move is in top 3, then it's already classified within best3MovesWithClass
+    // else run classify again
+    const playedMoveIsInTop3 = best3MovesWithClass[i].find(moveEval => moveEval.pv === move.lan);
+
+    if (playedMoveIsInTop3)
+      return playedMoveIsInTop3.classification;
+
+    return classify({
+      subArr: best3MovesWithClass[i],
+      lan: move.lan,
+      history: arr,
+      i,
+      beforeEval: cps[i],
+      afterEval: cps[i + 1],
+    });
+  });
+}
+
+function getCps(best3MovesMod: MoveEvalWithClass[][], currentGame: Chess) {
   const history = currentGame.history({ verbose: true });
   // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
   const beforeMate = best3MovesMod.map(subArr => subArr[0].eval);
@@ -266,7 +294,8 @@ function getAccuracy(cps: (string | number)[]): [number, number] {
 }
 
 interface EvalStore {
-  best3MovesMod: MoveEvalMod[][];
+  best3MovesWithClass: MoveEvalWithClass[][];
+  classHistory: Classification[];
   cps: (string | number)[];
   accuracy: [number, number];
   populate: () => void;
@@ -274,19 +303,21 @@ interface EvalStore {
 }
 
 export const useEvalStore = create<EvalStore>(set => ({
-  best3MovesMod: [],
-  cps: [],
+  best3MovesWithClass: [],
+  classHistory: [],
+  cps: [], // while this show eval --> should I group these two together?
   accuracy: [0, 0],
   populate: () => set(() => {
     // should only be called once, after best3Moves is filled
     const best3Moves = useStockfishOutputStore.getState().best3Moves;
     const currentGame = useBoardStore.getState().currentGame;
     const history = currentGame.history({ verbose: true });
-    const best3MovesMod = modBest3Moves(best3Moves, history);
-    const cps = getCps(best3MovesMod, currentGame);
+    const best3MovesWithClass = classifyBest3Moves(best3Moves, history);
+    const cps = getCps(best3MovesWithClass, currentGame);
+    const classHistory = classifyActualMoves(best3MovesWithClass, cps, history);
     const accuracy = getAccuracy(cps);
 
-    return { best3MovesMod, cps, accuracy };
+    return { best3MovesWithClass, classHistory, cps, accuracy };
   }),
-  reset: () => set({ best3MovesMod: [], cps: [], accuracy: [0, 0] }),
+  reset: () => set({ best3MovesWithClass: [], classHistory: [], cps: [], accuracy: [0, 0] }),
 }));

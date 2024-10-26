@@ -1,13 +1,13 @@
 import { Button } from '@nextui-org/button';
-import { Chess, DEFAULT_POSITION } from 'chess.js';
+import { DEFAULT_POSITION } from 'chess.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import openings from '../../openings';
+import openings from '../../openings.tsv';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
-import classify from '../../utils/classify';
 import cn from '../../utils/cn';
+import lanToSan from '../../utils/lanToSan';
 import makePair from '../../utils/makePair';
 import EvalGraph from './EvalGraph';
 
@@ -24,29 +24,30 @@ export default function ReviewMoves() {
 
   const history = currentGame.history({ verbose: true });
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
-  const best3MovesMod = useEvalStore(state => state.best3MovesMod);
-  const cps = useEvalStore(state => state.cps);
+
+  const {
+    best3MovesWithClass,
+    cps,
+    classHistory,
+  } = useEvalStore(useShallow(state => ({
+    best3MovesWithClass: state.best3MovesWithClass,
+    cps: state.cps,
+    classHistory: state.classHistory,
+  })));
+
   const [openingName, setOpeningName] = useState('Starting Position');
 
   useEffect(() => {
-    const currentFen = fens[currentMoveNum];
-    const found = openings.find(opening => opening.fen.includes(currentFen.split(' ')[0]));
-    if (found && found.name !== openingName)
-      setOpeningName(found.name);
-  }, [currentMoveNum]);
-
-  function lanToSan(lan: string, i: number) {
-    const possibleMoves = new Chess(fens[i]).moves({ verbose: true });
-    const found = possibleMoves.find(move => move.lan === lan)!;
-
-    if (!found) {
-      console.error(`Cant find legal move ${lan} in fen [${i}]: ${fens[i]}`);
-
-      return `lan-${lan}`;
+    if (currentMoveNum === 0) {
+      setOpeningName('Starting Position');
     }
-
-    return found!.san;
-  }
+    else {
+      const currentFen = fens[currentMoveNum];
+      const found = openings.find(opening => opening.epd.includes(currentFen.split(' ')[0]));
+      if (found && found.name !== openingName)
+        setOpeningName(found.name);
+    }
+  }, [currentMoveNum]);
 
   const historyPairs = makePair(history);
   const currentMove = history[currentMoveNum - 1];
@@ -66,16 +67,6 @@ export default function ReviewMoves() {
     return whiteHasAdv;
   }, [currentMoveNum]);
 
-  const currentMoveClass = useMemo(() => {
-    // if played move is in top 3
-    // find class in best3MovesMod array (specifically for 'forced' case)
-    // else call classify() again
-    if (currentMoveNum === 0)
-      return '';
-
-    return classify(cps[currentMoveNum - 1], cps[currentMoveNum], currentMoveNum - 1, best3MovesMod[currentMoveNum - 1].length === 1);
-  }, [currentMoveNum]);
-
   return (
     <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
@@ -89,7 +80,7 @@ export default function ReviewMoves() {
                 {' '}
                 was
                 {' '}
-                {currentMoveClass}
+                {classHistory[currentMoveNum - 1]}
               </span>
               <span
                 className={cn(
@@ -102,7 +93,7 @@ export default function ReviewMoves() {
             </p>
           </>
         )}
-        {best3MovesMod[currentMoveNum - 1]?.map((move, i) => {
+        {best3MovesWithClass[currentMoveNum - 1]?.map((move, i) => {
           let whiteHasAdv: boolean;
           const adv = formatCp(move.eval);
 
@@ -115,7 +106,7 @@ export default function ReviewMoves() {
 
           return (
             <div className="grid grid-cols-[60px,_60px,_1fr] items-center justify-items-start gap-4 text-small" key={i}>
-              <p className="font-bold">{lanToSan(move.pv, currentMoveNum - 1)}</p>
+              <p className="font-bold">{lanToSan(move.pv, currentMoveNum - 1, fens)}</p>
               <p
                 className={cn(
                   'w-12 rounded-sm px-2 py-1 text-center font-bold',
