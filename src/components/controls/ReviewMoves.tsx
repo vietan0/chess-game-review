@@ -1,9 +1,8 @@
 import { Button } from '@nextui-org/button';
 import { DEFAULT_POSITION } from 'chess.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
-import openings from '../../openings.tsv';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
 import cn from '../../utils/cn';
@@ -29,25 +28,13 @@ export default function ReviewMoves() {
     best3MovesWithClass,
     cps,
     classHistory,
+    openingNames,
   } = useEvalStore(useShallow(state => ({
     best3MovesWithClass: state.best3MovesWithClass,
     cps: state.cps,
     classHistory: state.classHistory,
+    openingNames: state.openingNames,
   })));
-
-  const [openingName, setOpeningName] = useState('Starting Position');
-
-  useEffect(() => {
-    if (currentMoveNum === 0) {
-      setOpeningName('Starting Position');
-    }
-    else {
-      const currentFen = fens[currentMoveNum];
-      const found = openings.find(opening => opening.epd.includes(currentFen.split(' ')[0]));
-      if (found && found.name !== openingName)
-        setOpeningName(found.name);
-    }
-  }, [currentMoveNum]);
 
   const historyPairs = makePair(history);
   const currentMove = history[currentMoveNum - 1];
@@ -120,7 +107,7 @@ export default function ReviewMoves() {
           );
         })}
       </div>
-      <p className="text-small text-foreground-500">{openingName}</p>
+      <p className="text-small text-foreground-500">{openingNames[currentMoveNum]}</p>
       <div className="overflow-scroll">
         <div className="flex flex-col">
           {historyPairs.map((pair, i) => (

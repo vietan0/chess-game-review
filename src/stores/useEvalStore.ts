@@ -1,6 +1,7 @@
 import { DEFAULT_POSITION } from 'chess.js';
 import { create } from 'zustand';
 
+import openings from '../openings.tsv';
 import classify from '../utils/classify';
 import { useBoardStore } from './useBoardStore';
 import { type MoveEval, useStockfishOutputStore } from './useStockfishOutputStore';
@@ -219,6 +220,23 @@ function classifyActualMoves(best3MovesWithClass: MoveEvalWithClass[][], cps: (s
   });
 }
 
+function getOpenings(fens: string[]) {
+  const openingNames = [];
+
+  for (let i = 0; i < fens.length; i++) {
+    if (i === 0) {
+      openingNames.push('Starting Position');
+      continue;
+    }
+
+    const currentFen = fens[i];
+    const found = openings.find(opening => opening.epd.includes(currentFen.split(' ')[0]));
+    openingNames.push(found ? found.name : openingNames[openingNames.length - 1]);
+  }
+
+  return openingNames;
+}
+
 function getCps(best3MovesMod: MoveEvalWithClass[][], currentGame: Chess) {
   const history = currentGame.history({ verbose: true });
   // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
@@ -296,6 +314,7 @@ function getAccuracy(cps: (string | number)[]): [number, number] {
 interface EvalStore {
   best3MovesWithClass: MoveEvalWithClass[][];
   classHistory: Classification[];
+  openingNames: string[];
   cps: (string | number)[];
   accuracy: [number, number];
   populate: () => void;
@@ -305,6 +324,7 @@ interface EvalStore {
 export const useEvalStore = create<EvalStore>(set => ({
   best3MovesWithClass: [],
   classHistory: [],
+  openingNames: [],
   cps: [], // while this show eval --> should I group these two together?
   accuracy: [0, 0],
   populate: () => set(() => {
@@ -313,11 +333,13 @@ export const useEvalStore = create<EvalStore>(set => ({
     const currentGame = useBoardStore.getState().currentGame;
     const history = currentGame.history({ verbose: true });
     const best3MovesWithClass = classifyBest3Moves(best3Moves, history);
+    const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
+    const openingNames = getOpenings(fens);
     const cps = getCps(best3MovesWithClass, currentGame);
     const classHistory = classifyActualMoves(best3MovesWithClass, cps, history);
     const accuracy = getAccuracy(cps);
 
-    return { best3MovesWithClass, classHistory, cps, accuracy };
+    return { best3MovesWithClass, classHistory, openingNames, cps, accuracy };
   }),
-  reset: () => set({ best3MovesWithClass: [], classHistory: [], cps: [], accuracy: [0, 0] }),
+  reset: () => set({ best3MovesWithClass: [], classHistory: [], openingNames: [], cps: [], accuracy: [0, 0] }),
 }));
