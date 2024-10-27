@@ -18,7 +18,7 @@ export default function EndgameBadges() {
 
   if (isGameOver && isFinalMove) {
     return (
-      <div className="absolute size-full text-background">
+      <div className="absolute size-full text-background" id="endgame-badges">
         <div
           className="absolute size-[12.5%]"
           style={{ transform: `translate(${wx + 80}%, ${wy - 17.5}%)` }}
