@@ -49,9 +49,11 @@ export default function Highlight() {
       case 'book':
         return 'bg-book/50';
 
-      default:
-        // forced
+      case 'forced':
         return 'bg-highlight/50';
+
+      default:
+        throw new Error (`Invalid classification: ${classification}`);
     }
   }
 

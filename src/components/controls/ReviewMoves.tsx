@@ -190,9 +190,11 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
       case 'book':
         return 'text-book';
 
-      default:
-        // forced
+      case 'forced':
         return 'text-forced';
+
+      default:
+        throw new Error (`Invalid classification: ${classification}`);
     }
   }
 
@@ -206,7 +208,7 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
 
   return (
     <div className="relative">
-      {['inaccuracy', 'mistake', 'blunder', 'miss', 'great', 'brilliant'].includes(classification) && (
+      {['inaccuracy', 'mistake', 'blunder'].includes(classification) && (
         <MoveClassification
           classification={classification}
           className="absolute -left-5 top-1.5 size-5 cursor-pointer"

@@ -11,6 +11,7 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
 
+import type { Classification } from '../../utils/classify';
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
 interface TooltipData {
@@ -41,6 +42,7 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     const stage = useStageStore(state => state.stage);
     const setStage = useStageStore(state => state.setStage);
     const graphH = 80;
+    const classHistory = useEvalStore(state => state.classHistory);
 
     const getNumericValue = (item: { val: string | number; i: number }) => {
       if (typeof item.val === 'number') {
@@ -107,6 +109,68 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
       });
     }, [showTooltip, xScale, yScale]);
 
+    function chooseStrokeColor(classification: Classification) {
+      switch (classification) {
+        case 'best':
+          return 'stroke-best';
+
+        case 'excellent':
+          return 'stroke-excellent';
+
+        case 'good':
+          return 'stroke-good';
+
+        case 'inaccuracy':
+          return 'stroke-inaccuracy';
+
+        case 'mistake':
+          return 'stroke-mistake';
+
+        case 'blunder':
+          return 'stroke-blunder';
+
+        case 'book':
+          return 'stroke-book';
+
+        case 'forced':
+          return 'stroke-forced';
+
+        default:
+          return 'stroke-white';
+      }
+    }
+
+    function chooseFillColor(classification: Classification) {
+      switch (classification) {
+        case 'best':
+          return 'fill-best';
+
+        case 'excellent':
+          return 'fill-excellent';
+
+        case 'good':
+          return 'fill-good';
+
+        case 'inaccuracy':
+          return 'fill-inaccuracy';
+
+        case 'mistake':
+          return 'fill-mistake';
+
+        case 'blunder':
+          return 'fill-blunder';
+
+        case 'book':
+          return 'fill-book';
+
+        case 'forced':
+          return 'fill-forced';
+
+        default:
+          return 'fill-white';
+      }
+    }
+
     return (
       <>
         <svg
@@ -155,32 +219,47 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
                 to={{ x: tooltipLeft, y: graphH + margin.top }}
               />
               <circle
-                className="fill-default-500"
+                className={chooseFillColor(classHistory[tooltipData.i - 1])}
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 pointerEvents="none"
-                r={4}
-                stroke="white"
-                strokeWidth={2}
+                r={5}
               />
             </g>
           )}
           <g>
+            {classHistory
+              .map((classification, i) => {
+                if (['inaccuracy', 'mistake', 'blunder'].includes(classification)) {
+                  return (
+                    <circle
+                      className={chooseFillColor(classification)}
+                      cx={xScale(i + 1)}
+                      cy={yScale(getNumericValue(cpObj[i + 1]))}
+                      key={i}
+                      pointerEvents="none"
+                      r={4}
+                    />
+                  );
+                }
+
+                return null;
+              })}
+          </g>
+          <g>
             <Line
-              className="stroke-primary-500/50"
+              className={chooseStrokeColor(classHistory[currentMoveNum - 1])}
               from={{ x: xScale(currentMoveNum), y: margin.top }}
               pointerEvents="none"
               strokeWidth={3}
               to={{ x: xScale(currentMoveNum), y: graphH + margin.top }}
             />
             <circle
-              className="fill-primary-500"
+              className={chooseFillColor(classHistory[currentMoveNum - 1])}
               cx={xScale(currentMoveNum)}
               cy={yScale(getNumericValue(cpObj[currentMoveNum]))}
               pointerEvents="none"
-              r={4}
-              stroke="white"
-              strokeWidth={2}
+              r={5}
             />
           </g>
         </svg>
