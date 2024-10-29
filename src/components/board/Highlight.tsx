@@ -2,6 +2,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
+import { chooseHighlightColor } from '../../utils/chooseColorFromClassification';
 import cn from '../../utils/cn';
 import translatePiece from '../../utils/translatePiece';
 
@@ -26,45 +27,14 @@ export default function Highlight() {
   const [xTo, yTo] = translatePiece(currentMove.to, isFlipped);
   const classification = classHistory[currentMoveNum - 1];
 
-  function chooseBgColor() {
-    switch (classification) {
-      case 'best':
-        return 'bg-best/50';
-
-      case 'excellent':
-        return 'bg-excellent/50';
-
-      case 'good':
-        return 'bg-good/50';
-
-      case 'inaccuracy':
-        return 'bg-inaccuracy/50';
-
-      case 'mistake':
-        return 'bg-mistake/50';
-
-      case 'blunder':
-        return 'bg-blunder/50';
-
-      case 'book':
-        return 'bg-book/50';
-
-      case 'forced':
-        return 'bg-highlight/50';
-
-      default:
-        throw new Error (`Invalid classification: ${classification}`);
-    }
-  }
-
   return (
     <div id="highlight">
       <div
-        className={cn('absolute size-[12.5%]', chooseBgColor())}
+        className={cn('absolute size-[12.5%]', chooseHighlightColor(classification))}
         style={{ transform: `translate(${xFrom}%, ${yFrom}%)` }}
       />
       <div
-        className={cn('absolute size-[12.5%]', chooseBgColor())}
+        className={cn('absolute size-[12.5%]', chooseHighlightColor(classification))}
         style={{ transform: `translate(${xTo}%, ${yTo}%)` }}
       />
     </div>

@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import MoveClassification from '../../icons/move-classifications/MoveClassification';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
+import { chooseTextColor } from '../../utils/chooseColorFromClassification';
 import cn from '../../utils/cn';
 import lanToSan from '../../utils/lanToSan';
 import makePair from '../../utils/makePair';
@@ -167,37 +168,6 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
 
   const classification = classHistory[realIndex - 1];
 
-  function chooseTextColor() {
-    switch (classification) {
-      case 'best':
-        return 'text-best';
-
-      case 'excellent':
-        return 'text-excellent';
-
-      case 'good':
-        return 'text-good';
-
-      case 'inaccuracy':
-        return 'text-inaccuracy';
-
-      case 'mistake':
-        return 'text-mistake';
-
-      case 'blunder':
-        return 'text-blunder';
-
-      case 'book':
-        return 'text-book';
-
-      case 'forced':
-        return 'text-forced';
-
-      default:
-        throw new Error (`Invalid classification: ${classification}`);
-    }
-  }
-
   useEffect(() => {
     if (currentMoveNum === realIndex) {
       if (window.innerWidth >= 1024) {
@@ -219,7 +189,7 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
         className={cn(
           'min-w-0 justify-start rounded-[4px] px-2 font-bold',
           currentMoveNum === realIndex && 'bg-default-200',
-          chooseTextColor(),
+          chooseTextColor(classification),
         )}
         disableAnimation
         disableRipple

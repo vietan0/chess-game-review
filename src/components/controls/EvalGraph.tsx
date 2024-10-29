@@ -10,8 +10,8 @@ import { useCallback, useMemo } from 'react';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
+import { chooseFillColor, chooseStrokeColor } from '../../utils/chooseColorFromClassification';
 
-import type { Classification } from '../../utils/classify';
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
 interface TooltipData {
@@ -108,68 +108,6 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
         tooltipTop: yScale(getNumericValue(d)),
       });
     }, [showTooltip, xScale, yScale]);
-
-    function chooseStrokeColor(classification: Classification) {
-      switch (classification) {
-        case 'best':
-          return 'stroke-best';
-
-        case 'excellent':
-          return 'stroke-excellent';
-
-        case 'good':
-          return 'stroke-good';
-
-        case 'inaccuracy':
-          return 'stroke-inaccuracy';
-
-        case 'mistake':
-          return 'stroke-mistake';
-
-        case 'blunder':
-          return 'stroke-blunder';
-
-        case 'book':
-          return 'stroke-book';
-
-        case 'forced':
-          return 'stroke-forced';
-
-        default:
-          return 'stroke-white';
-      }
-    }
-
-    function chooseFillColor(classification: Classification) {
-      switch (classification) {
-        case 'best':
-          return 'fill-best';
-
-        case 'excellent':
-          return 'fill-excellent';
-
-        case 'good':
-          return 'fill-good';
-
-        case 'inaccuracy':
-          return 'fill-inaccuracy';
-
-        case 'mistake':
-          return 'fill-mistake';
-
-        case 'blunder':
-          return 'fill-blunder';
-
-        case 'book':
-          return 'fill-book';
-
-        case 'forced':
-          return 'fill-forced';
-
-        default:
-          return 'fill-white';
-      }
-    }
 
     return (
       <>
