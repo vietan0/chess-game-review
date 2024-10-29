@@ -98,6 +98,29 @@ function getClassFromThresholds(delta: number, thresholds: number[]): Classifica
 function bothNumbers(beforeEval: number, afterEval: number, whiteToMove: boolean) {
   const wasLosing = (whiteToMove && beforeEval < 0) || (!whiteToMove && beforeEval > 0);
   const delta = getDelta(beforeEval, afterEval, whiteToMove);
+
+  if (
+    !wasLosing
+    && beforeEval * afterEval > 0 // same sign
+  ) {
+    if (Math.abs(beforeEval) > 800 && Math.abs(afterEval) > 500) {
+      // special case 1: when totally winning before and after, 'inaccuracy' is the lowest classification
+      if (delta >= -50)
+        return 'best';
+      if (delta > -150)
+        return 'excellent';
+      if (delta > -200)
+        return 'good';
+
+      return 'inaccuracy';
+    }
+
+    if (Math.abs(beforeEval) > 600 && Math.abs(afterEval) < 200) {
+      // special case 2: when totally winning before, then advantage is < 200 after, auto 'blunder'
+      return 'blunder';
+    }
+  }
+
   const thresholds = chooseThresholds(beforeEval, wasLosing);
   const classification = getClassFromThresholds(delta, thresholds);
 
