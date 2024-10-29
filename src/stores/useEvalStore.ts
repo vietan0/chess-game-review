@@ -237,10 +237,10 @@ function getOpenings(fens: string[]) {
   return openingNames;
 }
 
-function getCps(best3MovesMod: MoveEvalWithClass[][], currentGame: Chess) {
+function getCps(best3MovesWithClass: MoveEvalWithClass[][], currentGame: Chess) {
   const history = currentGame.history({ verbose: true });
   // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
-  const beforeMate = best3MovesMod.map(subArr => subArr[0].eval);
+  const beforeMate = best3MovesWithClass.map(subArr => subArr[0].eval);
   const isCheckmate = currentGame.isCheckmate();
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
