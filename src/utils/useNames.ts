@@ -6,14 +6,14 @@ export default function useNames() {
   let wName;
   let bName;
 
-  if (header.White && header.White !== '?') {
+  if (header.White && header.White !== '?' && header.White !== '-') {
     wName = header.White;
   }
   else {
     wName = 'White';
   }
 
-  if (header.Black && header.Black !== '?') {
+  if (header.Black && header.Black !== '?' && header.Black !== '-') {
     bName = header.Black;
   }
 

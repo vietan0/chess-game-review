@@ -58,11 +58,11 @@ export default function ReviewOverview() {
     <div className="flex flex-col gap-4 text-small" id="ReviewOverview">
       <EvalGraph />
       <div className="flex flex-col gap-2" id="accuracy">
-        <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4">
+        <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4 [&>*]:w-full">
           <p className="text-foreground-500">Players</p>
-          <p className="justify-self-center overflow-x-scroll text-ellipsis font-bold">{wName}</p>
+          <p className="truncate text-center font-bold">{wName}</p>
           <span className="invisible text-[1px]">purposefully blank space</span>
-          <p className="justify-self-center overflow-x-scroll text-ellipsis font-bold">{bName}</p>
+          <p className="truncate text-center font-bold">{bName}</p>
         </div>
         <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4">
           <p className="text-foreground-500">Accuracy</p>
