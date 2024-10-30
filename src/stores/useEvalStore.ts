@@ -241,12 +241,11 @@ function getCps(best3MovesWithClass: MoveEvalWithClass[][], currentGame: Chess) 
   const history = currentGame.history({ verbose: true });
   // should have 3 types of value: number, string ("+M1"/"-M1"), string ("1-0"/"0-1") for checkmate case
   const beforeMate = best3MovesWithClass.map(subArr => subArr[0].eval);
-  const isCheckmate = currentGame.isCheckmate();
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
-  if (isCheckmate && beforeMate.length === fens.length - 1) {
-    // only push the checkmate after done analyzing
-    const result = currentGame.header().Result; // '1-0' or '0-1'
+  if ((currentGame.isCheckmate() || currentGame.isStalemate()) && beforeMate.length === fens.length - 1) {
+    // only push the checkmate/stalemate after done analyzing
+    const result = currentGame.header().Result; // '1-0' or '0-1' or '1-2/1-2'
     const afterMate = [...beforeMate, result];
 
     return afterMate;

@@ -49,6 +49,10 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
         return item.val;
       }
 
+      else if (item.val === '1/2-1/2') {
+        return 0;
+      }
+
       else if (item.val.startsWith('-') || item.val === '0-1') {
         return -2000;
       }

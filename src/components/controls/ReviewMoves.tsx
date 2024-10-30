@@ -51,7 +51,7 @@ export default function ReviewMoves() {
       whiteHasAdv = cps[currentMoveNum] >= 0;
     }
     else {
-      whiteHasAdv = cps[currentMoveNum].startsWith('+');
+      whiteHasAdv = cps[currentMoveNum].startsWith('+') || cps[currentMoveNum] === '1-0';
     }
 
     return whiteHasAdv;
@@ -85,8 +85,9 @@ export default function ReviewMoves() {
             </span>
             <span
               className={cn(
-                'w-14 rounded-sm px-2 py-1 text-center font-bold',
+                'rounded-sm px-2 py-1 text-center font-bold',
                 whiteHasAdv ? 'bg-foreground text-background' : 'bg-default-100',
+                adv === '1/2-1/2' ? 'w-20' : 'w-14',
               )}
             >
               {(adv.startsWith('-') || adv.startsWith('+')) ? adv.slice(1) : adv}

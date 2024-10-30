@@ -128,19 +128,24 @@ function bothNumbers(beforeEval: number, afterEval: number, whiteToMove: boolean
 }
 
 function bothStrings(beforeEval: string, afterEval: string, whiteToMove: boolean): Classification {
-  // 1. checkmate case
+  // 1. stalemate case
+  if (afterEval === '1/2-1/2') {
+    return 'blunder';
+  }
+
+  // 2. checkmate case
   if (afterEval === '1-0' || afterEval === '0-1') {
     return 'best';
   }
 
-  // 2. switch sign means blunder
+  // 3. switch sign means blunder
   if (
     (beforeEval[0] === '-' && afterEval[0] === '+')
     || (beforeEval[0] === '+' && afterEval[0] === '-')) {
     return 'blunder';
   }
 
-  // 3. same sign -> compare mate values
+  // 4. same sign -> compare mate values
   const beforeM = Number(beforeEval.slice(2));
   const afterM = Number(afterEval.slice(2));
   const deltaM = whiteToMove ? afterM - beforeM : beforeM - afterM;
@@ -158,7 +163,33 @@ function bothStrings(beforeEval: string, afterEval: string, whiteToMove: boolean
 }
 
 function numberToString(beforeEval: number, afterEval: string, whiteToMove: boolean): Classification {
-  const mateIsPositive = afterEval.startsWith('+');
+  const stalemate = afterEval === '1/2-1/2';
+  const mateIsPositive = !stalemate && afterEval.startsWith('+');
+
+  if (stalemate) {
+    if (whiteToMove) {
+      // white moves, then stalemate
+      if (beforeEval <= 100)
+        return 'good';
+      if (beforeEval <= 200)
+        return 'inaccuracy';
+      if (beforeEval <= 300)
+        return 'mistake';
+
+      return 'blunder';
+    }
+    else {
+      // black moves, then stalemate
+      if (beforeEval >= -100)
+        return 'good';
+      if (beforeEval >= -200)
+        return 'inaccuracy';
+      if (beforeEval >= -300)
+        return 'mistake';
+
+      return 'blunder';
+    }
+  }
 
   if (whiteToMove) {
     if (mateIsPositive) {
@@ -293,5 +324,8 @@ export default function classify({
   beforeEval: string | number;
   afterEval: string | number;
 }) {
+  if (afterEval === undefined)
+    return 'book';
+
   return sniffForced(subArr) || sniffBook(lan, history, i) || classifyByEval(beforeEval, afterEval, i);
 }
