@@ -341,8 +341,5 @@ export default function classify({
   beforeEval: string | number;
   afterEval: string | number;
 }) {
-  if (afterEval === undefined)
-    return 'book';
-
   return sniffForced(subArr) || sniffBook(lan, history, i) || classifyByEval(beforeEval, afterEval, i);
 }
