@@ -121,6 +121,23 @@ function bothNumbers(beforeEval: number, afterEval: number, whiteToMove: boolean
     }
   }
 
+  if (
+    wasLosing
+    && beforeEval * afterEval > 0 // same sign
+  ) {
+    if (Math.abs(beforeEval) > 600 && Math.abs(afterEval) > 900) {
+      // special case 3: when dead lost before and after, 'inaccuracy' is the lowest classification
+      if (delta >= -50)
+        return 'best';
+      if (delta > -150)
+        return 'excellent';
+      if (delta > -200)
+        return 'good';
+
+      return 'inaccuracy';
+    }
+  }
+
   const thresholds = chooseThresholds(beforeEval, wasLosing);
   const classification = getClassFromThresholds(delta, thresholds);
 
