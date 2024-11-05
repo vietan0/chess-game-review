@@ -9,6 +9,7 @@ import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
+import Arrows from './Arrows';
 import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
@@ -69,6 +70,7 @@ export default function Board() {
           <Pieces />
           <MoveClassificationBadges />
           <EndgameBadges />
+          <Arrows />
         </div>
       </div>
       <PlayerBadge color={isFlipped ? 'b' : 'w'} />
