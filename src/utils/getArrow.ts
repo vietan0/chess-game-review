@@ -97,10 +97,6 @@ export default function getArrow(startSquare: Square, endSquare: Square): Arrow 
   if ((horiDist === 2 && vertDist === 1) || (horiDist === 1 && vertDist === 2)) {
     // knight
     let direction: KnightArrow['direction'] | null = null;
-    console.log(deltaFile);
-    console.log(horiDist);
-    console.log(deltaRank);
-    console.log(vertDist);
 
     if (horiDist === 2) {
       // right/left first
@@ -129,8 +125,6 @@ export default function getArrow(startSquare: Square, endSquare: Square): Arrow 
       shape: 'knight',
       direction,
     };
-
-    console.log(knightArrow.direction);
 
     return knightArrow;
   }

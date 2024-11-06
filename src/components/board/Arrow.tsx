@@ -80,6 +80,7 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
   let l = 0;
   const baseX = 65;
   const baseY = ((75 - 4 * q) / 2) + 10;
+  let table: number[][] = [];
   let rotate = '';
 
   if (arrow.shape === 'horizontal' || arrow.shape === 'vertical') {
@@ -95,6 +96,16 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
       : arrow.direction === 'left'
       ? 180
       : 270}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
+
+    table = [
+      [0, 0],
+      [b, 0],
+      [b, -q],
+      [l, q],
+      [b, 3 * q],
+      [b, 2 * q],
+      [0, 2 * q],
+    ];
   }
 
   else if (arrow.shape === 'diagonal') {
@@ -110,17 +121,68 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
       : arrow.direction === 'upleft'
       ? 225
       : 315}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
-  }
 
-  const table = [
-    [0, 0],
-    [b, 0],
-    [b, -q],
-    [l, q],
-    [b, 3 * q],
-    [b, 2 * q],
-    [0, 2 * q],
-  ];
+    table = [
+      [0, 0],
+      [b, 0],
+      [b, -q],
+      [l, q],
+      [b, 3 * q],
+      [b, 2 * q],
+      [0, 2 * q],
+    ];
+  }
+  else {
+    // knight shaped
+    if (arrow.direction === 'rightdown'
+      || arrow.direction === 'downleft'
+      || arrow.direction === 'leftup'
+      || arrow.direction === 'upright'
+    ) {
+      table = [
+        [0, 0],
+        [10 + 112.5 + q, 0],
+        [10 + 112.5 + q, 37.5 + 2.5 * q],
+        [10 + 112.5 + 2 * q, 37.5 + 2.5 * q],
+        [10 + 112.5, 75 + q],
+        [10 + 112.5 - 2 * q, 37.5 + 2.5 * q],
+        [10 + 112.5 - q, 37.5 + 2.5 * q],
+        [10 + 112.5 - q, 2 * q],
+        [0, 2 * q],
+      ];
+
+      rotate = `rotate(${
+        arrow.direction === 'rightdown'
+        ? 0
+        : arrow.direction === 'downleft'
+        ? 90
+        : arrow.direction === 'leftup'
+        ? 180
+        : 270}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
+    }
+    else {
+      table = [
+        [0, 0],
+        [10 + 112.5 - q, 0],
+        [10 + 112.5 - q, -25 - 10 - q],
+        [10 + 112.5 - 2 * q, -25 - 10 - q],
+        [10 + 112.5, -75 + q],
+        [10 + 112.5 + 2 * q, -25 - 10 - q],
+        [10 + 112.5 + q, -25 - 10 - q],
+        [10 + 112.5 + q, 2 * q],
+        [0, 2 * q],
+      ];
+
+      rotate = `rotate(${
+        arrow.direction === 'rightup'
+        ? 0
+        : arrow.direction === 'upleft'
+        ? -90
+        : arrow.direction === 'leftdown'
+        ? -180
+        : -270}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
+    }
+  }
 
   const points = tableToPoints(table);
   const [offsetX, offsetY] = offset(from);
