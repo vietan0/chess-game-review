@@ -1,11 +1,9 @@
-import { useBoardStore } from '../../stores/useBoardStore';
 import getArrow from '../../utils/getArrow';
 import tableToPoints from '../../utils/tableToPoints';
 
 import type { Square } from 'chess.js';
 
 export default function Arrow({ from, to }: { from: Square; to: Square }) {
-  const isFlipped = useBoardStore(state => state.isFlipped);
   const arrow = getArrow(from, to);
   if (!arrow)
     return null;
@@ -76,70 +74,66 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
     return [x, y];
   }
 
+  const q = 9;
+  let d = 0;
+  let b = 0;
+  let l = 0;
+  const baseX = 65;
+  const baseY = ((75 - 4 * q) / 2) + 10;
+  let rotate = '';
+
   if (arrow.shape === 'horizontal' || arrow.shape === 'vertical') {
-    let d = 0;
-    let b = 0;
-    const q = 9;
-    let l = 0;
-    let baseX = 0;
-    let baseY = 0;
-    let table: number[][] = [];
+    d = (arrow.distance - 1) * 75;
+    b = d + 25;
+    l = b + 2.5 * q;
 
-    if (arrow.shape === 'horizontal') {
-      d = (arrow.distance - 1) * 75;
-      b = arrow.direction === 'right' ? d + 25 : -d - 25;
-      l = arrow.direction === 'right' ? b + 2.5 * q : b - 2.5 * q;
-      baseX = arrow.direction === 'right' ? 65 : 10;
-      baseY = ((75 - 4 * q) / 2) + 10;
-
-      table = [
-        [0, 0],
-        [b, 0],
-        [b, -q],
-        [0 + l, q],
-        [b, 3 * q],
-        [b, 2 * q],
-        [0, 2 * q],
-      ];
-    }
-    else {
-      d = (arrow.distance - 1) * 75;
-      b = arrow.direction === 'down' ? d + 25 : -d - 25;
-      l = arrow.direction === 'down' ? b + 2.5 * q : b - 2.5 * q;
-      baseX = (75 - 4 * q) / 2 + 3 * q;
-      baseY = arrow.direction === 'down' ? 65 : 10;
-
-      table = [
-        [0, 0],
-        [0, b],
-        [q, b],
-        [-q, l],
-        [-3 * q, b],
-        [-2 * q, b],
-        [-2 * q, 0],
-      ];
-    }
-
-    const points = tableToPoints(table);
-    const [offsetX, offsetY] = offset(from);
-    const transX = baseX + offsetX;
-    const transY = baseY + offsetY;
-    const translate = `translate(${transX}, ${transY})`;
-
-    const flipOrigin = {
-      x: -transX + 300,
-      y: -transY + 300,
-    }; // center of board relative to starting point
-
-    const rotate = `rotate(${isFlipped ? 180 : 0}, ${flipOrigin.x}, ${flipOrigin.y})`;
-
-    return (
-      <polygon
-        fill="rgba(255, 170, 0, 0.8)"
-        opacity="0.8"
-        points={points}
-        transform={`${translate} ${rotate}`}
-      />
-    );
+    rotate = `rotate(${
+      arrow.direction === 'right'
+      ? 0
+      : arrow.direction === 'down'
+      ? 90
+      : arrow.direction === 'left'
+      ? 180
+      : 270}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
   }
+
+  else if (arrow.shape === 'diagonal') {
+    d = (arrow.distance - 1) * 75;
+    b = (d + 25) * Math.sqrt(2) + 6 * (Math.sqrt(2) - 1) * q;
+    l = b + 2.5 * q;
+
+    rotate = `rotate(${
+      arrow.direction === 'downright'
+      ? 45
+      : arrow.direction === 'downleft'
+      ? 135
+      : arrow.direction === 'upleft'
+      ? 225
+      : 315}, ${-baseX + 37.5}, ${-baseY + 37.5})`;
+  }
+
+  const table = [
+    [0, 0],
+    [b, 0],
+    [b, -q],
+    [l, q],
+    [b, 3 * q],
+    [b, 2 * q],
+    [0, 2 * q],
+  ];
+
+  const points = tableToPoints(table);
+  const [offsetX, offsetY] = offset(from);
+  const transX = baseX + offsetX;
+  const transY = baseY + offsetY;
+  const translate = `translate(${transX}, ${transY})`;
+
+  return (
+    <polygon
+      fill="rgba(255, 170, 0, 0.8)"
+      opacity="0.8"
+      points={points}
+      transform={`${translate} ${rotate}`}
+    />
+  );
 }

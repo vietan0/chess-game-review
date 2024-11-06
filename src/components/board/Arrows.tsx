@@ -162,7 +162,7 @@ export default function Arrows() {
     return (525 + 600) / 2;
   }
 
-  function getSquareCenter(square: Square, isFlipped: boolean) {
+  function getSquareCenter(square: Square) {
     const [file, rank] = square;
     const center = { x: 0, y: 0 };
 
@@ -179,28 +179,28 @@ export default function Arrows() {
 
     switch (file) {
       case 'a':
-        center.x = isFlipped ? centers[7] : centers[0];
+        center.x = centers[0];
         break;
       case 'b':
-        center.x = isFlipped ? centers[6] : centers[1];
+        center.x = centers[1];
         break;
       case 'c':
-        center.x = isFlipped ? centers[5] : centers[2];
+        center.x = centers[2];
         break;
       case 'd':
-        center.x = isFlipped ? centers[4] : centers[3];
+        center.x = centers[3];
         break;
       case 'e':
-        center.x = isFlipped ? centers[3] : centers[4];
+        center.x = centers[4];
         break;
       case 'f':
-        center.x = isFlipped ? centers[2] : centers[5];
+        center.x = centers[5];
         break;
       case 'g':
-        center.x = isFlipped ? centers[1] : centers[6];
+        center.x = centers[6];
         break;
       case 'h':
-        center.x = isFlipped ? centers[0] : centers[7];
+        center.x = centers[7];
         break;
       default:
         break;
@@ -208,28 +208,28 @@ export default function Arrows() {
 
     switch (rank) {
       case '1':
-        center.y = isFlipped ? centers[0] : centers[7];
+        center.y = centers[7];
         break;
       case '2':
-        center.y = isFlipped ? centers[1] : centers[6];
+        center.y = centers[6];
         break;
       case '3':
-        center.y = isFlipped ? centers[2] : centers[5];
+        center.y = centers[5];
         break;
       case '4':
-        center.y = isFlipped ? centers[3] : centers[4];
+        center.y = centers[4];
         break;
       case '5':
-        center.y = isFlipped ? centers[4] : centers[3];
+        center.y = centers[3];
         break;
       case '6':
-        center.y = isFlipped ? centers[5] : centers[2];
+        center.y = centers[2];
         break;
       case '7':
-        center.y = isFlipped ? centers[6] : centers[1];
+        center.y = centers[1];
         break;
       case '8':
-        center.y = isFlipped ? centers[7] : centers[0];
+        center.y = centers[0];
         break;
       default:
         break;
@@ -288,21 +288,22 @@ export default function Arrows() {
       onContextMenu={handleRClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      transform={`rotate(${isFlipped ? 180 : 0})`}
       width={600}
     >
       {startSquare && endSquare && startSquare !== endSquare
       && (
         <>
           <ellipse
-            cx={getSquareCenter(startSquare, isFlipped).x}
-            cy={getSquareCenter(startSquare, isFlipped).y}
+            cx={getSquareCenter(startSquare).x}
+            cy={getSquareCenter(startSquare).y}
             fill="rgba(255, 170, 0, 0.8)"
             rx="5"
             ry="5"
           />
           <ellipse
-            cx={getSquareCenter(endSquare, isFlipped).x}
-            cy={getSquareCenter(endSquare, isFlipped).y}
+            cx={getSquareCenter(endSquare).x}
+            cy={getSquareCenter(endSquare).y}
             fill="rgba(255, 170, 0, 0.8)"
             rx="5"
             ry="5"
