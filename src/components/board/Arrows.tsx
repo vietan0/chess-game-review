@@ -1,7 +1,7 @@
-/* eslint-disable unused-imports/no-unused-vars */
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
+import getArrow from '../../utils/getArrow';
 import Arrow from './Arrow';
 
 import type { Square } from 'chess.js';
@@ -18,20 +18,27 @@ export default function Arrows() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartPos, setDragStartPos] = useState<Pos>({ x: null, y: null });
   const [dragEndPos, setDragEndPos] = useState<Pos>({ x: null, y: null });
+  const [arrows, setArrows] = useState<string[]>([]);
 
-  const startSquare = useMemo(() => {
-    if (dragStartPos.x === null || dragStartPos.y === null)
-      return null;
+  useEffect(() => {
+    if (dragStartPos.x !== null && dragStartPos.y !== null && dragEndPos.x !== null && dragEndPos.y !== null) {
+      const from = getSquare(ordinalSquare(dragStartPos.x), ordinalSquare(dragStartPos.y), isFlipped);
+      const to = getSquare(ordinalSquare(dragEndPos.x), ordinalSquare(dragEndPos.y), isFlipped);
 
-    return getSquare(ordinalSquare(dragStartPos.x), ordinalSquare(dragStartPos.y), isFlipped);
-  }, [dragStartPos]);
+      if (from !== to && getArrow(from, to)) {
+        const arrow = `${from}${to}`;
 
-  const endSquare = useMemo(() => {
-    if (dragEndPos.x === null || dragEndPos.y === null)
-      return null;
-
-    return getSquare(ordinalSquare(dragEndPos.x), ordinalSquare(dragEndPos.y), isFlipped);
-  }, [dragEndPos]);
+        setArrows((prev) => {
+          if (prev.includes(arrow)) {
+            return prev.filter(a => a !== arrow);
+          }
+          else {
+            return [...prev, arrow];
+          }
+        });
+      }
+    }
+  }, [dragStartPos, dragEndPos]);
 
   function ordinalSquare(num: number): Ordinal {
     if (num >= 0 && num < 75) {
@@ -130,117 +137,10 @@ export default function Arrows() {
     return `${file}${rank}` as Square;
   }
 
-  function centerACoor(num: number) {
-    if (num >= 0 && num < 75) {
-      return 75 / 2;
-    }
-
-    if (num >= 75 && num < 150) {
-      return (75 + 150) / 2;
-    }
-
-    if (num >= 150 && num < 225) {
-      return (150 + 225) / 2;
-    }
-
-    if (num >= 225 && num < 300) {
-      return (225 + 300) / 2;
-    }
-
-    if (num >= 300 && num < 375) {
-      return (300 + 375) / 2;
-    }
-
-    if (num >= 375 && num < 450) {
-      return (375 + 450) / 2;
-    }
-
-    if (num >= 450 && num < 525) {
-      return (450 + 525) / 2;
-    }
-
-    return (525 + 600) / 2;
-  }
-
-  function getSquareCenter(square: Square) {
-    const [file, rank] = square;
-    const center = { x: 0, y: 0 };
-
-    const centers = [
-      (0 + 75) / 2,
-      (75 + 150) / 2,
-      (150 + 225) / 2,
-      (225 + 300) / 2,
-      (300 + 375) / 2,
-      (375 + 450) / 2,
-      (450 + 525) / 2,
-      (525 + 600) / 2,
-    ];
-
-    switch (file) {
-      case 'a':
-        center.x = centers[0];
-        break;
-      case 'b':
-        center.x = centers[1];
-        break;
-      case 'c':
-        center.x = centers[2];
-        break;
-      case 'd':
-        center.x = centers[3];
-        break;
-      case 'e':
-        center.x = centers[4];
-        break;
-      case 'f':
-        center.x = centers[5];
-        break;
-      case 'g':
-        center.x = centers[6];
-        break;
-      case 'h':
-        center.x = centers[7];
-        break;
-      default:
-        break;
-    }
-
-    switch (rank) {
-      case '1':
-        center.y = centers[7];
-        break;
-      case '2':
-        center.y = centers[6];
-        break;
-      case '3':
-        center.y = centers[5];
-        break;
-      case '4':
-        center.y = centers[4];
-        break;
-      case '5':
-        center.y = centers[3];
-        break;
-      case '6':
-        center.y = centers[2];
-        break;
-      case '7':
-        center.y = centers[1];
-        break;
-      case '8':
-        center.y = centers[0];
-        break;
-      default:
-        break;
-    }
-
-    return center;
-  }
-
-  function handleClick(e: React.MouseEvent<SVGSVGElement, MouseEvent>) {
+  function handleClick() {
     setDragStartPos({ x: null, y: null });
     setDragEndPos({ x: null, y: null });
+    setArrows([]);
   }
 
   function handleRClick(e: React.MouseEvent<SVGSVGElement, MouseEvent>) {
@@ -291,26 +191,13 @@ export default function Arrows() {
       transform={`rotate(${isFlipped ? 180 : 0})`}
       width={600}
     >
-      {startSquare && endSquare && startSquare !== endSquare
-      && (
-        <>
-          <ellipse
-            cx={getSquareCenter(startSquare).x}
-            cy={getSquareCenter(startSquare).y}
-            fill="rgba(255, 170, 0, 0.8)"
-            rx="5"
-            ry="5"
-          />
-          <ellipse
-            cx={getSquareCenter(endSquare).x}
-            cy={getSquareCenter(endSquare).y}
-            fill="rgba(255, 170, 0, 0.8)"
-            rx="5"
-            ry="5"
-          />
-        </>
-      )}
-      <Arrow from="h1" to="c1" />
+      {arrows.map(a => (
+        <Arrow
+          from={a.substring(0, 2) as Square}
+          key={a}
+          to={a.substring(2, 4) as Square}
+        />
+      ))}
     </svg>
   );
 }
