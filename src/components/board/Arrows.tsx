@@ -155,8 +155,8 @@ export default function Arrows() {
       const rect = svg.getBoundingClientRect();
 
       setDragStartPos({
-        x: e.pageX - rect.x,
-        y: e.pageY - rect.y,
+        x: e.pageX - rect.x - window.scrollX,
+        y: e.pageY - rect.y - window.scrollY,
       });
 
       setDragEndPos({ x: null, y: null });
@@ -172,8 +172,8 @@ export default function Arrows() {
         const rect = svg.getBoundingClientRect();
 
         setDragEndPos({
-          x: e.pageX - rect.x,
-          y: e.pageY - rect.y,
+          x: e.pageX - rect.x - window.scrollX,
+          y: e.pageY - rect.y - window.scrollY,
         });
       }
     }
