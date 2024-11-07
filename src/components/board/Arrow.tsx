@@ -74,6 +74,9 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
     return [x, y];
   }
 
+  // How to draw an arrow polygon from points:
+  // https://www.desmos.com/calculator/2asvkl9yyq
+
   const q = 9;
   let d = 0;
   let b = 0;
@@ -132,6 +135,7 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
       [0, 2 * q],
     ];
   }
+
   else {
     // knight shaped
     if (arrow.direction === 'rightdown'
