@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import useSoundFx from '../../hooks/useSoundFx';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
+import { useManualHighlightStore } from '../../stores/useManualHighlightStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useStageStore } from '../../stores/useStageStore';
@@ -26,6 +27,7 @@ if (import.meta.env.DEV) {
   mountStoreDevtool('settingsStore', useSettingsStore);
   mountStoreDevtool('evalStore', useEvalStore);
   mountStoreDevtool('stageStore', useStageStore);
+  mountStoreDevtool('manualHighlightStore', useManualHighlightStore);
 }
 
 export default function Board() {

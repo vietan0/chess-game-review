@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
+import { useManualHighlightStore } from '../../stores/useManualHighlightStore';
 import { useStageStore } from '../../stores/useStageStore';
 import getArrow from '../../utils/getArrow';
 import Arrow from './Arrow';
@@ -22,6 +23,8 @@ export default function Arrows() {
   const [dragStartPos, setDragStartPos] = useState<Pos>({ x: null, y: null });
   const [dragEndPos, setDragEndPos] = useState<Pos>({ x: null, y: null });
   const [arrows, setArrows] = useState<string[]>([]);
+  const toggleHighlight = useManualHighlightStore(state => state.toggleHighlight);
+  const resetHighlight = useManualHighlightStore(state => state.resetHighlight);
   // bestMove arrow
   const reviewFinished = useStageStore(state => state.computed.reviewFinished);
   const best3MovesWithClass = useEvalStore(state => state.best3MovesWithClass);
@@ -44,6 +47,10 @@ export default function Arrows() {
     if (dragStartPos.x !== null && dragStartPos.y !== null && dragEndPos.x !== null && dragEndPos.y !== null) {
       const from = getSquare(ordinalSquare(dragStartPos.x), ordinalSquare(dragStartPos.y), isFlipped);
       const to = getSquare(ordinalSquare(dragEndPos.x), ordinalSquare(dragEndPos.y), isFlipped);
+
+      if (from === to) {
+        toggleHighlight(from);
+      }
 
       if (from !== to && getArrow(from, to)) {
         const arrow = `${from}${to}`;
@@ -161,6 +168,7 @@ export default function Arrows() {
     setDragStartPos({ x: null, y: null });
     setDragEndPos({ x: null, y: null });
     setArrows([]);
+    resetHighlight();
   }
 
   function handleRClick(e: React.MouseEvent<SVGSVGElement, MouseEvent>) {
