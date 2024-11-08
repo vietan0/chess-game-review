@@ -26,7 +26,7 @@ export default function MoveClassificationBadges() {
   const [x, y] = translatePiece(currentMove.to, isFlipped);
 
   return (
-    <div className="absolute size-full" id="move-classification-badges">
+    <div className="pointer-events-none absolute size-full" id="move-classification-badges">
       <div
         className="absolute size-[12.5%]"
         style={{ transform: `translate(${x + 80}%, ${y - 17.5}%)` }}
