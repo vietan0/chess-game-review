@@ -1,12 +1,11 @@
 import { useShallow } from 'zustand/react/shallow';
 
+import MoveClassification from '../../icons/move-classifications/MoveClassification';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
-import { chooseHighlightColor } from '../../utils/chooseColorFromClassification';
-import cn from '../../utils/cn';
 import translatePiece from '../../utils/translatePiece';
 
-export default function Highlight() {
+export default function MoveClassificationBadges() {
   const {
     currentGame,
     currentMoveNum,
@@ -18,25 +17,25 @@ export default function Highlight() {
   })));
 
   const classHistory = useEvalStore(state => state.classHistory);
-
-  if (currentMoveNum === 0)
-    return null;
   const history = currentGame.history({ verbose: true });
   const currentMove = history[currentMoveNum - 1];
-  const [xFrom, yFrom] = translatePiece(currentMove.from, isFlipped);
-  const [xTo, yTo] = translatePiece(currentMove.to, isFlipped);
+
+  if (!currentMove)
+    return null;
   const classification = classHistory[currentMoveNum - 1];
+  const [x, y] = translatePiece(currentMove.to, isFlipped);
 
   return (
-    <div id="highlight">
+    <div className="absolute size-full" id="move-classification-badges">
       <div
-        className={cn('absolute size-[12.5%]', chooseHighlightColor(classification))}
-        style={{ transform: `translate(${xFrom}%, ${yFrom}%)` }}
-      />
-      <div
-        className={cn('absolute size-[12.5%]', chooseHighlightColor(classification))}
-        style={{ transform: `translate(${xTo}%, ${yTo}%)` }}
-      />
+        className="absolute size-[12.5%]"
+        style={{ transform: `translate(${x + 80}%, ${y - 17.5}%)` }}
+      >
+        <MoveClassification
+          classification={classification}
+          className="size-7"
+        />
+      </div>
     </div>
   );
 }

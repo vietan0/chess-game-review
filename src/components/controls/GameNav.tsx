@@ -45,7 +45,15 @@ export default function GameNav() {
 
   useHotkeys('left', () => toPrevMove());
   useHotkeys('up', () => toFirstMove());
-  useHotkeys('down', () => toFinalMove());
+
+  useHotkeys('down', () => {
+    toFinalMove();
+
+    if (stage === 'review-overview' && currentMoveNum === 0) {
+      setStage('review-moves');
+    }
+  });
+
   useHotkeys('x', () => flipBoard());
 
   return (
@@ -96,7 +104,13 @@ export default function GameNav() {
           disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
-          onPress={toFinalMove}
+          onPress={() => {
+            toFinalMove();
+
+            if (stage === 'review-overview' && currentMoveNum === 0) {
+              setStage('review-moves');
+            }
+          }}
           radius="sm"
         >
           <Icon icon="material-symbols:last-page-rounded" />

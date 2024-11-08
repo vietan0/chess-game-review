@@ -47,7 +47,7 @@ export default function Review() {
     reset: state.reset,
   })));
 
-  const completePercentage = Math.floor((best3Moves.length / (currentGame.isCheckmate() ? fens.length - 1 : fens.length)) * 100); // if checkmate, best3Moves has one less item than fens
+  const completePercentage = Math.floor((best3Moves.length / ((currentGame.isCheckmate() || currentGame.isStalemate()) ? fens.length - 1 : fens.length)) * 100); // if checkmate or stalemate, best3Moves has one less item than fens
 
   const outputListener = useCallback((message: string) => {
     if (

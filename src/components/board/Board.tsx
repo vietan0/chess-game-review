@@ -14,6 +14,7 @@ import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
 import EvalBar from './EvalBar';
 import Highlight from './Highlight';
+import MoveClassificationBadges from './MoveClassificationBadges';
 import Pieces from './Pieces';
 import PlayerBadge from './PlayerBadge';
 
@@ -66,6 +67,7 @@ export default function Board() {
           <Highlight />
           <Coors />
           <Pieces />
+          <MoveClassificationBadges />
           <EndgameBadges />
         </div>
       </div>

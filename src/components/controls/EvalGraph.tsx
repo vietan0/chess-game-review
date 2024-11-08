@@ -10,6 +10,7 @@ import { useCallback, useMemo } from 'react';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { formatCp, useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
+import { chooseFillColor, chooseStrokeColor } from '../../utils/chooseColorFromClassification';
 
 import type { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
@@ -41,10 +42,15 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     const stage = useStageStore(state => state.stage);
     const setStage = useStageStore(state => state.setStage);
     const graphH = 80;
+    const classHistory = useEvalStore(state => state.classHistory);
 
     const getNumericValue = (item: { val: string | number; i: number }) => {
       if (typeof item.val === 'number') {
         return item.val;
+      }
+
+      else if (item.val === '1/2-1/2') {
+        return 0;
       }
 
       else if (item.val.startsWith('-') || item.val === '0-1') {
@@ -155,32 +161,47 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
                 to={{ x: tooltipLeft, y: graphH + margin.top }}
               />
               <circle
-                className="fill-default-500"
+                className={chooseFillColor(classHistory[tooltipData.i - 1])}
                 cx={tooltipLeft}
                 cy={tooltipTop}
                 pointerEvents="none"
-                r={4}
-                stroke="white"
-                strokeWidth={2}
+                r={5}
               />
             </g>
           )}
           <g>
+            {classHistory
+              .map((classification, i) => {
+                if (['inaccuracy', 'mistake', 'blunder'].includes(classification)) {
+                  return (
+                    <circle
+                      className={chooseFillColor(classification)}
+                      cx={xScale(i + 1)}
+                      cy={yScale(getNumericValue(cpObj[i + 1]))}
+                      key={i}
+                      pointerEvents="none"
+                      r={4}
+                    />
+                  );
+                }
+
+                return null;
+              })}
+          </g>
+          <g>
             <Line
-              className="stroke-primary-500/50"
+              className={chooseStrokeColor(classHistory[currentMoveNum - 1])}
               from={{ x: xScale(currentMoveNum), y: margin.top }}
               pointerEvents="none"
               strokeWidth={3}
               to={{ x: xScale(currentMoveNum), y: graphH + margin.top }}
             />
             <circle
-              className="fill-primary-500"
+              className={chooseFillColor(classHistory[currentMoveNum - 1])}
               cx={xScale(currentMoveNum)}
               cy={yScale(getNumericValue(cpObj[currentMoveNum]))}
               pointerEvents="none"
-              r={4}
-              stroke="white"
-              strokeWidth={2}
+              r={5}
             />
           </g>
         </svg>
