@@ -3,7 +3,7 @@ import tableToPoints from '../../utils/tableToPoints';
 
 import type { Square } from 'chess.js';
 
-export default function Arrow({ from, to }: { from: Square; to: Square }) {
+export default function Arrow({ from, to, color }: { from: Square; to: Square; color?: string }) {
   const arrow = getArrow(from, to);
   if (!arrow)
     return null;
@@ -196,7 +196,7 @@ export default function Arrow({ from, to }: { from: Square; to: Square }) {
 
   return (
     <polygon
-      fill="rgba(255, 170, 0, 0.8)"
+      fill={color === 'green' ? 'rgb(150, 190, 70)' : 'rgba(255, 170, 0, 0.8)'}
       opacity="0.8"
       points={points}
       transform={`${translate} ${rotate}`}

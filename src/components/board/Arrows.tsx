@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
+import { useEvalStore } from '../../stores/useEvalStore';
+import { useStageStore } from '../../stores/useStageStore';
 import getArrow from '../../utils/getArrow';
 import Arrow from './Arrow';
 
@@ -14,11 +16,29 @@ interface Pos {
 }
 
 export default function Arrows() {
+  const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const isFlipped = useBoardStore(state => state.isFlipped);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartPos, setDragStartPos] = useState<Pos>({ x: null, y: null });
   const [dragEndPos, setDragEndPos] = useState<Pos>({ x: null, y: null });
   const [arrows, setArrows] = useState<string[]>([]);
+  // bestMove arrow
+  const reviewFinished = useStageStore(state => state.computed.reviewFinished);
+  const best3MovesWithClass = useEvalStore(state => state.best3MovesWithClass);
+
+  const bestMoveArrow = useMemo(() => {
+    if (!reviewFinished) {
+      return null;
+    }
+
+    if (currentMoveNum === 0) {
+      return null;
+    }
+
+    const bestMove = best3MovesWithClass[currentMoveNum - 1][0];
+
+    return bestMove.pv;
+  }, [reviewFinished, currentMoveNum, best3MovesWithClass]);
 
   useEffect(() => {
     if (dragStartPos.x !== null && dragStartPos.y !== null && dragEndPos.x !== null && dragEndPos.y !== null) {
@@ -198,6 +218,14 @@ export default function Arrows() {
           to={a.substring(2, 4) as Square}
         />
       ))}
+      {bestMoveArrow
+      && (
+        <Arrow
+          color="green"
+          from={bestMoveArrow.substring(0, 2) as Square}
+          to={bestMoveArrow.substring(2, 4) as Square}
+        />
+      )}
     </svg>
   );
 }
