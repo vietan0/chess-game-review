@@ -201,7 +201,7 @@ export default function Arrows() {
 
   return (
     <svg
-      className="relative z-10"
+      className="absolute"
       height={600}
       id="arrows"
       onClick={handleClick}

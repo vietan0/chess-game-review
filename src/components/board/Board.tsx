@@ -68,9 +68,9 @@ export default function Board() {
           <Highlight />
           <Coors />
           <Pieces />
+          <Arrows />
           <MoveClassificationBadges />
           <EndgameBadges />
-          <Arrows />
         </div>
       </div>
       <PlayerBadge color={isFlipped ? 'b' : 'w'} />
