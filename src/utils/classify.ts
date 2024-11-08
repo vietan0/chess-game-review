@@ -165,7 +165,7 @@ function bothStrings(beforeEval: string, afterEval: string, whiteToMove: boolean
   // 4. same sign -> compare mate values
   const beforeM = Number(beforeEval.slice(2));
   const afterM = Number(afterEval.slice(2));
-  const deltaM = whiteToMove ? afterM - beforeM : beforeM - afterM;
+  const deltaM = whiteToMove ? beforeM - afterM : afterM - beforeM;
 
   if (deltaM >= 0) {
     return 'best';
@@ -210,8 +210,9 @@ function numberToString(beforeEval: number, afterEval: string, whiteToMove: bool
 
   if (whiteToMove) {
     if (mateIsPositive) {
-      // white moves, then white has mate --> not possible
-      throw new Error ('This should not happen');
+      // white moves, then white has mate --> technically not possible,
+      // but may happen in a winning endgame (e.g. +40 to +M9) due to engine's search depth
+      return 'best';
     }
 
     // white moves, then black has mate
@@ -227,8 +228,9 @@ function numberToString(beforeEval: number, afterEval: string, whiteToMove: bool
   }
   else {
     if (!mateIsPositive) {
-      // black moves, then black has mate --> not possible
-      throw new Error ('This should not happen');
+      // black moves, then black has mate --> technically not possible,
+      // but may happen in a winning endgame (e.g. -40 to -M9) due to engine's search depth
+      return 'best';
     }
 
     // black moves, then white has mate
