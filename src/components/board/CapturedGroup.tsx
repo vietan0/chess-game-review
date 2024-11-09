@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 
-import getIconPath from '../../utils/getIconPath';
+import { getPiecePath } from '../../utils/getPath';
 
 import type { Capturable } from '../../utils/getCaptured';
 import type { Color } from 'chess.js';
@@ -17,7 +17,7 @@ export default function CapturedGroup({ color, number, piece }: {
           alt=""
           className="inline-block size-[18px] object-cover"
           key={nanoid()}
-          src={getIconPath(`${color}${piece}`, 'pieces', 'png')}
+          src={getPiecePath(`${color}${piece}`, 'pieces/neo', 'png')}
           style={{
             marginLeft: i === 0 ? '-2px' : '-11px',
           }}

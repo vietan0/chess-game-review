@@ -10,8 +10,8 @@ import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
+import { getBackgroundPath } from '../../utils/getPath';
 import Arrows from './Arrows';
-import BoardSquares from './BoardSquares';
 import Coors from './Coors';
 import EndgameBadges from './EndgameBadges';
 import EvalBar from './EvalBar';
@@ -45,6 +45,7 @@ export default function Board() {
 
   const isLoaded = useStageStore(state => state.computed.isLoaded);
   const username = useSelectGameStore(state => state.username);
+  const { board } = useSettingsStore(state => state.settings);
 
   useEffect(() => {
     if (isLoaded && username) {
@@ -66,7 +67,11 @@ export default function Board() {
       <div className="flex gap-3" id="Board&Bar">
         <EvalBar />
         <div className="relative size-[600px]" id="actual-board">
-          <BoardSquares />
+          <img
+            alt=""
+            className="absolute"
+            src={getBackgroundPath(board, 'png')}
+          />
           <Highlight />
           <Coors />
           <Pieces />

@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
-import getIconPath from '../../utils/getIconPath';
+import { useSettingsStore } from '../../stores/useSettingsStore';
+import { getPiecePath } from '../../utils/getPath';
 import translatePiece from '../../utils/translatePiece';
 
 import type { Color, PieceSymbol, Square } from 'chess.js';
@@ -26,6 +27,7 @@ export default function Pieces() {
   const nextMove = history[currentMoveNum];
   const displayedGame = new Chess(currentMoveNum > 0 ? history[currentMoveNum - 1].after : undefined);
   const board = displayedGame.board();
+  const { pieces: piecesTheme } = useSettingsStore(state => state.settings);
 
   /**
    * Generate initial x,y for piece animation.
@@ -85,7 +87,7 @@ export default function Pieces() {
             y: `${initY}%`,
           }}
           key={key}
-          src={getIconPath(`${piece.color}${piece.type}`, 'pieces', 'png')}
+          src={getPiecePath(`${piece.color}${piece.type}`, `pieces/${piecesTheme}`, 'png')}
           transition={{ duration: 0.075, bounce: 0 }}
         />
       );
