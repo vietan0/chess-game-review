@@ -77,6 +77,7 @@ export default function Pieces() {
 
       return (
         <motion.img
+          alt={`${piece.color}${piece.type}`}
           animate={{
             x: `${x}%`,
             y: `${y}%`,

@@ -116,6 +116,7 @@ const EvalGraphNotResponsive = withTooltip<AreaProps, TooltipData>(
     return (
       <>
         <svg
+          aria-label="Evaluation Graph"
           className="overflow-hidden rounded-md"
           height={graphH}
           width="100%"

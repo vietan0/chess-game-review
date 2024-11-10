@@ -85,13 +85,12 @@ export default function Controls() {
         >
           <Icon icon="material-symbols:chevron-left-rounded" />
         </Button>
-        <a
+        <p
           className={cn('flex w-full items-center justify-center font-bold', stage === 'home' && 'text-xl')}
-          href="/"
         >
-          {stage === 'home' && <img className="mr-1 size-5" src="/star.svg" />}
+          {stage === 'home' && <img alt="" className="mr-1 size-5" src="/star.svg" />}
           {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
-        </a>
+        </p>
       </div>
       <div className="grow overflow-scroll px-4">
         {stage === 'home'

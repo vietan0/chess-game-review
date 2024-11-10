@@ -3,7 +3,9 @@ import type { SVGProps } from 'react';
 export default function Forced(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
+      aria-label="Forced"
       height={24}
+      role="img"
       viewBox="0 0 18 19"
       width={24}
       xmlns="http://www.w3.org/2000/svg"

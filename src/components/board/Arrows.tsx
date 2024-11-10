@@ -209,6 +209,7 @@ export default function Arrows() {
 
   return (
     <svg
+      aria-label="SVG canvas for drawing arrows"
       className="absolute"
       height={600}
       id="arrows"

@@ -28,6 +28,7 @@ export default function Highlight() {
     return (
       <div
         className="absolute size-[12.5%]"
+        key={square}
         style={{
           transform: `translate(${xFrom}%, ${yFrom}%)`,
           backgroundColor: 'rgb(235, 97, 80)',
