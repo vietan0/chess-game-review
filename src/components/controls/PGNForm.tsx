@@ -84,7 +84,7 @@ export default function PGNForm() {
             Add Game
           </Button>
         </CardFooter>
-        <DevTool control={control} />
+        {import.meta.env.PROD || <DevTool control={control} />}
       </form>
     </Card>
   );

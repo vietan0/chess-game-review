@@ -20,7 +20,7 @@ import MoveClassificationBadges from './MoveClassificationBadges';
 import Pieces from './Pieces';
 import PlayerBadge from './PlayerBadge';
 
-if (import.meta.env.DEV) {
+if (!import.meta.env.PROD) {
   mountStoreDevtool('selectGameStore', useSelectGameStore);
   mountStoreDevtool('boardStore', useBoardStore);
   mountStoreDevtool('stockfishOutputStore', useStockfishOutputStore);

@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </main>
         </HelmetProvider>
       </NextUIProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.PROD || <ReactQueryDevtools initialIsOpen={false} /> }
     </QueryClientProvider>
   </React.StrictMode>,
 );

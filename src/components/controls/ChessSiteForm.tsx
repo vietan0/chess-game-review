@@ -48,7 +48,7 @@ export default function ChessSiteForm({ site }: { site: Site }) {
       >
         Submit
       </Button>
-      <DevTool control={control} />
+      {import.meta.env.PROD || <DevTool control={control} />}
     </form>
   );
 }
