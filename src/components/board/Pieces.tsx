@@ -87,7 +87,7 @@ export default function Pieces() {
             y: `${initY}%`,
           }}
           key={key}
-          src={`./pieces/${piecesTheme}/${piece.color}${piece.type}.png`}
+          src={`/pieces/${piecesTheme}/${piece.color}${piece.type}.png`}
           transition={{ duration: 0.075, bounce: 0 }}
         />
       );

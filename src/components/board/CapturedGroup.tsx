@@ -15,7 +15,7 @@ export default function CapturedGroup({ color, number, piece }: {
           alt=""
           className="inline-block size-[18px] object-cover"
           key={nanoid()}
-          src={`./pieces/neo/${color}${piece}.png`}
+          src={`/pieces/neo/${color}${piece}.png`}
           style={{
             marginLeft: i === 0 ? '-2px' : '-11px',
           }}

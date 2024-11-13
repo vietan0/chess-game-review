@@ -69,7 +69,7 @@ export default function Board() {
           <img
             alt=""
             className="absolute"
-            src={`./boards/${board}.png`}
+            src={`/boards/${board}.png`}
           />
           <Highlight />
           <Coors />
