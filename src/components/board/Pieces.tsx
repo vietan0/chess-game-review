@@ -4,7 +4,6 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
-import { getPiecePath } from '../../utils/getPath';
 import translatePiece from '../../utils/translatePiece';
 
 import type { Color, PieceSymbol, Square } from 'chess.js';
@@ -88,7 +87,7 @@ export default function Pieces() {
             y: `${initY}%`,
           }}
           key={key}
-          src={getPiecePath(`${piece.color}${piece.type}`, `pieces/${piecesTheme}`, 'png')}
+          src={`./pieces/${piecesTheme}/${piece.color}${piece.type}.png`}
           transition={{ duration: 0.075, bounce: 0 }}
         />
       );
