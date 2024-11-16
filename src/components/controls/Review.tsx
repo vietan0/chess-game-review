@@ -129,8 +129,17 @@ export default function Review() {
   if (isLoading || isFetching)
     return <Loading />;
 
-  if (error)
-    return 'Error while loading Stockfish';
+  if (error) {
+    return (
+      <p>
+        Loading Stockfish failed:
+        {' '}
+        <code className="inline-block text-small text-danger-500">
+          {error.message}
+        </code>
+      </p>
+    );
+  }
 
   return (
     <div className="h-full" id="Review">
