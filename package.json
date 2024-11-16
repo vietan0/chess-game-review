@@ -45,7 +45,6 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.52.2",
     "react-hotkeys-hook": "^4.5.0",
-    "stockfish-nnue.wasm": "1.0.0-1946a675.smolnet",
     "tailwind-merge": "^2.4.0",
     "use-sound": "^4.0.3",
     "zustand": "^4.5.4"
