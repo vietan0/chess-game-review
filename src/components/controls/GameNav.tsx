@@ -36,6 +36,8 @@ export default function GameNav() {
   const history = currentGame.history({ verbose: true });
 
   useHotkeys('right', () => {
+    if (history.length === 0 || currentMoveNum === history.length || !reviewFinished)
+      return;
     toNextMove();
 
     if (stage === 'review-overview' && currentMoveNum === 0) {
@@ -43,10 +45,21 @@ export default function GameNav() {
     }
   });
 
-  useHotkeys('left', () => toPrevMove());
-  useHotkeys('up', () => toFirstMove());
+  useHotkeys('left', () => {
+    if (history.length === 0 || currentMoveNum === 0 || !reviewFinished)
+      return;
+    toPrevMove();
+  });
+
+  useHotkeys('up', () => {
+    if (history.length === 0 || currentMoveNum === 0 || !reviewFinished)
+      return;
+    toFirstMove();
+  });
 
   useHotkeys('down', () => {
+    if (history.length === 0 || currentMoveNum === history.length || !reviewFinished)
+      return;
     toFinalMove();
 
     if (stage === 'review-overview' && currentMoveNum === 0) {
@@ -99,7 +112,7 @@ export default function GameNav() {
           <Icon icon="material-symbols:chevron-right-rounded" />
         </Button>
         <Button
-          aria-label="Last move"
+          aria-label="Final move"
           className="grow text-3xl"
           disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
@@ -135,6 +148,7 @@ export default function GameNav() {
             setStage('home');
           }}
           size="sm"
+          variant="flat"
         >
           Reset
         </Button>
