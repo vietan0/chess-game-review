@@ -59,7 +59,7 @@ export default function Highlight() {
         />
       </>
     );
-  }, [currentMoveNum]);
+  }, [currentMoveNum, isFlipped]);
 
   return (
     <div className="absolute size-full" id="highlight">
