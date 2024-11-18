@@ -115,7 +115,7 @@ function sortBest3Moves(best3Moves: MoveEvalMerged[][]) {
             if (a.eval[0] === b.eval[0]) {
             // 1a. same sign
               const aNum = Number(a.eval.slice(2));
-              const bNum = Number(a.eval.slice(2));
+              const bNum = Number(b.eval.slice(2));
 
               // both positive
               if (a.eval[0] === '+') {

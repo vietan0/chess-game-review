@@ -150,8 +150,13 @@ function bothStrings(beforeEval: string, afterEval: string, whiteToMove: boolean
     return 'blunder';
   }
 
-  // 2. checkmate case
+  // 2a. checkmate case - when classifying actual moves, afterEval is 1-0/0-1
   if (afterEval === '1-0' || afterEval === '0-1') {
+    return 'best';
+  }
+
+  // 2b. also checkmate case - Stockfish denotes checkmate as M1, not 1-0/0-1
+  if ((whiteToMove && afterEval === 'M1') || (!whiteToMove && afterEval === '-M1')) {
     return 'best';
   }
 
@@ -165,16 +170,21 @@ function bothStrings(beforeEval: string, afterEval: string, whiteToMove: boolean
   // 4. same sign -> compare mate values
   const beforeM = Number(beforeEval.slice(2));
   const afterM = Number(afterEval.slice(2));
-  const deltaM = whiteToMove ? beforeM - afterM : afterM - beforeM;
+  const sign = beforeEval[0];
+  let deltaM = beforeM - afterM;
+
+  if ((sign === '+' && !whiteToMove) || (sign === '-' && whiteToMove)) {
+    deltaM = deltaM * -1;
+  }
 
   if (deltaM >= 0) {
     return 'best';
   }
-  else if (deltaM >= -10) {
+  else if (deltaM >= -7) {
     return 'excellent';
   }
   else {
-    // deltaM < -10
+    // deltaM < -7
     return 'good';
   }
 }

@@ -97,8 +97,18 @@ export default function ReviewMoves() {
         {best3MovesWithClass[currentMoveNum - 1]
           ?.filter(move => move.pv !== currentMove.lan)
           .map((move, i) => {
+            let adv;
+            const san = lanToSan(move.pv, currentMoveNum - 1, fens);
+
+            if (san.endsWith('#')) {
+              const moveEval = move.eval as string;
+              adv = moveEval.startsWith('+') ? '1-0' : '0-1';
+            }
+            else {
+              adv = formatCp(move.eval);
+            }
+
             let whiteHasAdv: boolean;
-            const adv = formatCp(move.eval);
 
             if (typeof move.eval === 'number') {
               whiteHasAdv = move.eval >= 0;
@@ -114,7 +124,7 @@ export default function ReviewMoves() {
                     classification={move.classification}
                     className="mr-1 inline-block size-5"
                   />
-                  {lanToSan(move.pv, currentMoveNum - 1, fens)}
+                  {san}
                 </p>
                 <p
                   className={cn(
