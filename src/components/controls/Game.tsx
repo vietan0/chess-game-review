@@ -91,8 +91,8 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
 
   const wName = isChessCom(game) ? game.white.username : getLichessUsername(game.players.white);
   const bName = isChessCom(game) ? game.black.username : getLichessUsername(game.players.black);
-  const wRating = showRatings ? isChessCom(game) ? game.white.rating : getLichessRating(game.players.white) : null;
-  const bRating = showRatings ? isChessCom(game) ? game.black.rating : getLichessRating(game.players.black) : null;
+  const wRating = isChessCom(game) ? game.white.rating : getLichessRating(game.players.white);
+  const bRating = isChessCom(game) ? game.black.rating : getLichessRating(game.players.black);
 
   return (
     <Card
@@ -119,18 +119,22 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
             {timeControl}
           </span>
         </div>
-        <div className="flex flex-col gap-0.5" id="players-info">
+        <div className="flex min-w-0 flex-col gap-0.5" id="players-info">
           <div className="flex items-center gap-2">
-            <span className="max-w-40 overflow-hidden truncate">{wName}</span>
-            <span className="text-xs font-bold leading-4 text-foreground-500">
-              {wRating}
-            </span>
+            <span className="truncate">{wName}</span>
+            {showRatings && (
+              <span className="text-xs font-bold leading-4 text-foreground-500">
+                {wRating}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <span className="max-w-40 overflow-hidden truncate">{bName}</span>
-            <span className="text-xs font-bold leading-4 text-foreground-500">
-              {bRating}
-            </span>
+            <span className="truncate">{bName}</span>
+            {showRatings && (
+              <span className="text-xs font-bold leading-4 text-foreground-500">
+                {bRating}
+              </span>
+            )}
           </div>
         </div>
         <Result className="ml-auto size-5" result={result} />

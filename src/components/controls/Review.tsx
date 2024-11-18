@@ -121,7 +121,6 @@ export default function Review() {
         listen();
         stockfish.postMessage(`position fen ${fens[fenIndex]}`);
         stockfish.postMessage(`go depth ${depth}`);
-        console.info(`posted position and go for fenIndex ${fenIndex}`);
       }
     }
   }, [stockfish, stage, isListening]);
