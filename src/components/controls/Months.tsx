@@ -19,7 +19,7 @@ export default function Months() {
   const setStage = useStageStore(state => state.setStage);
   const { data, isLoading, error } = useGameArchives(username);
   if (isLoading)
-    return <Loading />;
+    return <Loading label="Loading monthly collections…" />;
   if (error)
     return 'Error with Query';
 

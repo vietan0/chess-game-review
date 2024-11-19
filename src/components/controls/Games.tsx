@@ -9,7 +9,7 @@ export default function Games() {
   const { data: games, isLoading, error } = useMonthlyArchives(monthLink!);
 
   if (isLoading)
-    return <Loading />;
+    return <Loading label="Fetching games…" />;
 
   if (error)
     return 'Error with Query';

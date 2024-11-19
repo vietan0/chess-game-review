@@ -126,7 +126,7 @@ export default function Review() {
   }, [stockfish, stage, isListening]);
 
   if (isLoading || isFetching)
-    return <Loading />;
+    return <Loading label="Loading Stockfish…" />;
 
   if (error) {
     return (
