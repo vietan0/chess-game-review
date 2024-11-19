@@ -103,7 +103,7 @@ function bothNumbers(beforeEval: number, afterEval: number, whiteToMove: boolean
     !wasLosing
     && beforeEval * afterEval > 0 // same sign
   ) {
-    if (Math.abs(beforeEval) > 800 && Math.abs(afterEval) > 500) {
+    if (Math.abs(beforeEval) > 700 && Math.abs(afterEval) > 400) {
       // special case 1: when totally winning before and after, 'inaccuracy' is the lowest classification
       if (delta >= -50)
         return 'best';
