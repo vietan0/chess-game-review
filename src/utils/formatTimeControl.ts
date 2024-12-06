@@ -3,7 +3,9 @@ import dayjs from 'dayjs';
 import type { ChessComGame, LichessGame } from '../queries/useMonthlyArchives'; // ES 2015
 
 export const dailyIncrementRegex = /(?<=\/)\d+$/;
-export const mainTimeRegex = /\d+(?=\+)|^\d+$/;
+// 3 cases: no increment OR increment OR x moves in y hours then increment
+// test: https://regexr.com/89nnm
+export const mainTimeRegex = /^\d+$|^\d+(?=\+)|(?<=\/)\d+(?=:\d)/;
 const incrementRegex = /(?<=\+)\d+$/;
 
 /**
@@ -14,7 +16,7 @@ const incrementRegex = /(?<=\+)\d+$/;
  * formatChessComTimeControl('1800') // '30m'
  */
 export function formatChessComTimeControl(timeControl: ChessComGame['time_control']) {
-  if (timeControl.includes('/')) {
+  if (timeControl.startsWith('1/')) {
     // daily game
     const dailyIncrement = timeControl.match(dailyIncrementRegex)![0];
     const formatted = dayjs.duration(Number(dailyIncrement), 'seconds').format('D[d]');
