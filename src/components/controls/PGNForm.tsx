@@ -1,7 +1,7 @@
+import { Button } from '@heroui/button';
+import { Card, CardBody, CardFooter } from '@heroui/card';
+import { Textarea } from '@heroui/input';
 import { DevTool } from '@hookform/devtools';
-import { Button } from '@nextui-org/button';
-import { Card, CardBody, CardFooter } from '@nextui-org/card';
-import { Textarea } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useBoardStore } from '../../stores/useBoardStore';

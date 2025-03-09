@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/button';
+import { Button } from '@heroui/button';
 import { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 

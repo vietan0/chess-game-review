@@ -1,5 +1,5 @@
-import { Button } from '@nextui-org/button';
-import { Progress } from '@nextui-org/progress';
+import { Button } from '@heroui/button';
+import { Progress } from '@heroui/progress';
 import { useQueryClient } from '@tanstack/react-query';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useCallback, useEffect } from 'react';

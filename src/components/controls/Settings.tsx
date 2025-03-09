@@ -1,8 +1,8 @@
+import { Button } from '@heroui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
+import { Select, SelectItem } from '@heroui/select';
+import { Switch } from '@heroui/switch';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { Button } from '@nextui-org/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/popover';
-import { Select, SelectItem } from '@nextui-org/select';
-import { Switch } from '@nextui-org/switch';
 
 import { useSettingsStore } from '../../stores/useSettingsStore';
 

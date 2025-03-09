@@ -1,5 +1,5 @@
+import { Button } from '@heroui/button';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { Button } from '@nextui-org/button';
 import { Helmet } from 'react-helmet-async';
 import { useShallow } from 'zustand/react/shallow';
 

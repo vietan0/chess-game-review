@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/button';
+import { Button } from '@heroui/button';
 import { useMemo } from 'react';
 
 import MoveClassification from '../../icons/move-classifications/MoveClassification';

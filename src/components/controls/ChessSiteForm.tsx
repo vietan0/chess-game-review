@@ -1,6 +1,6 @@
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
 import { DevTool } from '@hookform/devtools';
-import { Button } from '@nextui-org/button';
-import { Input } from '@nextui-org/input';
 import { Controller, useForm } from 'react-hook-form';
 
 import useLocalStorage from '../../hooks/useLocalStorage';
