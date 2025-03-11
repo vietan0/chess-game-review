@@ -93,6 +93,8 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const bName = isChessCom(game) ? game.black.username : getLichessUsername(game.players.black);
   const wRating = isChessCom(game) ? game.white.rating : getLichessRating(game.players.white);
   const bRating = isChessCom(game) ? game.black.rating : getLichessRating(game.players.black);
+  const totalMovesRegex = /\d+(?=\.\s)/g;
+  const totalMoves = game.pgn.match(totalMovesRegex)!.length;
 
   return (
     <Card
@@ -137,7 +139,10 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
             )}
           </div>
         </div>
-        <Result className="ml-auto size-5" result={result} />
+        <div className="ml-auto flex w-20 items-center justify-between gap-10 text-xs">
+          <span className="text-default-500">{totalMoves}</span>
+          <Result className="size-5" result={result} />
+        </div>
       </CardBody>
     </Card>
   );
