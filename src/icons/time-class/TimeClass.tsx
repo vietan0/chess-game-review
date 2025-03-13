@@ -6,8 +6,10 @@ import Rapid from './Rapid';
 
 import type { SVGProps } from 'react';
 
+export type TimeClassType = 'bullet' | 'blitz' | 'rapid' | 'daily' | 'bot';
+
 interface TimeClassProps extends SVGProps<SVGSVGElement> {
-  timeClass: 'bullet' | 'blitz' | 'rapid' | 'daily' | 'bot';
+  timeClass: TimeClassType;
 }
 
 export default function TimeClass({ timeClass, ...props }: TimeClassProps) {

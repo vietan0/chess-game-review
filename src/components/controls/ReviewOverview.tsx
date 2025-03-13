@@ -5,6 +5,7 @@ import MoveClassification from '../../icons/move-classifications/MoveClassificat
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
+import capitalize from '../../utils/capitalize';
 import { chooseTextColor } from '../../utils/chooseColorFromClassification';
 import cn from '../../utils/cn';
 import useNames from '../../utils/useNames';
@@ -80,7 +81,7 @@ export default function ReviewOverview() {
 
           return (
             <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4" key={i}>
-              <p className="text-foreground-500">{cl[0].toUpperCase() + cl.slice(1)}</p>
+              <p className="text-foreground-500">{capitalize(cl)}</p>
               <p className={cn(
                 'justify-self-center text-base font-bold',
                 chooseTextColor(cl),

@@ -5,6 +5,7 @@ import { Switch } from '@heroui/switch';
 import { Icon } from '@iconify/react/dist/iconify.js';
 
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import capitalize from '../../utils/capitalize';
 
 import type { Board, Pieces } from '../../stores/useSettingsStore';
 
@@ -49,7 +50,7 @@ export default function Settings() {
           >
             {['neo', 'classic', 'ocean'].map(p => (
               <SelectItem key={p}>
-                {p[0].toUpperCase() + p.slice(1)}
+                {capitalize(p)}
               </SelectItem>
             ))}
           </Select>
@@ -65,7 +66,7 @@ export default function Settings() {
           >
             {['green', 'brown', 'ice'].map(p => (
               <SelectItem key={p}>
-                {p[0].toUpperCase() + p.slice(1)}
+                {capitalize(p)}
               </SelectItem>
             ))}
           </Select>

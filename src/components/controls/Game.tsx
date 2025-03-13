@@ -6,18 +6,16 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useStageStore } from '../../stores/useStageStore';
+import convertLichessTimeClass from '../../utils/convertLichessTimeClass';
 import { formatChessComTimeControl, formatLichessTimeControl } from '../../utils/formatTimeControl';
+import getChessComResult from '../../utils/getChessComResult';
+import getLichessResult from '../../utils/getLichessResult';
 import isChessCom from '../../utils/isChessCom';
+import isChessComBotGame from '../../utils/isChessComBotGame';
+import isLichessAI from '../../utils/isLichessAI';
+import isLichessBotGame from '../../utils/isLichessBotGame';
 
 import type { ChessComGame, LichessAI, LichessGame, LichessPlayer } from '../../queries/useMonthlyArchives';
-
-function isLichessAI(player: LichessPlayer | LichessAI): player is LichessAI {
-  return (player as LichessAI).aiLevel !== undefined;
-}
-
-function isChessComBotGame(game: ChessComGame) {
-  return game.time_control.endsWith('/0');
-}
 
 export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const loadGame = useBoardStore(state => state.loadGame);
@@ -25,36 +23,6 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   const submitGame = useSelectGameStore(state => state.submitGame);
   const showRatings = useSettingsStore(state => state.settings.showRatings);
   const setStage = useStageStore(state => state.setStage);
-
-  function getChessComResult(game: ChessComGame) {
-    const userColor = username.toLowerCase() === game.white.username.toLowerCase() ? 'w' : 'b';
-
-    if (game.pgn.endsWith('1-0\n'))
-      return userColor === 'w' ? 'win' : 'lose';
-    else if (game.pgn.endsWith('0-1\n'))
-      return userColor === 'w' ? 'lose' : 'win';
-    else return 'draw';
-  }
-
-  function getLichessResult(game: LichessGame) {
-    let userColor = '';
-
-    if (isLichessAI(game.players.white)) {
-      userColor = 'b';
-    }
-    else if (isLichessAI(game.players.black)) {
-      userColor = 'w';
-    }
-    else {
-      userColor = username.toLowerCase() === game.players.white.user.id.toLowerCase() ? 'w' : 'b';
-    }
-
-    if (game.winner === 'white')
-      return userColor === 'w' ? 'win' : 'lose';
-    else if (game.winner === 'black')
-      return userColor === 'w' ? 'lose' : 'win';
-    else return 'draw';
-  }
 
   function getLichessUsername(player: LichessPlayer | LichessAI) {
     return isLichessAI(player) ? `lichess AI level ${player.aiLevel}` : player.user.id;
@@ -64,24 +32,15 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
     return isLichessAI(player) ? 0 : player.rating;
   }
 
-  function convertLichessTimeClass(speed: LichessGame['speed']) {
-    if (speed === 'correspondence')
-      return 'daily';
-    if (speed === 'ultraBullet')
-      return 'bullet';
-    if (speed === 'classical')
-      return 'rapid';
-
-    return speed;
-  }
-
-  const result = isChessCom(game) ? getChessComResult(game) : getLichessResult(game);
+  const result = isChessCom(game) ? getChessComResult(username, game) : getLichessResult(username, game);
 
   const timeClass = isChessCom(game)
     ? isChessComBotGame(game)
       ? 'bot'
       : game.time_class
-    : convertLichessTimeClass(game.speed);
+    : isLichessBotGame(game)
+      ? 'bot'
+      : convertLichessTimeClass(game.speed);
 
   const timeControl = isChessCom(game)
     ? isChessComBotGame(game)
