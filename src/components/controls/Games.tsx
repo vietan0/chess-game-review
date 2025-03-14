@@ -5,6 +5,7 @@ import { Select, SelectItem } from '@heroui/select';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+import Result from '../../icons/result/Result';
 import TimeClass from '../../icons/time-class/TimeClass';
 import useMonthlyArchives from '../../queries/useMonthlyArchives';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
@@ -162,7 +163,12 @@ export default function Games() {
                     size="sm"
                   >
                     {['win', 'lose', 'draw'].map(result => (
-                      <SelectItem key={result}>{capitalize(result)}</SelectItem>
+                      <SelectItem
+                        key={result}
+                        startContent={<Result className="size-5" result={result as 'win' | 'lose' | 'draw'} />}
+                      >
+                        {capitalize(result)}
+                      </SelectItem>
                     ))}
                   </Select>
                 )}
