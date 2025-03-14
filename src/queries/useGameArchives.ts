@@ -44,21 +44,21 @@ async function fetchLichess(username: string) {
   });
 
   // generate UNIX timestamps for all the months inbetween (edge-inclusive)
-  const sinceTo: { since: number; to: number }[] = [];
+  const sinceUntil: { since: number; until: number }[] = [];
   let currentMonth = createdMonth; // will increase 1 month each while-loop
 
   while (currentMonth.isSameOrBefore(now)) {
     const nextMonth = currentMonth.add(1, 'month');
 
-    sinceTo.unshift({
+    sinceUntil.unshift({
       since: currentMonth.valueOf(),
-      to: nextMonth.valueOf(),
+      until: nextMonth.valueOf(),
     });
 
     currentMonth = nextMonth;
   }
 
-  const monthLinks = sinceTo.map(({ since, to }) => `https://lichess.org/api/games/user/${username}?pgnInJson=true&clocks=true&literate=true&since=${since}&to=${to}`);
+  const monthLinks = sinceUntil.map(({ since, until }) => `https://lichess.org/api/games/user/${username}?pgnInJson=true&clocks=true&literate=true&since=${since}&until=${until}`);
 
   return groupLichessLinksByYear(monthLinks);
 }

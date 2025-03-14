@@ -39,7 +39,7 @@ export function groupChessComLinksByYear(links: string[]) {
  * getUnitFromLichessLink('https://lichess.org/api/games/user/vietan0?since=1722445200000&to=1725123600000', 'year'); // 2024
  */
 export function getUnitFromLichessLink(link: string, unit: 'month' | 'year') {
-  const sinceRegex = /(?<=since=)\d+(?=&to)/;
+  const sinceRegex = /(?<=since=)\d+(?=&until)/;
   const sinceStr = link.match(sinceRegex)![0];
   const since = Number(sinceStr); // UNIX timestamp
   const year = dayjs(since).year();
