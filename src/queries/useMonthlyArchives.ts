@@ -91,8 +91,12 @@ async function fetchLichessGames(monthLink: string) {
   const games: LichessGame[] = [];
   const onMessage = (game: LichessGame) => games.push(game);
 
-  await fetch(monthLink, { headers: { Accept: 'application/x-ndjson' } })
-    .then(readStream(onMessage));
+  await fetch(monthLink, {
+    headers: {
+      Accept: 'application/x-ndjson',
+      Authorization: `Bearer ${import.meta.env.VITE_LICHESS_TOKEN}`,
+    },
+  }).then(readStream(onMessage));
 
   const noVariants = games.filter(game => game.variant === 'standard');
 
