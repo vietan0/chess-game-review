@@ -124,14 +124,15 @@ export default function Games() {
     <div className="flex max-h-full flex-col gap-2 overflow-y-scroll" id="Games">
       <Accordion
         className="mb-0 rounded-small"
+        isCompact
         variant="bordered"
       >
         <AccordionItem
           aria-label="Filter"
           classNames={{
             content: 'pb-3',
+            title: 'text-sm',
           }}
-          isCompact
           key="filter"
           title="Filter"
         >
@@ -240,9 +241,11 @@ export default function Games() {
       </Accordion>
       <div className="min-h-0 overflow-y-scroll">
         {
-          filtered && filtered.length > 0
-            ? filtered.map(game => <Game game={game} key={isChessCom(game) ? game.uuid : game.id} />)
-            : <p className="text-center text-sm">No games found.</p>
+          filtered
+            ? filtered.length > 0
+              ? filtered.map(game => <Game game={game} key={isChessCom(game) ? game.uuid : game.id} />)
+              : <p className="text-center text-sm">No games found.</p>
+            : null
         }
       </div>
     </div>

@@ -64,7 +64,7 @@ export default function Controls() {
   }
 
   return (
-    <div className="flex h-[500px] w-[642px] min-w-[310px] grow flex-col gap-4 lg:size-auto lg:max-w-[480px]" id="Controls">
+    <div className="flex h-[640px] w-[642px] min-w-[310px] grow flex-col gap-4 lg:size-auto lg:max-w-[480px]" id="Controls">
       <Helmet>
         <title>
           {isLoaded
@@ -88,8 +88,14 @@ export default function Controls() {
         <p
           className={cn('flex w-full items-center justify-center font-bold', stage === 'home' && 'text-xl')}
         >
-          {stage === 'home' && <img alt="" className="mr-1 size-5" src="/star.svg" />}
-          {stage === 'home' ? 'Game Review' : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
+          {stage === 'home'
+            ? (
+                <>
+                  <img alt="" className="mr-1 size-5" src="/star.svg" />
+                  <span>Game Review</span>
+                </>
+              )
+            : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
         </p>
       </div>
       <div className="grow overflow-scroll px-4">
