@@ -97,7 +97,7 @@ export default function Pieces() {
   });
 
   return (
-    <div className="absolute size-full" id="pieces">
+    <div className="absolute aspect-square w-full" id="pieces">
       {pieces}
     </div>
   );

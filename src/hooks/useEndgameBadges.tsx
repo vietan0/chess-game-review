@@ -1,5 +1,6 @@
 import Badge from '../icons/endgame-badges/Badge';
 import { useBoardStore } from '../stores/useBoardStore';
+import badgeStyle from '../utils/badgeStyle';
 import useLoser from './useLoser';
 
 type WhiteBadge = 'abandoned' | 'checkmate-white' | 'draw-white' | 'resign-white' | 'timeout-white' | 'winner' | null;
@@ -34,8 +35,19 @@ export default function useEndgameBadges() {
     bResult = 'draw-black';
   }
 
-  const wkBadge = <Badge badge={wResult} className="size-7" />;
-  const bkBadge = <Badge badge={bResult} className="size-7" />;
+  const wkBadge = (
+    <Badge
+      badge={wResult}
+      style={badgeStyle}
+    />
+  );
+
+  const bkBadge = (
+    <Badge
+      badge={bResult}
+      style={badgeStyle}
+    />
+  );
 
   return [wkBadge, bkBadge];
 }

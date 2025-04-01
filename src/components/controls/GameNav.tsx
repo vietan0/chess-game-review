@@ -1,6 +1,7 @@
 import { Button } from '@heroui/button';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useMediaQuery } from 'react-responsive';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
@@ -34,6 +35,10 @@ export default function GameNav() {
   const setStage = useStageStore(state => state.setStage);
   const reviewFinished = useStageStore(state => state.computed.reviewFinished);
   const history = currentGame.history({ verbose: true });
+
+  const isLg = useMediaQuery({
+    query: '(min-width: 1024px)',
+  });
 
   useHotkeys('right', () => {
     if (history.length === 0 || currentMoveNum === history.length || !reviewFinished)
@@ -70,7 +75,7 @@ export default function GameNav() {
   useHotkeys('x', () => flipBoard());
 
   return (
-    <div className="mt-auto flex flex-col gap-2" id="GameNav">
+    <div className="fixed bottom-3 left-1/2 mt-auto flex w-11/12 max-w-[642px] -translate-x-2/4 flex-col flex-wrap justify-between gap-2 rounded-xl bg-default-50/90 p-3 ring-1 ring-foreground-300 backdrop-blur-sm xs:w-10/12 xs:flex-row lg:static lg:w-auto lg:translate-x-0 lg:flex-col lg:bg-inherit lg:p-0 lg:ring-0" id="GameNav">
       <div className="flex gap-1">
         <Button
           aria-label="First move"
@@ -80,6 +85,7 @@ export default function GameNav() {
           isIconOnly
           onPress={toFirstMove}
           radius="sm"
+          size={isLg ? 'md' : 'sm'}
         >
           <Icon icon="material-symbols:first-page-rounded" />
         </Button>
@@ -91,6 +97,7 @@ export default function GameNav() {
           isIconOnly
           onPress={toPrevMove}
           radius="sm"
+          size={isLg ? 'md' : 'sm'}
         >
           <Icon icon="material-symbols:chevron-left-rounded" />
         </Button>
@@ -108,6 +115,7 @@ export default function GameNav() {
             }
           }}
           radius="sm"
+          size={isLg ? 'md' : 'sm'}
         >
           <Icon icon="material-symbols:chevron-right-rounded" />
         </Button>
@@ -125,6 +133,7 @@ export default function GameNav() {
             }
           }}
           radius="sm"
+          size={isLg ? 'md' : 'sm'}
         >
           <Icon icon="material-symbols:last-page-rounded" />
         </Button>

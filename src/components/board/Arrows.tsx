@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
@@ -19,6 +19,7 @@ interface Pos {
 export default function Arrows() {
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const isFlipped = useBoardStore(state => state.isFlipped);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartPos, setDragStartPos] = useState<Pos>({ x: null, y: null });
   const [dragEndPos, setDragEndPos] = useState<Pos>({ x: null, y: null });
@@ -44,55 +45,59 @@ export default function Arrows() {
   }, [reviewFinished, currentMoveNum, best3MovesWithClass]);
 
   useEffect(() => {
-    if (dragStartPos.x !== null && dragStartPos.y !== null && dragEndPos.x !== null && dragEndPos.y !== null) {
-      const from = getSquare(ordinalSquare(dragStartPos.x), ordinalSquare(dragStartPos.y), isFlipped);
-      const to = getSquare(ordinalSquare(dragEndPos.x), ordinalSquare(dragEndPos.y), isFlipped);
+    if (svgRef.current) {
+      if (dragStartPos.x !== null && dragStartPos.y !== null && dragEndPos.x !== null && dragEndPos.y !== null) {
+        const from = getSquare(ordinalSquare(dragStartPos.x), ordinalSquare(dragStartPos.y), isFlipped);
+        const to = getSquare(ordinalSquare(dragEndPos.x), ordinalSquare(dragEndPos.y), isFlipped);
 
-      if (from === to) {
-        toggleHighlight(from);
-      }
+        if (from === to) {
+          toggleHighlight(from);
+        }
 
-      if (from !== to && getArrow(from, to)) {
-        const arrow = `${from}${to}`;
+        if (from !== to && getArrow(from, to)) {
+          const arrow = `${from}${to}`;
 
-        setArrows((prev) => {
-          if (prev.includes(arrow)) {
-            return prev.filter(a => a !== arrow);
-          }
-          else {
-            return [...prev, arrow];
-          }
-        });
+          setArrows((prev) => {
+            if (prev.includes(arrow)) {
+              return prev.filter(a => a !== arrow);
+            }
+            else {
+              return [...prev, arrow];
+            }
+          });
+        }
       }
     }
   }, [dragStartPos, dragEndPos]);
 
   function ordinalSquare(num: number): Ordinal {
-    if (num >= 0 && num < 75) {
+    const { width } = svgRef.current!.getBoundingClientRect();
+
+    if (num >= 0 && num < width / 8) {
       return 1;
     }
 
-    if (num >= 75 && num < 150) {
+    if (num >= width / 8 && num < width * 2 / 8) {
       return 2;
     }
 
-    if (num >= 150 && num < 225) {
+    if (num >= width * 2 / 8 && num < width * 3 / 8) {
       return 3;
     }
 
-    if (num >= 225 && num < 300) {
+    if (num >= width * 3 / 8 && num < width * 4 / 8) {
       return 4;
     }
 
-    if (num >= 300 && num < 375) {
+    if (num >= width * 4 / 8 && num < width * 5 / 8) {
       return 5;
     }
 
-    if (num >= 375 && num < 450) {
+    if (num >= width * 5 / 8 && num < width * 6 / 8) {
       return 6;
     }
 
-    if (num >= 450 && num < 525) {
+    if (num >= width * 6 / 8 && num < width * 7 / 8) {
       return 7;
     }
 
@@ -210,15 +215,15 @@ export default function Arrows() {
   return (
     <svg
       aria-label="SVG canvas for drawing arrows"
-      className="absolute"
-      height={600}
+      className="absolute aspect-square w-full"
       id="arrows"
       onClick={handleClick}
       onContextMenu={handleRClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      ref={svgRef}
       transform={`rotate(${isFlipped ? 180 : 0})`}
-      width={600}
+      viewBox="0 0 600 600"
     >
       {arrows.map(a => (
         <Arrow

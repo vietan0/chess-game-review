@@ -64,7 +64,7 @@ export default function Controls() {
   }
 
   return (
-    <div className="flex h-[640px] w-[642px] min-w-[310px] grow flex-col gap-4 lg:size-auto lg:max-w-[480px]" id="Controls">
+    <div className="mb-28 flex h-[500px] min-w-[310px] max-w-[642px] grow flex-col gap-4 xs:mb-14 xs:h-[640px] lg:mb-0 lg:size-auto lg:h-auto lg:max-w-[480px]" id="Controls">
       <Helmet>
         <title>
           {isLoaded
@@ -98,7 +98,7 @@ export default function Controls() {
             : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
         </p>
       </div>
-      <div className="grow overflow-scroll px-4">
+      <div className="grow overflow-scroll xs:px-4">
         {stage === 'home'
           ? <Forms />
           : stage === 'select-month'

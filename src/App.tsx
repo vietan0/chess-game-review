@@ -14,9 +14,11 @@ export default function App() {
 
   return (
     <ErrorBoundary FallbackComponent={Fallback}>
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-6 p-6 lg:h-full lg:flex-row lg:items-stretch" id="App">
-        <Board />
-        <Controls />
+      <div className="mx-auto h-full p-3 xs:p-6" id="App">
+        <div className="relative mx-auto flex h-full max-w-[642px] flex-col justify-center gap-6 lg:max-w-none lg:flex-row">
+          <Board />
+          <Controls />
+        </div>
       </div>
     </ErrorBoundary>
   );

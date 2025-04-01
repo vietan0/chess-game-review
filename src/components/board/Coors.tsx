@@ -31,7 +31,7 @@ function Coor({ square }: { square: Square }) {
   const file = (
     <span
       className={cn(
-        'absolute bottom-0.5 right-1 select-none text-sm font-semibold',
+        'absolute bottom-0.5 right-0.5 select-none text-[2vw] font-semibold xs:right-1 sm:text-sm',
         chooseTextColorFromTheme(color),
       )}
     >
@@ -42,7 +42,7 @@ function Coor({ square }: { square: Square }) {
   const rank = (
     <span
       className={cn(
-        'absolute left-1 top-1 select-none text-sm font-semibold',
+        'absolute left-0.5 top-0.5 select-none text-[2vw] font-semibold xs:left-1 xs:top-1 sm:text-sm',
         chooseTextColorFromTheme(color),
       )}
     >
@@ -71,7 +71,7 @@ function Coor({ square }: { square: Square }) {
 
 export default function Coors() {
   return (
-    <div id="coors">
+    <div className="absolute aspect-square w-full" id="coors">
       {SQUARES.map(square => <Coor key={square} square={square} />)}
     </div>
   );

@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import MoveClassification from '../../icons/move-classifications/MoveClassification';
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
+import badgeStyle from '../../utils/badgeStyle';
 import translatePiece from '../../utils/translatePiece';
 
 export default function MoveClassificationBadges() {
@@ -33,7 +34,7 @@ export default function MoveClassificationBadges() {
       >
         <MoveClassification
           classification={classification}
-          className="size-7"
+          style={badgeStyle}
         />
       </div>
     </div>

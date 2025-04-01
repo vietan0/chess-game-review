@@ -42,31 +42,35 @@ export default function EvalBar() {
     }
   }, [adv, isFlipped]);
 
-  function calcHeight(adv: string) {
-    const maxHNoMate = 600 * 0.95;
-    const minHNoMate = 600 * 0.05;
+  /**
+   * Calculate the height of the evaluation bar *in percentage* based on the evaluation number.
+   */
+  function calcHeight(adv: string | undefined) {
     if (!adv)
-      return 300;
+      return 50;
+
+    const maxHNoMate = 95;
+    const minHNoMate = 5;
 
     if (adv.includes('M')) {
       // mate in y
-      return adv.startsWith('-') ? 0 : 600;
+      return adv.startsWith('-') ? 0 : 100;
     }
 
     // games ended in checkmate/stalemate
     if (adv === '1-0')
-      return 600;
+      return 100;
     if (adv === '0-1')
       return 0;
     if (adv === '1/2-1/2')
-      return 300;
+      return 50;
 
     if (Number(adv) > 5)
       return maxHNoMate;
     if (Number(adv) < -5)
       return minHNoMate;
 
-    return 54 * Number(adv) + 300;
+    return 9 * Number(adv) + 50;
   }
 
   const displayedAdv = useMemo(() => {
@@ -89,19 +93,19 @@ export default function EvalBar() {
 
   return (
     <div className={cn(
-      'relative flex w-[30px] flex-col overflow-hidden rounded bg-default-100',
+      'relative flex w-6 shrink-0 flex-col overflow-hidden rounded bg-default-100 xs:w-[30px]',
       isFlipped ? 'justify-start' : 'justify-end',
     )}
     >
       <motion.div
-        animate={{ height: calcHeight(adv) }}
+        animate={{ height: `${calcHeight(adv)}%` }}
         className="bg-foreground"
-        initial={{ height: calcHeight(initAdv) }}
+        initial={{ height: `${calcHeight(initAdv)}%` }}
         key={currentMoveNum}
       >
       </motion.div>
       <span className={cn(
-        'absolute inset-x-0 me-auto ms-auto w-[30px] text-center text-[11px] mix-blend-difference',
+        'absolute inset-x-0 me-auto ms-auto w-full text-center text-[9px] mix-blend-difference xs:text-[11px]',
         isTop ? 'top-1' : 'bottom-1',
       )}
       >
