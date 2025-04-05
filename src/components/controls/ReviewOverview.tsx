@@ -59,13 +59,13 @@ export default function ReviewOverview() {
     <div className="flex flex-col gap-4 text-small" id="ReviewOverview">
       <EvalGraph />
       <div className="flex flex-col gap-2" id="accuracy">
-        <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4 [&>*]:w-full">
+        <div className="grid grid-cols-[100px,_1fr,_24px,_1fr] items-center gap-4 [&>*]:w-full">
           <p className="text-foreground-500">Players</p>
           <p className="truncate text-center font-bold">{wName}</p>
           <span className="invisible text-[1px]">purposefully blank space</span>
           <p className="truncate text-center font-bold">{bName}</p>
         </div>
-        <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4">
+        <div className="grid grid-cols-[100px,_1fr,_24px,_1fr] items-center gap-4">
           <p className="text-foreground-500">Accuracy</p>
           <p className="inline-block justify-self-center rounded bg-white px-3 py-2 text-lg font-bold text-background">{accuracy[0]}</p>
           <span className="invisible text-[1px]">purposefully blank space</span>
@@ -80,7 +80,7 @@ export default function ReviewOverview() {
             return null;
 
           return (
-            <div className="grid grid-cols-[120px,_1fr,_24px,_1fr] items-center gap-4" key={i}>
+            <div className="grid grid-cols-[100px,_1fr,_24px,_1fr] items-center gap-4" key={i}>
               <p className="text-foreground-500">{capitalize(cl)}</p>
               <p className={cn(
                 'justify-self-center text-base font-bold',

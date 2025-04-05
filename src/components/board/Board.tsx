@@ -68,7 +68,7 @@ export default function Board() {
         <div className="relative aspect-square w-[calc(100%_-_42px)]" id="actual-board">
           <img
             alt=""
-            className="absolute"
+            className="absolute rounded"
             src={`/boards/${board}.png`}
           />
           <Highlight />
