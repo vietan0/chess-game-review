@@ -1,18 +1,13 @@
 import Badge from '../icons/endgame-badges/Badge';
-import { useBoardStore } from '../stores/useBoardStore';
 import badgeStyle from '../utils/badgeStyle';
 import useLoser from './useLoser';
+import useResult from './useResult';
 
-type WhiteBadge = 'abandoned' | 'checkmate-white' | 'draw-white' | 'resign-white' | 'timeout-white' | 'winner' | null;
-type BlackBadge = 'abandoned' | 'checkmate-black' | 'draw-black' | 'resign-black' | 'timeout-black' | 'winner' | null;
-
-export type BadgeType = 'abandoned' | 'checkmate-black' | 'checkmate-white' | 'draw-black' | 'draw-white' | 'resign-black' | 'resign-white' | 'timeout-black' | 'timeout-white' | 'winner' | null;
+import type { BlackBadge, WhiteBadge } from '../utils/endgameBadges';
 
 export default function useEndgameBadges() {
-  const currentGame = useBoardStore(state => state.currentGame);
-  const header = currentGame.header();
-  const result = header.Result;
-  const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
+  const result = useResult();
+  const isGameOver = result && ['1-0', '0-1', '1/2-1/2'].includes(result);
   let wResult: WhiteBadge = null;
   let bResult: BlackBadge = null;
   const { loseBy } = useLoser();

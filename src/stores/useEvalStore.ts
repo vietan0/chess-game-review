@@ -221,7 +221,7 @@ function classifyActualMoves(best3MovesWithClass: MoveEvalWithClass[][], cps: (s
 }
 
 function getOpenings(fens: string[]) {
-  const openingNames = [];
+  const openingNames: string[] = [];
 
   for (let i = 0; i < fens.length; i++) {
     if (i === 0) {
@@ -244,11 +244,16 @@ function getCps(best3MovesWithClass: MoveEvalWithClass[][], currentGame: Chess) 
   const fens = [DEFAULT_POSITION, ...history.map(move => move.after)];
 
   if ((currentGame.isCheckmate() || currentGame.isStalemate()) && beforeMate.length === fens.length - 1) {
-    // only push the checkmate/stalemate after done analyzing
-    const result = currentGame.header().Result; // '1-0' or '0-1' or '1-2/1-2'
-    const afterMate = [...beforeMate, result];
+    if (currentGame.isCheckmate()) {
+      if (currentGame.turn() === 'w') {
+        return [...beforeMate, '0-1']; // black wins
+      }
+      else {
+        return [...beforeMate, '1-0']; // white wins
+      }
+    }
 
-    return afterMate;
+    return [...beforeMate, '1/2-1/2']; // stalemate
   }
   else {
     return beforeMate;

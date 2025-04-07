@@ -1,5 +1,6 @@
 import useEndgameBadges from '../../hooks/useEndgameBadges';
 import useKingSquares from '../../hooks/useKingSquares';
+import useResult from '../../hooks/useResult';
 import { useBoardStore } from '../../stores/useBoardStore';
 import translatePiece from '../../utils/translatePiece';
 
@@ -9,8 +10,8 @@ export default function EndgameBadges() {
   const currentGame = useBoardStore(state => state.currentGame);
   const currentMoveNum = useBoardStore(state => state.currentMoveNum);
   const isFlipped = useBoardStore(state => state.isFlipped);
-  const result = currentGame.header().Result;
-  const isGameOver = ['1-0', '0-1', '1/2-1/2'].includes(result);
+  const result = useResult();
+  const isGameOver = result && ['1-0', '0-1', '1/2-1/2'].includes(result);
   const history = currentGame.history({ verbose: true });
   const isFinalMove = currentMoveNum === history.length;
   const [wx, wy] = translatePiece(wkSquare, isFlipped);
