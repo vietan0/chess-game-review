@@ -1,4 +1,5 @@
 import { Button } from '@heroui/button';
+import { Icon } from '@iconify/react/dist/iconify.js';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useEffect, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -18,9 +19,11 @@ export default function ReviewMoves() {
   const {
     currentGame,
     currentMoveNum,
+    isFlipped,
   } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
+    isFlipped: state.isFlipped,
   })));
 
   const history = currentGame.history({ verbose: true });
@@ -60,7 +63,7 @@ export default function ReviewMoves() {
   const result = currentGame.header().Result;
 
   return (
-    <div className="grid h-full grid-rows-[auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
+    <div className="grid h-full grid-rows-[auto,_auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
         {currentMoveNum > 0 && (
           <p className="flex justify-between gap-2">
@@ -139,6 +142,30 @@ export default function ReviewMoves() {
           })}
       </div>
       <p className="text-small text-foreground-500">{openingNames[currentMoveNum]}</p>
+      <div className="flex gap-4">
+        <a
+          className="flex w-fit gap-0 text-tiny text-foreground-500 hover:underline"
+          href={`https://www.chess.com/analysis?fen=${fens[currentMoveNum]}&flip=${isFlipped}`}
+          target="_blank"
+        >
+          <span>chess.com</span>
+          <Icon
+            className="text-small"
+            icon="material-symbols:arrow-outward-rounded"
+          />
+        </a>
+        <a
+          className="flex w-fit gap-0 text-tiny text-foreground-500 hover:underline"
+          href={`https://lichess.org/analysis/${fens[currentMoveNum]}`}
+          target="_blank"
+        >
+          <span>lichess</span>
+          <Icon
+            className="text-small"
+            icon="material-symbols:arrow-outward-rounded"
+          />
+        </a>
+      </div>
       <div className="overflow-scroll">
         <div className="flex flex-col">
           {historyPairs.map((pair, i) => (
