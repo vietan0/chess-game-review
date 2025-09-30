@@ -18,7 +18,12 @@ export default function Settings() {
   const chooseBoard = useSettingsStore(state => state.chooseBoard);
 
   return (
-    <Popover isOpen={isOpen} onOpenChange={open => setIsOpen(open)}>
+    <Popover
+      classNames={{ content: 'w-52' }}
+      isOpen={isOpen}
+      onOpenChange={open => setIsOpen(open)}
+      placement="top-end"
+    >
       <PopoverTrigger>
         <Button
           aria-label="Settings Popover"
@@ -38,7 +43,7 @@ export default function Settings() {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="flex flex-col gap-3 px-2 py-4">
+        <div className="flex w-full flex-col gap-3 px-2 py-4">
           <Switch
             isSelected={showRatings}
             onValueChange={toggleShowRatings}
@@ -56,9 +61,14 @@ export default function Settings() {
             selectedKeys={[pieces]}
             size="sm"
           >
-            {['neo', 'classic', 'ocean'].map(p => (
-              <SelectItem key={p}>
-                {capitalize(p)}
+            {['neo', 'classic', 'ocean'].map(pieces => (
+              <SelectItem
+                key={pieces}
+                startContent={(
+                  <img className="size-10" src={`/pieces/${pieces}/wn.png`} />
+                )}
+              >
+                {capitalize(pieces)}
               </SelectItem>
             ))}
           </Select>
@@ -72,9 +82,20 @@ export default function Settings() {
             selectedKeys={[board]}
             size="sm"
           >
-            {['green', 'brown', 'ice'].map(p => (
-              <SelectItem key={p}>
-                {capitalize(p)}
+            {['green', 'brown', 'ice'].map(board => (
+              <SelectItem
+                key={board}
+                startContent={(
+                  <div
+                    className="size-10"
+                    style={{
+                      backgroundImage: `url("/boards/${board}.png")`,
+                      backgroundSize: '400%',
+                    }}
+                  />
+                )}
+              >
+                {capitalize(board)}
               </SelectItem>
             ))}
           </Select>
