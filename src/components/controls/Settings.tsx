@@ -3,6 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
 import { Select, SelectItem } from '@heroui/select';
 import { Switch } from '@heroui/switch';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { useState } from 'react';
 
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import capitalize from '../../utils/capitalize';
@@ -10,13 +11,14 @@ import capitalize from '../../utils/capitalize';
 import type { Board, Pieces } from '../../stores/useSettingsStore';
 
 export default function Settings() {
+  const [isOpen, setIsOpen] = useState(false);
   const { showRatings, pieces, board } = useSettingsStore(state => state.settings);
   const toggleShowRatings = useSettingsStore(state => state.toggleShowRatings);
   const choosePieces = useSettingsStore(state => state.choosePieces);
   const chooseBoard = useSettingsStore(state => state.chooseBoard);
 
   return (
-    <Popover>
+    <Popover isOpen={isOpen} onOpenChange={open => setIsOpen(open)}>
       <PopoverTrigger>
         <Button
           aria-label="Settings Popover"
@@ -24,9 +26,15 @@ export default function Settings() {
           isIconOnly
           radius="sm"
           size="sm"
-          variant="solid"
+          variant="flat"
         >
-          <Icon icon="material-symbols:settings-outline-rounded" />
+          <Icon
+            className="transition-transform"
+            icon="material-symbols:settings"
+            style={{
+              transform: `rotate(${isOpen ? '-30deg' : '0'})`,
+            }}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent>

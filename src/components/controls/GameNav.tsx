@@ -13,6 +13,7 @@ export default function GameNav() {
   const {
     currentGame,
     currentMoveNum,
+    isFlipped,
     flipBoard,
     toFirstMove,
     toPrevMove,
@@ -22,6 +23,7 @@ export default function GameNav() {
   } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
+    isFlipped: state.isFlipped,
     flipBoard: state.flipBoard,
     toFirstMove: state.toFirstMove,
     toPrevMove: state.toPrevMove,
@@ -142,8 +144,15 @@ export default function GameNav() {
           onPress={() => flipBoard()}
           radius="sm"
           size="sm"
+          variant="flat"
         >
-          <Icon icon="material-symbols:sync-rounded" />
+          <Icon
+            className="transition-transform"
+            icon="material-symbols:sync"
+            style={{
+              transform: `rotate(${isFlipped ? '180deg' : '0'})`,
+            }}
+          />
         </Button>
         <Button
           color="danger"
