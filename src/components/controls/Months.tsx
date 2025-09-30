@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import dayjs from 'dayjs';
 import objectSupport from 'dayjs/plugin/objectSupport';
 import { nanoid } from 'nanoid';
@@ -33,7 +33,7 @@ export default function Months() {
         return (
           <div key={nanoid()}>
             <p className={cn('mb-2 font-bold', i !== 0 && 'mt-4')}>{year}</p>
-            <div className="grid grid-cols-[repeat(4,_minmax(64px,_1fr))] gap-1" id="month-grid">
+            <div className="grid grid-cols-[repeat(4,minmax(64px,1fr))] gap-1" id="month-grid">
               {yearArr.map((link) => {
                 const month = site === 'chess.com'
                   ? Number(link.slice(-2))
@@ -41,7 +41,7 @@ export default function Months() {
 
                 return (
                   <Button
-                    className="mb-1 mr-1 inline-block min-w-16"
+                    className="mr-1 mb-1 inline-block min-w-16"
                     key={link}
                     onPress={() => {
                       setStage('select-game');

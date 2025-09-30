@@ -1,5 +1,4 @@
-import { Button } from '@heroui/button';
-import { Progress } from '@heroui/progress';
+import { Button, Progress } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useCallback, useEffect } from 'react';
@@ -10,10 +9,10 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
+import cn from '../../utils/cn';
 import Loading from '../Loading';
 import ReviewMoves from './ReviewMoves';
 import ReviewOverview from './ReviewOverview';
-import cn from '../../utils/cn';
 
 const depth = 12;
 

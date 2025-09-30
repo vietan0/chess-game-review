@@ -1,6 +1,6 @@
-import { Button } from '@heroui/button';
+import { Helmet } from '@dr.pogodin/react-helmet';
+import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { Helmet } from 'react-helmet-async';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
@@ -64,7 +64,14 @@ export default function Controls() {
   }
 
   return (
-    <div className="mb-28 flex h-[500px] min-w-[310px] max-w-[642px] grow flex-col gap-4 xs:mb-14 xs:h-[640px] lg:mb-0 lg:size-auto lg:h-auto lg:max-w-[480px]" id="Controls">
+    <div
+      className={`
+        mb-28 flex h-[500px] max-w-[642px] min-w-[310px] grow flex-col gap-4
+        xs:mb-14 xs:h-[640px]
+        lg:mb-0 lg:size-auto lg:h-auto lg:max-w-[480px]
+      `}
+      id="Controls"
+    >
       <Helmet>
         <title>
           {isLoaded
@@ -85,7 +92,9 @@ export default function Controls() {
           <Icon icon="material-symbols:chevron-left-rounded" />
         </Button>
         <p
-          className={cn('flex w-full items-center justify-center font-bold', stage === 'home' && 'text-xl')}
+          className={cn('flex w-full items-center justify-center font-bold', stage === 'home' && `
+            text-xl
+          `)}
         >
           {stage === 'home'
             ? (
@@ -97,7 +106,11 @@ export default function Controls() {
             : stage === 'select-month' ? 'Select Month' : stage === 'select-game' ? 'Select Game' : 'Review'}
         </p>
       </div>
-      <div className="grow overflow-scroll xs:px-4">
+      <div className={`
+        grow overflow-scroll
+        xs:px-4
+      `}
+      >
         {stage === 'home'
           ? <Forms />
           : stage === 'select-month'

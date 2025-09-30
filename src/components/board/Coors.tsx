@@ -31,7 +31,11 @@ function Coor({ square }: { square: Square }) {
   const file = (
     <span
       className={cn(
-        'absolute bottom-0.5 right-0.5 select-none text-[2vw] font-semibold xs:right-1 sm:text-sm',
+        `
+          absolute right-0.5 bottom-0.5 text-[2vw] font-semibold select-none
+          xs:right-1
+          sm:text-sm
+        `,
         chooseTextColorFromTheme(color),
       )}
     >
@@ -42,7 +46,11 @@ function Coor({ square }: { square: Square }) {
   const rank = (
     <span
       className={cn(
-        'absolute left-0.5 top-0.5 select-none text-[2vw] font-semibold xs:left-1 xs:top-1 sm:text-sm',
+        `
+          absolute top-0.5 left-0.5 text-[2vw] font-semibold select-none
+          xs:top-1 xs:left-1
+          sm:text-sm
+        `,
         chooseTextColorFromTheme(color),
       )}
     >

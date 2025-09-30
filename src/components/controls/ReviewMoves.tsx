@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useEffect, useMemo, useRef } from 'react';
@@ -63,7 +63,7 @@ export default function ReviewMoves() {
   const result = currentGame.header().Result;
 
   return (
-    <div className="grid h-full grid-rows-[auto,_auto,_auto,_1fr,_80px] gap-3" id="ReviewMoves">
+    <div className="grid h-full grid-rows-[auto_auto_auto_1fr_80px] gap-3" id="ReviewMoves">
       <div className="flex flex-col gap-1">
         {currentMoveNum > 0 && (
           <p className="flex justify-between gap-2">
@@ -121,7 +121,13 @@ export default function ReviewMoves() {
             }
 
             return (
-              <div className="grid grid-cols-[90px,_1fr] items-center justify-items-start gap-4 text-small" key={i}>
+              <div
+                className={`
+                  grid grid-cols-[90px_1fr] items-center justify-items-start
+                  gap-4 text-small
+                `}
+                key={i}
+              >
                 <p className="font-bold">
                   <MoveClassification
                     classification={move.classification}
@@ -132,7 +138,9 @@ export default function ReviewMoves() {
                 <p
                   className={cn(
                     'w-12 rounded-sm px-2 py-1 text-center font-bold',
-                    whiteHasAdv ? 'bg-foreground text-background' : 'bg-default-100',
+                    whiteHasAdv
+                      ? 'bg-foreground text-background'
+                      : `bg-default-100`,
                   )}
                 >
                   {(adv.startsWith('-') || adv.startsWith('+')) ? adv.slice(1) : adv}
@@ -144,7 +152,10 @@ export default function ReviewMoves() {
       <p className="text-small text-foreground-500">{openingNames[currentMoveNum]}</p>
       <div className="flex gap-4">
         <a
-          className="flex w-fit gap-0 text-tiny text-foreground-500 hover:underline"
+          className={`
+            flex w-fit gap-0 text-tiny text-foreground-500
+            hover:underline
+          `}
           href={`https://www.chess.com/analysis?fen=${fens[currentMoveNum]}&flip=${isFlipped}`}
           target="_blank"
         >
@@ -155,7 +166,10 @@ export default function ReviewMoves() {
           />
         </a>
         <a
-          className="flex w-fit gap-0 text-tiny text-foreground-500 hover:underline"
+          className={`
+            flex w-fit gap-0 text-tiny text-foreground-500
+            hover:underline
+          `}
           href={`https://lichess.org/analysis/${fens[currentMoveNum]}`}
           target="_blank"
         >
@@ -171,7 +185,10 @@ export default function ReviewMoves() {
           {historyPairs.map((pair, i) => (
             <div
               className={cn(
-                'grid grid-cols-[40px,_90px,_90px] items-center justify-items-start gap-2 pl-2',
+                `
+                  grid grid-cols-[40px_90px_90px] items-center
+                  justify-items-start gap-2 pl-2
+                `,
                 i % 2 === 1 && 'bg-default-100/50',
               )}
               key={i}
@@ -219,7 +236,7 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
       {['inaccuracy', 'mistake', 'blunder'].includes(classification) && (
         <MoveClassification
           classification={classification}
-          className="absolute -left-5 top-1.5 size-5 cursor-pointer"
+          className="absolute top-1.5 -left-5 size-5 cursor-pointer"
           onClick={() => toMove(realIndex)}
         />
       )}

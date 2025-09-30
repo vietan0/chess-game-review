@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useMediaQuery } from 'react-responsive';
@@ -77,7 +77,17 @@ export default function GameNav() {
   useHotkeys('x', () => flipBoard());
 
   return (
-    <div className="fixed bottom-3 left-1/2 z-10 mt-auto flex w-11/12 max-w-[642px] -translate-x-2/4 flex-col flex-wrap justify-between gap-2 rounded-xl bg-default-50/90 p-3 ring-1 ring-foreground-300 backdrop-blur-sm xs:w-10/12 xs:flex-row lg:static lg:w-auto lg:translate-x-0 lg:flex-col lg:bg-inherit lg:p-0 lg:ring-0" id="GameNav">
+    <div
+      className={`
+        fixed bottom-3 left-1/2 z-10 mt-auto flex w-11/12 max-w-[642px]
+        -translate-x-2/4 flex-col flex-wrap justify-between gap-2 rounded-xl
+        bg-default-50/90 p-3 ring-1 ring-foreground-300 backdrop-blur-sm
+        xs:w-10/12 xs:flex-row
+        lg:static lg:w-auto lg:translate-x-0 lg:flex-col lg:bg-inherit lg:p-0
+        lg:ring-0
+      `}
+      id="GameNav"
+    >
       <div className="flex gap-1">
         <Button
           aria-label="First move"

@@ -1,4 +1,4 @@
-import { Accordion, AccordionItem } from '@heroui/accordion';
+import { Accordion, AccordionItem } from '@heroui/react';
 
 import useLocalStorage from '../../hooks/useLocalStorage';
 import ChessCom from '../../icons/game-src/ChessCom';

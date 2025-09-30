@@ -1,7 +1,4 @@
-import { Button } from '@heroui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover';
-import { Select, SelectItem } from '@heroui/select';
-import { Switch } from '@heroui/switch';
+import { Button, Popover, PopoverContent, PopoverTrigger, Select, SelectItem, Switch } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useState } from 'react';
 

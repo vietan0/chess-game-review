@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import { heroui } from '@heroui/theme';
+import { heroui } from '@heroui/react';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
 export default {
