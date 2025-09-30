@@ -76,7 +76,6 @@ export default function Controls() {
         <Button
           aria-label="Back"
           className={cn('text-2xl', stage === 'home' && 'invisible')}
-          disableRipple
           isIconOnly
           onPress={back}
           radius="sm"

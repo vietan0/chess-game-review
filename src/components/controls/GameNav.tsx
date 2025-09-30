@@ -80,7 +80,6 @@ export default function GameNav() {
         <Button
           aria-label="First move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toFirstMove}
@@ -92,7 +91,6 @@ export default function GameNav() {
         <Button
           aria-label="Previous move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toPrevMove}
@@ -104,7 +102,6 @@ export default function GameNav() {
         <Button
           aria-label="Next move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={() => {
@@ -122,7 +119,6 @@ export default function GameNav() {
         <Button
           aria-label="Final move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={() => {

@@ -230,7 +230,6 @@ function MoveButton({ pairIndex, move }: { pairIndex: number; move: Move }) {
           chooseTextColor(classification),
         )}
         disableAnimation
-        disableRipple
         onPress={() => toMove(realIndex)}
         radius="sm"
         ref={ref}
