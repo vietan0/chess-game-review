@@ -40,7 +40,7 @@ export default function ChessSiteForm({ site }: { site: Site }) {
         )}
       />
       <Button
-        className="h-12"
+        className="h-12 font-semibold text-shadow-xs"
         color="primary"
         isDisabled={watch('username') === '' || !formState.isValid}
         radius="sm"

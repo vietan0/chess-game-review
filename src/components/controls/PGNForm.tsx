@@ -74,6 +74,7 @@ export default function PGNForm() {
         </CardBody>
         <CardFooter>
           <Button
+            className="font-semibold text-shadow-xs"
             color="primary"
             disableAnimation
             fullWidth

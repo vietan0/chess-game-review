@@ -12,7 +12,6 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],
-        mono: ['Chivo Mono', ...defaultTheme.fontFamily.mono],
       },
       screens: {
         xs: '400px',
@@ -41,5 +40,49 @@ export default {
     },
   },
   darkMode: 'class',
-  plugins: [heroui()],
+  plugins: [heroui({
+    themes: {
+      light: {
+        colors: {
+          primary: {
+            DEFAULT: '#81B64C',
+            50: '#EEFAE4',
+            100: '#D7EAC5',
+            200: '#BEDAA2',
+            300: '#A5CB7F',
+            400: '#8CBD5C',
+            500: '#81B64C',
+            600: '#587F33',
+            700: '#3F5B23',
+            800: '#243712',
+            900: '#091400',
+          },
+        },
+      },
+      dark: {
+        colors: {
+          primary: {
+            DEFAULT: '#81B64C',
+            50: '#EEFAE4',
+            100: '#D7EAC5',
+            200: '#BEDAA2',
+            300: '#A5CB7F',
+            400: '#8CBD5C',
+            500: '#81B64C',
+            600: '#587F33',
+            700: '#3F5B23',
+            800: '#243712',
+            900: '#091400',
+          },
+        },
+      },
+    },
+    layout: {
+      radius: {
+        small: '6px',
+        medium: '9px',
+        large: '12px',
+      },
+    },
+  })],
 };

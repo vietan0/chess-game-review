@@ -102,7 +102,7 @@ export default function ReviewOverview() {
         })}
       </div>
       <Button
-        className="h-12 text-medium font-bold"
+        className="h-12 text-medium font-bold text-shadow-xs"
         color="primary"
         fullWidth
         onPress={() => {

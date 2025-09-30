@@ -216,6 +216,7 @@ export default function Games() {
             </div>
             <div className="flex justify-end gap-2">
               <Button
+                className="text-shadow-xs"
                 color="primary"
                 isDisabled={!formState.isValid}
                 radius="sm"
