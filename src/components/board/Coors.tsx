@@ -18,13 +18,13 @@ function Coor({ square }: { square: Square }) {
 
   function chooseTextColorFromTheme(color: 'light' | 'dark') {
     if (board === 'green') {
-      return color === 'light' ? 'text-darkGreen' : 'text-lightGreen';
+      return color === 'light' ? 'text-dark-green' : 'text-light-green';
     }
     else if (board === 'brown') {
-      return color === 'light' ? 'text-darkBrown' : 'text-lightBrown';
+      return color === 'light' ? 'text-dark-brown' : 'text-light-brown';
     }
     else {
-      return color === 'light' ? 'text-darkIce' : 'text-lightIce';
+      return color === 'light' ? 'text-dark-ice' : 'text-light-ice';
     }
   }
 
