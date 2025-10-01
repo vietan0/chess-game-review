@@ -1,4 +1,4 @@
-import { Card, CardBody } from '@heroui/card';
+import { Card, CardBody } from '@heroui/react';
 
 import Result from '../../icons/result/Result';
 import TimeClass from '../../icons/time-class/TimeClass';
@@ -6,6 +6,7 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { useStageStore } from '../../stores/useStageStore';
+import cn from '../../utils/cn';
 import convertLichessTimeClass from '../../utils/convertLichessTimeClass';
 import { formatChessComTimeControl, formatLichessTimeControl } from '../../utils/formatTimeControl';
 import getChessComResult from '../../utils/getChessComResult';
@@ -58,8 +59,13 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   return (
     <Card
       classNames={{
-        base: 'text-sm border-b-1 border-default-100',
-        body: 'flex-row gap-3 items-center pl-2 pr-4 py-3',
+        base: cn(`
+          border-default-300/50 bg-transparent text-sm
+          not-last:border-b
+          data-[hover=true]:bg-content4/20
+          dark:data-[hover=true]:bg-content4/20
+        `),
+        body: cn('flex-row items-center gap-3 py-3 pr-4 pl-2'),
       }}
       disableAnimation
       fullWidth
@@ -76,7 +82,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
       <CardBody>
         <div className="flex w-10 min-w-10 flex-col items-center gap-1" id="time-control">
           <TimeClass className="size-5" timeClass={timeClass} />
-          <span className="text-nowrap text-xs text-foreground-500">
+          <span className="text-xs text-nowrap text-foreground-500">
             {timeControl}
           </span>
         </div>
@@ -84,7 +90,7 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
           <div className="flex items-center gap-2">
             <span className="truncate">{wName}</span>
             {showRatings && (
-              <span className="text-xs font-bold leading-4 text-foreground-500">
+              <span className="text-xs leading-4 font-bold text-foreground-500">
                 {wRating}
               </span>
             )}
@@ -92,13 +98,16 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
           <div className="flex items-center gap-2">
             <span className="truncate">{bName}</span>
             {showRatings && (
-              <span className="text-xs font-bold leading-4 text-foreground-500">
+              <span className="text-xs leading-4 font-bold text-foreground-500">
                 {bRating}
               </span>
             )}
           </div>
         </div>
-        <div className="ml-auto flex w-20 items-center justify-between gap-10 text-xs">
+        <div className={`
+          ml-auto flex w-20 items-center justify-between gap-10 text-xs
+        `}
+        >
           <span className="text-default-500">{totalMoves}</span>
           <Result className="size-5" result={result} />
         </div>

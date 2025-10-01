@@ -1,12 +1,11 @@
-import { Button } from '@heroui/button';
-import { Card, CardBody, CardFooter } from '@heroui/card';
-import { Textarea } from '@heroui/input';
+import { Button, Card, CardBody, CardFooter, Textarea } from '@heroui/react';
 import { DevTool } from '@hookform/devtools';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useBoardStore } from '../../stores/useBoardStore';
 import { useSelectGameStore } from '../../stores/useSelectGameStore';
 import { useStageStore } from '../../stores/useStageStore';
+import cn from '../../utils/cn';
 
 import type { SubmitHandler } from 'react-hook-form';
 
@@ -44,7 +43,7 @@ export default function PGNForm() {
   return (
     <Card
       classNames={{
-        base: 'bg-content2 rounded-small',
+        base: cn('rounded-small bg-content2'),
         header: 'text-sm',
         body: 'p-0',
         footer: 'p-0 rounded-none',
@@ -74,6 +73,7 @@ export default function PGNForm() {
         </CardBody>
         <CardFooter>
           <Button
+            className="font-semibold text-shadow-xs"
             color="primary"
             disableAnimation
             fullWidth

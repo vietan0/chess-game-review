@@ -61,11 +61,17 @@ export default function Board() {
   }, [isLoaded]);
 
   return (
-    <div className="flex w-full max-w-[642px] flex-col gap-2" id="Board">
+    <div className="flex h-fit w-full max-w-[642px] flex-col gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} />
-      <div className="flex gap-1.5 xs:gap-3" id="Board&Bar">
+      <div
+        className={`
+          flex gap-1.5
+          xs:gap-3
+        `}
+        id="Board&Bar"
+      >
         <EvalBar />
-        <div className="relative aspect-square w-[calc(100%_-_42px)]" id="actual-board">
+        <div className="relative aspect-square w-[calc(100%-42px)]" id="actual-board">
           <img
             alt=""
             className="absolute rounded"

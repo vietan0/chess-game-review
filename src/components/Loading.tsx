@@ -1,4 +1,4 @@
-import { CircularProgress } from '@heroui/progress';
+import { CircularProgress } from '@heroui/react';
 
 export default function Loading({ label }: { label?: string }) {
   return (

@@ -1,7 +1,4 @@
-import { Accordion, AccordionItem } from '@heroui/accordion';
-import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
-import { Select, SelectItem } from '@heroui/select';
+import { Accordion, AccordionItem, Button, Input, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -216,6 +213,7 @@ export default function Games() {
             </div>
             <div className="flex justify-end gap-2">
               <Button
+                className="text-shadow-xs"
                 color="primary"
                 isDisabled={!formState.isValid}
                 radius="sm"

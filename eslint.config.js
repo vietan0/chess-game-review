@@ -1,9 +1,9 @@
 import antfu from '@antfu/eslint-config';
 import { FlatCompat } from '@eslint/eslintrc';
 import pluginQuery from '@tanstack/eslint-plugin-query';
+import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import tailwind from 'eslint-plugin-tailwindcss';
 
 const compat = new FlatCompat();
 
@@ -92,11 +92,16 @@ export default antfu(
       markdown: true,
     },
   },
-  ...tailwind.configs['flat/recommended'],
   {
+    plugins: {
+      'better-tailwindcss': eslintPluginBetterTailwindcss,
+    },
+    rules: {
+      ...eslintPluginBetterTailwindcss.configs['recommended-warn'].rules,
+    },
     settings: {
-      tailwindcss: {
-        callees: ['classnames', 'clsx', 'cn'],
+      'better-tailwindcss': {
+        entryPoint: 'src/index.css',
       },
     },
   },

@@ -1,5 +1,4 @@
-import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
+import { Button, Input } from '@heroui/react';
 import { DevTool } from '@hookform/devtools';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -40,7 +39,7 @@ export default function ChessSiteForm({ site }: { site: Site }) {
         )}
       />
       <Button
-        className="h-12"
+        className="h-12 font-semibold text-shadow-xs"
         color="primary"
         isDisabled={watch('username') === '' || !formState.isValid}
         radius="sm"

@@ -93,7 +93,11 @@ export default function EvalBar() {
 
   return (
     <div className={cn(
-      'relative flex w-6 shrink-0 flex-col overflow-hidden rounded bg-default-100 xs:w-[30px]',
+      `
+        relative flex w-6 shrink-0 flex-col overflow-hidden rounded
+        bg-default-100
+        xs:w-[30px]
+      `,
       isFlipped ? 'justify-start' : 'justify-end',
     )}
     >
@@ -105,7 +109,11 @@ export default function EvalBar() {
       >
       </motion.div>
       <span className={cn(
-        'absolute inset-x-0 me-auto ms-auto w-full text-center text-[9px] mix-blend-difference xs:text-[11px]',
+        `
+          absolute inset-x-0 ms-auto me-auto w-full text-center text-[9px]
+          mix-blend-difference
+          xs:text-[11px]
+        `,
         isTop ? 'top-1' : 'bottom-1',
       )}
       >

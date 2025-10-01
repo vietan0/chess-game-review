@@ -1,4 +1,4 @@
-import { Button } from '@heroui/button';
+import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useMediaQuery } from 'react-responsive';
@@ -13,6 +13,7 @@ export default function GameNav() {
   const {
     currentGame,
     currentMoveNum,
+    isFlipped,
     flipBoard,
     toFirstMove,
     toPrevMove,
@@ -22,6 +23,7 @@ export default function GameNav() {
   } = useBoardStore(useShallow(state => ({
     currentGame: state.currentGame,
     currentMoveNum: state.currentMoveNum,
+    isFlipped: state.isFlipped,
     flipBoard: state.flipBoard,
     toFirstMove: state.toFirstMove,
     toPrevMove: state.toPrevMove,
@@ -75,12 +77,21 @@ export default function GameNav() {
   useHotkeys('x', () => flipBoard());
 
   return (
-    <div className="fixed bottom-3 left-1/2 z-10 mt-auto flex w-11/12 max-w-[642px] -translate-x-2/4 flex-col flex-wrap justify-between gap-2 rounded-xl bg-default-50/90 p-3 ring-1 ring-foreground-300 backdrop-blur-sm xs:w-10/12 xs:flex-row lg:static lg:w-auto lg:translate-x-0 lg:flex-col lg:bg-inherit lg:p-0 lg:ring-0" id="GameNav">
+    <div
+      className={`
+        fixed bottom-3 left-1/2 z-10 mt-auto flex w-11/12 max-w-[642px]
+        -translate-x-2/4 flex-col flex-wrap justify-between gap-2 rounded-xl
+        bg-default-50/90 p-3 ring-1 ring-foreground-300 backdrop-blur-sm
+        xs:w-10/12 xs:flex-row
+        lg:static lg:w-auto lg:translate-x-0 lg:flex-col lg:bg-inherit lg:p-0
+        lg:ring-0
+      `}
+      id="GameNav"
+    >
       <div className="flex gap-1">
         <Button
           aria-label="First move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toFirstMove}
@@ -92,7 +103,6 @@ export default function GameNav() {
         <Button
           aria-label="Previous move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === 0 || !reviewFinished}
           isIconOnly
           onPress={toPrevMove}
@@ -104,7 +114,6 @@ export default function GameNav() {
         <Button
           aria-label="Next move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={() => {
@@ -122,7 +131,6 @@ export default function GameNav() {
         <Button
           aria-label="Final move"
           className="grow text-3xl"
-          disableRipple
           isDisabled={history.length === 0 || currentMoveNum === history.length || !reviewFinished}
           isIconOnly
           onPress={() => {
@@ -146,8 +154,15 @@ export default function GameNav() {
           onPress={() => flipBoard()}
           radius="sm"
           size="sm"
+          variant="flat"
         >
-          <Icon icon="material-symbols:sync-rounded" />
+          <Icon
+            className="transition-transform"
+            icon="material-symbols:sync"
+            style={{
+              transform: `rotate(${isFlipped ? '180deg' : '0'})`,
+            }}
+          />
         </Button>
         <Button
           color="danger"

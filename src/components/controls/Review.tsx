@@ -1,5 +1,4 @@
-import { Button } from '@heroui/button';
-import { Progress } from '@heroui/progress';
+import { Button, Progress } from '@heroui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { DEFAULT_POSITION } from 'chess.js';
 import { useCallback, useEffect } from 'react';
@@ -10,6 +9,7 @@ import { useBoardStore } from '../../stores/useBoardStore';
 import { useEvalStore } from '../../stores/useEvalStore';
 import { useStageStore } from '../../stores/useStageStore';
 import { useStockfishOutputStore } from '../../stores/useStockfishOutputStore';
+import cn from '../../utils/cn';
 import Loading from '../Loading';
 import ReviewMoves from './ReviewMoves';
 import ReviewOverview from './ReviewOverview';
@@ -145,7 +145,7 @@ export default function Review() {
       {stage === 'loaded'
         ? (
             <Button
-              className="h-12 text-medium font-bold"
+              className="h-12 text-medium font-bold text-shadow-xs"
               color="primary"
               fullWidth
               onPress={review}
@@ -158,7 +158,12 @@ export default function Review() {
           ? (
               <Progress
                 aria-label="Reviewing..."
-                classNames={{ value: 'font-bold mx-auto' }}
+                classNames={{
+                  value: cn('mx-auto font-bold'),
+                  indicator: `
+                    bg-linear-[-45deg,hsl(var(--heroui-primary-600))_15%,hsl(var(--heroui-primary))_15%,hsl(var(--heroui-primary))_30%,hsl(var(--heroui-primary-600))_30%,hsl(var(--heroui-primary-600))_45%,hsl(var(--heroui-primary))_45%,hsl(var(--heroui-primary))_60%,hsl(var(--heroui-primary-600))_60%,hsl(var(--heroui-primary-600))_75%,hsl(var(--heroui-primary))_75%,hsl(var(--heroui-primary))_90%,hsl(var(--heroui-primary-600))_90%]
+                  `,
+                }}
                 showValueLabel={true}
                 size="lg"
                 value={completePercentage}

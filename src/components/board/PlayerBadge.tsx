@@ -166,10 +166,17 @@ export default function PlayerBadge({ color }: {
   }, [currentMoveNum, color, timeControl, header, loser, loseBy]);
 
   return (
-    <div className="ml-[30px] flex items-center justify-between gap-2 xs:ml-[42px]">
+    <div className={`
+      ml-[30px] flex items-center justify-between gap-2
+      xs:ml-[42px]
+    `}
+    >
       <div className="flex items-start gap-2">
         <Icon
-          className={cn('text-2xl xs:text-[40px]', color === 'b' && 'bg-default-100 text-background')}
+          className={cn(`
+            text-2xl
+            xs:text-[40px]
+          `, color === 'b' && `bg-default-100 text-background`)}
           icon="material-symbols:person"
         />
         <div>
@@ -202,8 +209,14 @@ export default function PlayerBadge({ color }: {
       {timeLeft && (
         <div
           className={cn(
-            'flex min-w-20 items-center justify-between gap-1 rounded px-2 py-1 text-right font-mono text-base xs:min-w-32 xs:text-xl',
-            color === 'w' ? 'bg-foreground text-foreground-50' : 'bg-default-100 text-foreground',
+            `
+              flex min-w-20 items-center justify-between gap-1 rounded px-2 py-1
+              text-right font-medium tabular-nums
+              xs:min-w-32 xs:text-xl
+            `,
+            color === 'w'
+              ? 'bg-foreground text-foreground-50'
+              : `bg-default-100 text-foreground`,
             color !== turn ? 'opacity-100' : 'opacity-40',
           )}
         >
