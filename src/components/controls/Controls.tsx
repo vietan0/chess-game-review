@@ -67,6 +67,7 @@ export default function Controls() {
     <div
       className={`
         mb-28 flex h-[500px] max-w-[642px] min-w-[310px] grow flex-col gap-4
+        backdrop-blur-sm
         xs:mb-14 xs:h-[640px]
         lg:mb-0 lg:size-auto lg:h-auto lg:max-w-[480px]
       `}

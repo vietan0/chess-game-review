@@ -59,7 +59,11 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
   return (
     <Card
       classNames={{
-        base: cn('border-b border-default-100 text-sm'),
+        base: cn(`
+          border-b border-default-300/50 bg-transparent text-sm
+          data-[hover=true]:bg-content4/20
+          dark:data-[hover=true]:bg-content4/20
+        `),
         body: cn('flex-row items-center gap-3 py-3 pr-4 pl-2'),
       }}
       disableAnimation

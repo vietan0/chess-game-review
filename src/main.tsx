@@ -16,7 +16,27 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <HeroUIProvider disableRipple>
         <HelmetProvider>
-          <main className="lg:h-screen">
+          <main className={`
+            relative
+            lg:h-screen
+          `}
+          >
+            <div className={`
+              absolute hidden h-full w-full overflow-hidden
+              mask-radial-[100%_100%] mask-radial-from-25% mask-radial-at-center
+              sm:block
+            `}
+            >
+              <img
+                alt="background gradient"
+                className={`
+                  absolute top-[400px] left-[450px] h-[150vh]
+                  transform-[rotate(-10deg)]
+                  lg:top-0 lg:left-[850px]
+                `}
+                src="/gradient.png"
+              />
+            </div>
             <App />
           </main>
         </HelmetProvider>
