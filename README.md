@@ -18,10 +18,6 @@ Inspired by [wintrcat](https://www.youtube.com/watch?v=N6dIEzA--7Y).
 - [React](https://reactjs.org/)
 - [Tanstack Query](https://tanstack.com/query/latest) - Async State Management
 - [Zustand](https://zustand-demo.pmnd.rs/) - Global State Management
-- [NextUI](https://nextui.org/) - Component Library
+- [HeroUI](https://www.heroui.com/) - UI Library
 - [Framer Motion](https://www.framer.com/motion/) - Animation
 - [Visx](https://airbnb.io/visx/) - Data Visualization
-
----
-
-Made by [Việt An](https://github.com/vietan0).
