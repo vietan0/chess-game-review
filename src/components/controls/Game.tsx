@@ -60,7 +60,8 @@ export default function Game({ game }: { game: ChessComGame | LichessGame }) {
     <Card
       classNames={{
         base: cn(`
-          border-b border-default-300/50 bg-transparent text-sm
+          border-default-300/50 bg-transparent text-sm
+          not-last:border-b
           data-[hover=true]:bg-content4/20
           dark:data-[hover=true]:bg-content4/20
         `),

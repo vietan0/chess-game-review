@@ -1,6 +1,8 @@
 import { Helmet } from '@dr.pogodin/react-helmet';
 import { Button } from '@heroui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import { createPortal } from 'react-dom';
+import { useMediaQuery } from 'react-responsive';
 import { useShallow } from 'zustand/react/shallow';
 
 import { useBoardStore } from '../../stores/useBoardStore';
@@ -35,6 +37,10 @@ export default function Controls() {
     resetSelectGameStore: state.reset,
   })));
 
+  const isLg = useMediaQuery({
+    query: '(min-width: 1024px)',
+  });
+
   const [wName, bName] = useNames();
 
   function back() {
@@ -66,11 +72,12 @@ export default function Controls() {
   return (
     <div
       className={`
-        mb-28 flex h-[500px] max-w-[642px] min-w-[310px] grow flex-col gap-4
+        flex h-[500px] max-w-[642px] min-w-[310px] grow flex-col gap-4
         backdrop-blur-sm
-        xs:mb-14 xs:h-[640px]
-        lg:mb-0 lg:size-auto lg:h-auto lg:max-w-[480px]
+        xs:h-[660px]
+        lg:mb-0 lg:h-auto lg:max-h-[696px] lg:w-auto lg:max-w-[480px]
       `}
+      // max-h-[696px] is the height of sibling element <Board />
       id="Controls"
     >
       <Helmet>
@@ -108,8 +115,9 @@ export default function Controls() {
         </p>
       </div>
       <div className={`
-        grow overflow-scroll
-        xs:px-4
+        mb-32 grow overflow-scroll
+        xs:mb-16 xs:px-4
+        lg:mb-0
       `}
       >
         {stage === 'home'
@@ -120,7 +128,7 @@ export default function Controls() {
               ? <Games />
               : <Review />}
       </div>
-      <GameNav />
+      {isLg ? <GameNav /> : createPortal(<GameNav />, document.getElementById('root')!)}
     </div>
   );
 }

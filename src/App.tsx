@@ -16,14 +16,13 @@ export default function App() {
     <ErrorBoundary FallbackComponent={Fallback}>
       <div
         className={`
-          mx-auto h-full p-3
+          mx-auto h-full overflow-scroll p-3
           xs:p-6
         `}
         id="App"
       >
         <div className={`
-          relative mx-auto flex h-full max-w-[642px] flex-col justify-center
-          gap-6
+          relative mx-auto flex max-w-[642px] flex-col justify-center gap-6
           lg:max-w-none lg:flex-row
         `}
         >

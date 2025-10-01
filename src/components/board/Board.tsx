@@ -61,7 +61,7 @@ export default function Board() {
   }, [isLoaded]);
 
   return (
-    <div className="flex w-full max-w-[642px] flex-col gap-2" id="Board">
+    <div className="flex h-fit w-full max-w-[642px] flex-col gap-2" id="Board">
       <PlayerBadge color={isFlipped ? 'w' : 'b'} />
       <div
         className={`
